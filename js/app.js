@@ -1,78 +1,48 @@
-/*document.addEventListener("DOMContentLoaded", function (event) {
-    var modal = document.getElementById('modal-box');
-    var close = document.getElementsByClassName("close")[0];
-    close.onclick = function () {
-        modal.style.display = "none";
-    };
-    var dropdownMenu = document.querySelectorAll('.dropdown-menu');
-    window.onclick = function (event) {
+function MainView() {
+    this._view = document.getElementById('main');
+}
 
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+MainView.prototype = {
+    addChild: function (content) {
+        //this._view.innerHTML = '';
+        this._view.appendChild(content);
+    },
+    removeChild: function (content) {
+        this._view.removeChild(content);
+    }
+};
 
-        if (!event.target.matches('.dropdown-toggle')) {
-            var dropdowns = document.querySelectorAll('.dropdown-menu');
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('open')) {
-                    openDropdown.classList.remove('open');
-                }
+function MainViewController(mainView) {
+    this._mainView = mainView;
+    this.modalService = new ModalService();
+    this.adapter = new EntryTableViewAdapter(this.modalService);
+    this.view = new EntryTableView(this.adapter);
+    this.entryTableController = new EntryTableController(this.view, this.modalService);
+}
+
+MainViewController.prototype = {
+    initialize: function () {
+        if (typeof(Storage) !== "undefined") {
+            // Code for localStorage/sessionStorage.
+            if (!!localStorage.authenticationToken) {
+                var self = this;
+                let loadingView = new LoadingView();
+                this._mainView.addChild(this.view.getViewElement());
+                this._mainView.addChild(loadingView.getViewElement());
+                this.entryTableController.initialize();
+                this.entryTableController.onReady.attach(function () {
+                    self._mainView.removeChild(loadingView.getViewElement());
+                })
+            } else {
+                window.location.replace('signin.html')
             }
+        } else {
+            // Sorry! No Web Storage support..
         }
     }
+};
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    var main = new MainViewController(new MainView());
+    main.initialize();
 });
-
-
-function selectAllEntry() {
-}
-
-
-function createEntry() {
-}
-*/
-
-
-function toggleMenu(event) {
-    var dropdownMenus = document.getElementsByClassName("dropdown-menu");
-    for (i = 0; i < dropdownMenus.length; i++) {
-        var openDropdown = dropdownMenus[i];
-        if (openDropdown.classList.contains('open')) {
-            openDropdown.classList.remove('open');
-        }
-    }
-    event.toElement.nextElementSibling.classList.toggle("open");
-}
-
-var formatter = (function () {
-    // var regEx = /{([^{]*?)}/g;
-    var regEx = /{{([^{]*?)}}/g;
-    var checkForSubstitutors = function (str) {
-        return regEx.test(str);
-    };
-
-    var getSubstitueValue = function (context) {
-        return function (regexMatch, placeholder) {
-            // console.log('regexMatch => ',regexMatch);
-            // console.log('placeholder => ',placeholder);
-            var splitArray = placeholder.split(".");
-            var currentContext = context;
-            while (splitArray.length) {
-                var item = splitArray.shift().trim();
-                if (typeof(currentContext) === "object" && item in currentContext)
-                    currentContext = currentContext[item];
-                else
-                    return;
-            }
-            return currentContext;
-        };
-    };
-
-    return function (input, context) {
-        if (checkForSubstitutors(input)) {
-            input = input.replace(regEx, getSubstitueValue(context));
-        }
-        return input
-    };
-})();

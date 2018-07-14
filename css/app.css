@@ -4,10 +4,20 @@
     border: none;
 }
 
+html, body {
+    min-width: 100%;
+}
+
+html {
+    box-sizing: border-box
+}
+
 body {
     font-weight: 400;
     background-color: #f7f7f7;
     font: 12px/120% "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 0;
+    margin: 0;
 }
 
 table, tbody, tfoot, thead, tr, th, td {
@@ -38,45 +48,14 @@ input:-webkit-autofill, textarea:-webkit-autofill {
     }
 }
 
-input[type=text], input[type=password] {
-    width: 100%;
-    display: inline-block;
-    padding: .75rem;
-    font-size: 1rem;
-    margin: 0.25rem 0 1rem 0;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    border-radius: 0.15rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-input[type=text]:focus, input[type=password]:focus {
-    border-color: #66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
-}
-
-hr {
-    border: 1px solid #f1f1f1;
-    margin-bottom: 20px;
-}
-
 .container {
     margin: 1rem auto;
     width: 80%;
 }
 
-.form-container {
-    margin: 0 auto;
-    width: 50%;
-}
-
-.form-container.signin {
-    width: 35%;
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 20px;
 }
 
 .card {
@@ -90,6 +69,10 @@ hr {
 /*.card:hover {
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }*/
+.hide {
+    visibility: hidden;
+    opacity: 0;
+}
 
 .btn {
     background-color: #4CAF50;
@@ -106,40 +89,69 @@ hr {
     opacity: 1;
 }
 
-.extra {
-    background-color: #f1f1f1;
-    text-align: center;
-    padding: .75rem;
-    margin-top: .5rem;
-}
-
 .row-col-2 {
     display: grid;
     grid-template-columns: auto auto;
     grid-gap: .5rem;
 }
 
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
+.form-input {
+    width: 100%;
+    display: inline-block;
+    padding: .75rem;
+    font-size: 1rem;
+    margin: 0.25rem 0 1rem 0;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 0.15rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-img.avatar {
+.form-input:focus, .form-input:focus {
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+.form-container input.invalid {
+    border-left: 5px solid red;
+}
+
+.form-container {
+    margin: 0 auto;
+    width: 50%;
+}
+
+.form-container.signin {
     width: 40%;
-    border-radius: 50%;
 }
 
-span.psw {
-    float: right;
-    padding-top: 16px;
+.form-login-header {
+    margin: 0 0 1.5rem;
 }
 
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    span.psw {
-        display: block;
-        float: none;
-    }
+.form-login-header .logo {
+    width: auto;
+    height: 50px;
+}
+
+.form-title {
+    color: #51ABDB;
+    font-size: 1.6rem;
+    font-weight: 300;
+    line-height: 1.2;
+    margin: 1rem 0 1.5rem;
+}
+
+.form-footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: .75rem;
+    margin-top: .5rem;
 }
 
 table {
@@ -211,7 +223,7 @@ table {
 }
 
 .entry-table table tbody tr td .content {
-    max-width: 600px;
+    max-width: 450px;
     display: block;
     color: #555;
     overflow: hidden;
@@ -300,7 +312,10 @@ table {
 .dropdown-toggle {
     background-color: #fff;
     display: inline-block;
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-50%, -50%);
     font: 400 12px helvetica neue, Helvetica, Arial, sans-serif;
     text-decoration: none;
     text-align: left;
@@ -316,7 +331,7 @@ table {
 }
 
 .dropdown-toggle:hover:after {
-    border-top-color: #00b22d;
+    border-top-color: #c5c5c5;
 
 }
 
@@ -658,6 +673,17 @@ table {
     cursor: default
 }
 
+.action-btn-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-50%, 50%);
+}
+
+.action-btn-container > .action-btn {
+    margin-left: 15px;
+}
+
 .action-btn {
     height: 20px;
     opacity: .54;
@@ -709,6 +735,11 @@ table {
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);*/
+}
+
+.delete {
+    background: url("../images/ic_delete.svg") no-repeat center;
+    background-size: 14px;
 
 }
 
@@ -786,4 +817,99 @@ table {
 
 .create-entry textarea:hover::-webkit-scrollbar-thumb {
     visibility: visible;
+}
+
+.alert {
+    align-items: center;
+    box-shadow: none;
+    display: none;
+    padding: 0.01em 16px;
+    color: #000;
+    cursor: default;
+    line-height: 24px;
+    margin-bottom: .75rem;
+    position: relative;
+}
+
+.alert.success {
+    color: #fff !important;
+    background-color: rgba(76, 175, 80, 0.8) !important;
+}
+
+.alert.error {
+    color: #fff !important;
+    background-color: rgba(244, 67, 54, 0.8) !important;
+}
+
+.alert-msg {
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Google Sans', Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+    padding: 0;
+}
+
+.alert > .close-btn {
+    cursor: pointer;
+    outline: none;
+    padding: 8px 16px;
+    position: absolute;
+    font-size: 1.2rem;
+    color: #fff;
+    right: 0;
+    top: 0;
+}
+
+/*Loading*/
+.loading-container {
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    z-index: 100;
+    color: #5f6368;
+    background: rgba(0, 0, 0, 0.47);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-ring {
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+
+.loading-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 51px;
+    height: 51px;
+    margin: 6px;
+    border: 6px solid transparent;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: loading-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.loading-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+
+.loading-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+
+.loading-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+
+@keyframes loading-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
