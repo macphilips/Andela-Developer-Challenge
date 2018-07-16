@@ -4,15 +4,17 @@ import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
 import accountRouter from './routes/v1/account';
+import authenticateRouter from './routes/v1/user-jwt-authentication';
 
 const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 
 const apiVersion = '/api/v1';
 app.use(`${apiVersion}/account`, accountRouter);
+app.use(`${apiVersion}/authenticate`, authenticateRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -27,7 +29,7 @@ app.use((err, req, res) => {
   // render the error page
   const code = err.status || 500;
   res.status(code);
-  res.send({code, message: err.message});
+  res.send({ code, message: err.message });
 });
 
 module.exports = app;
