@@ -10,3 +10,14 @@ deploy:
   local-dir: ui
   on:
     branch: master
+
+notifications:
+  email: false
+  slack:
+    on_success: never
+dist: trusty
+addons:
+  chrome: stable
+
+after_success:
+  - npm run coverage
