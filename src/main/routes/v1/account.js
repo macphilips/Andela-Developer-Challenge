@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import User from '../../model/User';
 import userRepository from '../../repository/users';
 import Util from '../../util/util';
+import VerifyToken from '../../security/jwt-filter';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.post('/register', (req, res) => {
   return res.status(201).send({ id: user.id, email: user.email, name: user.name });
 });
 
-router.get('/me', (req, res) => {
+router.get('/me', VerifyToken, (req, res) => {
   const user = userRepository.findById(req.userId);
   if (!user) {
     res.status(404).send('No user found.');

@@ -9,11 +9,11 @@ chai.use(chaiHttp);
 const should = chai.should();
 
 describe('Account API test', () => {
-  beforeEach((done) => {
-    userRepository.clear();
-    done();
-  });
   describe('POST /api/v1/account/register create new user', () => {
+    beforeEach((done) => {
+      userRepository.clear();
+      done();
+    });
     it('it should not POST a user when provided with invalid email or password ', (done) => {
       chai.request(server)
         .post('/api/v1/account/register')
@@ -67,6 +67,10 @@ describe('Account API test', () => {
     });
   });
   describe('GET /api/v1/account/me Get User', () => {
+    beforeEach((done) => {
+      userRepository.clear();
+      done();
+    });
     it('it should not allow access to resource when authentication is not provided', (done) => {
       chai.request(server)
         .get('/api/v1/account/me')
