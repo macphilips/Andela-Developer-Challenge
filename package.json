@@ -1,0 +1,33 @@
+{
+  "name": "api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rimraf build/",
+    "build-babel": "babel src -d build/src",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./bin/server",
+    "test": "npm run build && mocha build/src/test/**/*.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "has": "^1.0.3",
+    "http-errors": "~1.6.2",
+    "jsonwebtoken": "^8.3.0",
+    "morgan": "~1.9.0",
+    "randomstring": "^1.1.5",
+    "chai": "^3.5.0",
+    "chai-http": "^4.0.0",
+    "rimraf": "^2.6.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-airbnb": "^2.5.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "mocha": "^5.2.0"
+  }
+}
