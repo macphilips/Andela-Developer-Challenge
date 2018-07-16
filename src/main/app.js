@@ -1,20 +1,23 @@
-/* eslint-disable no-tabs,indent */
-
 import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
 import accountRouter from './routes/v1/account';
+import entriesRouter from './routes/v1/entries';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
+import config from './config';
 
 const app = express();
 
-app.use(logger('dev'));
+if (config.nodeEnv === 'dev') {
+  app.use(logger('dev'));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const apiVersion = '/api/v1';
 app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/authenticate`, authenticateRouter);
+app.use(`${apiVersion}/entries`, entriesRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
