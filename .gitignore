@@ -69,3 +69,10 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+
+######################
+# Coverage
+######################
+.coveralls.yml
+.nyc_output
+coverage/
