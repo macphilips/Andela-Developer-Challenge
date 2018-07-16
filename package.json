@@ -7,7 +7,7 @@
     "build-babel": "babel src -d build/src",
     "build": "npm run clean && npm run build-babel",
     "start": "npm run build && node ./bin/server",
-    "test": "SET NODE_ENV=test && npm run build && mocha build/src/test/**/*.js"
+    "test": "npm run build && mocha build/src/test/**/*.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
