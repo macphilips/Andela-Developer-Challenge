@@ -11,7 +11,7 @@ class EntryRepository {
   }
 
   save(input) {
-    const entry = {...input};
+    const entry = { ...input };
     const now = new Date();
     if (!entry.id) {
       entry.id = randomString.generate(8);
@@ -19,11 +19,12 @@ class EntryRepository {
     }
     entry.lastModified = now;
     const oldVar = this._entries[entry.id];
-    this._entries[entry.id] = {...oldVar, ...entry};
+    this._entries[entry.id] = { ...oldVar, ...entry };
 
     return this._entries[entry.id];
   }
 
+  /*
   findAll() {
     const entries = [];
     Object.keys(this._entries).forEach(((value) => {
@@ -31,6 +32,7 @@ class EntryRepository {
     }));
     return entries;
   }
+  */
 
   findAllByCreator(userId) {
     const entries = [];

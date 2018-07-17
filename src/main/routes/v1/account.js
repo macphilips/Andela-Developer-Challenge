@@ -27,12 +27,8 @@ router.post('/register', (req, res) => {
 
 router.get('/me', VerifyToken, (req, res) => {
   const user = userRepository.findById(req.userId);
-  if (!user) {
-    res.status(404).send('No user found.');
-  } else {
-    const { password, ...result } = user;
-    res.status(200).send(result);
-  }
+  const { password, ...result } = user;
+  res.status(200).send(result);
 });
 
 module.exports = router;

@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
 
   const token = TokenProvider.createToken(payload);
 
-  return res.status(200).send({auth: true, token});
+  return res.status(200).send({ auth: true, token });
 });
 
 module.exports = router;
