@@ -16,8 +16,15 @@ notifications:
   slack:
     on_success: never
 dist: trusty
+
 addons:
   chrome: stable
+  code_climate:
+    repo_token: $CLIMATE_CODE_REPORTER
+
+before_script:
+      - npm install codeclimate-test-reporter -g
 
 after_success:
   - npm run coverage
+  - codeclimate-test-reporter < ./coverage/lcov.info

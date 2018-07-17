@@ -1,3 +1,4 @@
+/* eslint-disable */
 var modalBoxTemplate = `
 <div id="modal-box" class="modal">
     <div class="modal-content"></div>
