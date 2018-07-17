@@ -8,8 +8,8 @@ import config from './config';
 
 const app = express();
 
-if (config.nodeEnv === 'dev') {
-  app.use(logger('dev'));
+if (config.nodeEnv !== 'test') {
+  app.use(logger('combined'));
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
