@@ -5,11 +5,9 @@ import Util from '../../util/util';
 
 
 function convertEntry(entry) {
-  console.log('entry => ', entry);
   const value = { ...entry };
   value.createdDate = Util.getTimeString(value.createdDate);
   value.lastModified = Util.getTimeString(value.lastModified);
-  console.log('value => ', value);
   return value;
 }
 
