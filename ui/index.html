@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>My Dairy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico"/>
     <link rel="stylesheet" href="css/app.css">
     <script src="js/helper-functions.js"></script>
     <script src="js/templates.js"></script>
@@ -16,7 +17,24 @@
     <script src="js/entry-list-item-view.js"></script>
     <script src="js/entry-list-view.js"></script>
 </head>
-<body >
+<body>
+<div class="nav-container">
+    <header class="nav-header">
+        <a href="/" class="header-logo">
+            <span class="logo-img"></span>
+        </a>
+        <div class="nav">
+            <ul>
+                <li>
+                    <a>Set Reminder</a>
+                </li>
+                <li>
+                    <a id="logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+</div>
 <div id="main">
     <div class="container"></div>
 </div>
