@@ -3,11 +3,11 @@ import randomString from 'randomstring';
 
 class EntryRepository {
   constructor() {
-    this._entries = {};
+    this.entries = {};
   }
 
   findById(userId) {
-    return (has(this._entries, userId)) ? this._entries[userId] : false;
+    return (has(this.entries, userId)) ? this.entries[userId] : false;
   }
 
   save(input) {
@@ -18,17 +18,17 @@ class EntryRepository {
       entry.createdDate = now;
     }
     entry.lastModified = now;
-    const oldVar = this._entries[entry.id];
-    this._entries[entry.id] = { ...oldVar, ...entry };
+    const oldVar = this.entries[entry.id];
+    this.entries[entry.id] = { ...oldVar, ...entry };
 
-    return this._entries[entry.id];
+    return this.entries[entry.id];
   }
 
   /*
   findAll() {
     const entries = [];
-    Object.keys(this._entries).forEach(((value) => {
-      entries.push(this._entries[value]);
+    Object.keys(this.entries).forEach(((value) => {
+      entries.push(this.entries[value]);
     }));
     return entries;
   }
@@ -36,8 +36,8 @@ class EntryRepository {
 
   findAllByCreator(userId) {
     const entries = [];
-    Object.keys(this._entries).forEach(((key) => {
-      const entry = this._entries[key];
+    Object.keys(this.entries).forEach(((key) => {
+      const entry = this.entries[key];
       if (entry.creatorID === userId) {
         entries.push(entry);
       }
@@ -47,7 +47,7 @@ class EntryRepository {
   }
 
   clear() {
-    this._entries = {};
+    this.entries = {};
   }
 }
 
