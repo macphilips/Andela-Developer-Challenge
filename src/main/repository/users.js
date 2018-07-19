@@ -6,11 +6,11 @@ const debug = require('debug')('api:server');
 
 class UserRepository {
   constructor() {
-    this._users = {};
+    this.users = {};
   }
 
   findById(userId) {
-    return (has(this._users, userId)) ? this._users[userId] : false;
+    return (has(this.users, userId)) ? this.users[userId] : false;
   }
 
   save(input) {
@@ -19,16 +19,16 @@ class UserRepository {
       user.id = randomString.generate(8);
       user.createdDate = new Date();
     }
-    const oldValue = this._users[user.id];
-    this._users[user.id] = { ...oldValue, ...user };
-    return this._users[user.id];
+    const oldValue = this.users[user.id];
+    this.users[user.id] = { ...oldValue, ...user };
+    return this.users[user.id];
   }
 
   findOneByEmail(email) {
     const users = [];
-    Object.keys(this._users).forEach(((key, index, array) => {
+    Object.keys(this.users).forEach(((key, index, array) => {
       debug(`key ${key} index ${index} array of ${array}`);
-      const user = this._users[key];
+      const user = this.users[key];
       if (user.email === email) {
         users.push(user);
       }
@@ -44,15 +44,15 @@ class UserRepository {
 
   findAll() {
     const users = [];
-    Object.keys(this._users).forEach(((value, index, array) => {
+    Object.keys(this.users).forEach(((value, index, array) => {
       debug(`key ${value} index ${index} array of ${array}`);
-      users.push(this._users[value]);
+      users.push(this.users[value]);
     }));
     return users;
   }
 
   clear() {
-    this._users = {};
+    this.users = {};
   }
 }
 
