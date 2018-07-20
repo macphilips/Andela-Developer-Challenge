@@ -2,6 +2,7 @@ import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
+import Auth from './security/jwt-filter';
 import accountRouter from './routes/v1/account';
 import entriesRouter from './routes/v1/entries';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(config.cors));
 
+app.use(Auth);
 const apiVersion = '/api/v1';
 app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/authenticate`, authenticateRouter);

@@ -2,15 +2,14 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../../model/User';
 import userRepository from '../../repository/users';
-import Util from '../../util/util';
-import VerifyToken from '../../security/jwt-filter';
+import { isEmpty } from '../../util/util';
 
 const router = express.Router();
 
 router.post('/register', (req, res) => {
   const { email, password } = req.body;
 
-  if (Util.isEmpty(email) || Util.isEmpty(password)) {
+  if (isEmpty(email) || isEmpty(password)) {
     return res.status(400).send({ code: 400, message: 'Email or password cannot be empty' });
   }
 
@@ -25,7 +24,7 @@ router.post('/register', (req, res) => {
   return res.status(201).send({ id: user.id, email: user.email, name: user.name });
 });
 
-router.get('/me', VerifyToken, (req, res) => {
+router.get('/me', (req, res) => {
   const user = userRepository.findById(req.userId);
   const { password, ...result } = user;
   res.status(200).send(result);

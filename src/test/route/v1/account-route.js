@@ -17,21 +17,21 @@ describe('Account API test', () => {
     it('it should not POST a user when provided with invalid email or password ', (done) => {
       chai.request(server)
         .post('/api/v1/account/register')
-        .send({name: 'John Doe', password: 'topsecret', email: ''})
+        .send({ name: 'John Doe', password: 'topsecret', email: '' })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.a('object');
         });
       chai.request(server)
         .post('/api/v1/account/register')
-        .send({name: 'John Doe', password: 'topsecret'})
+        .send({ name: 'John Doe', password: 'topsecret' })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.a('object');
         });
       chai.request(server)
         .post('/api/v1/account/register')
-        .send({name: 'John Doe', email: 'topsecret'})
+        .send({ name: 'John Doe', email: 'topsecret' })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.a('object');
@@ -39,7 +39,7 @@ describe('Account API test', () => {
         });
     });
     it('it should POST a user ', (done) => {
-      const user = {name: 'John Doe', password: 'topsecret', email: 'example@local'};
+      const user = { name: 'John Doe', password: 'topsecret', email: 'example@local' };
       chai.request(server)
         .post('/api/v1/account/register')
         .send(user)
@@ -54,7 +54,7 @@ describe('Account API test', () => {
         });
     });
     it('it should not POST a user when a user with given email already exists', (done) => {
-      const user = userRepository.save({name: 'John Doe', password: 'topsecret', email: 'example@local'});
+      const user = userRepository.save({ name: 'John Doe', password: 'topsecret', email: 'example@local' });
       chai.request(server)
         .post('/api/v1/account/register')
         .send(user)
@@ -82,8 +82,8 @@ describe('Account API test', () => {
         });
     });
     it('it should not allow access to resource when provided with an invalid token', (done) => {
-      const user = userRepository.save({name: 'Jane Doe', email: 'user@local'});
-      const token = TokenProvider.createToken({id: user.id}).substring(2);
+      const user = userRepository.save({ name: 'Jane Doe', email: 'user@local' });
+      const token = TokenProvider.createToken({ id: user.id }).substring(2);
       chai.request(server)
         .get('/api/v1/account/me')
         .set('x-access-token', token)
@@ -95,8 +95,8 @@ describe('Account API test', () => {
         });
     });
     it('it should GET current user with the provided token', (done) => {
-      const user = userRepository.save({name: 'Jane Doe', email: 'user@local'});
-      const token = TokenProvider.createToken({id: user.id});
+      const user = userRepository.save({ name: 'Jane Doe', email: 'user@local' });
+      const token = TokenProvider.createToken({ id: user.id });
       chai.request(server)
         .get('/api/v1/account/me')
         .set('x-access-token', token)
