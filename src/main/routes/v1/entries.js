@@ -1,5 +1,4 @@
 import express from 'express';
-import VerifyToken from '../../security/jwt-filter';
 import entriesRepository from '../../repository/entries';
 import Util from '../../util/util';
 
@@ -22,17 +21,17 @@ function convertEntries(entries) {
 
 const router = express.Router();
 
-router.get('/', VerifyToken, (req, res) => {
+router.get('/', (req, res) => {
   const entries = entriesRepository.findAllByCreator(req.userId);
   res.status(200).send(convertEntries(entries));
 });
-router.post('/', VerifyToken, (req, res) => {
+router.post('/', (req, res) => {
   const { title, content, id } = req.body;
   if (id) return res.status(400).send({});
   const creatorID = req.userId;
   return res.status(201).send(convertEntry(entriesRepository.save({ title, content, creatorID })));
 });
-router.put('/:id', VerifyToken, (req, res) => {
+router.put('/:id', (req, res) => {
   const { title, content } = req.body;
   const { id } = req.params;
   const creatorID = req.userId;
@@ -45,7 +44,7 @@ router.put('/:id', VerifyToken, (req, res) => {
     });
   }
 });
-router.get('/:id', VerifyToken, (req, res) => {
+router.get('/:id', (req, res) => {
   const { id } = req.params;
   const creatorID = req.userId;
   const entry = entriesRepository.findById(id);

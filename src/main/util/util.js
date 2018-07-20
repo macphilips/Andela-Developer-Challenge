@@ -8,7 +8,8 @@ function getTimeString(date) {
 }
 
 function isEmpty(str) {
-  return !str || (typeof (str) === 'string' && str.length === 0);
+  if (str === undefined || str === null) return true;
+  return (typeof (str) === 'string' && str.length === 0);
 }
 
 module.exports = { getTimeString, isEmpty };
