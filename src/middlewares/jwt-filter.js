@@ -1,6 +1,5 @@
-import jwt from 'jsonwebtoken';
 import TokenProvider from './jwt-provider';
-import Builder from '../util/ant-matcher';
+import Builder from '../functions/ant-matcher';
 
 function doFilter(req, res, next) {
   const antPathMatcher = new Builder().create();

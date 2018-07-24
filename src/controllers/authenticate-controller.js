@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import TokenProvider from '../security/jwt-provider';
+import TokenProvider from '../middlewares/jwt-provider';
 import userRepository from '../repository/users';
 
 export default class AuthenticateController {
@@ -19,6 +19,6 @@ export default class AuthenticateController {
       id: user.id,
     };
     const token = TokenProvider.createToken(payload);
-    return res.status(200).send({auth: true, token});
+    return res.status(200).send({ auth: true, token });
   }
 }
