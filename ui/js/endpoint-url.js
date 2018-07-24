@@ -1,10 +1,10 @@
-var baseUrl = 'https://murmuring-citadel-13117.herokuapp.com';
-var apiVersion = '/api/v1';
-var apiUrl = baseUrl + apiVersion;
-var registrationEndpoint = apiUrl + '/account/register';
-var authenticationEndpoint = apiUrl + '/authenticate';
-var entriesEndpoint = apiUrl + '/entries';
+const baseUrl = 'https://murmuring-citadel-13117.herokuapp.com';
+const apiVersion = '/api/v1';
+const apiUrl = baseUrl + apiVersion;
+const registrationEndpoint = `${apiUrl}/account/register`;
+const authenticationEndpoint = `${apiUrl}/authenticate`;
+const entriesEndpoint = `${apiUrl}/entries`;
 
 function getEntryUrlByID(id) {
-  return entriesEndpoint + '/' + id;
+  return `${entriesEndpoint}/${id}`;
 }

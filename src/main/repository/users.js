@@ -1,9 +1,6 @@
 import has from 'has';
 import randomString from 'randomstring';
 
-
-const debug = require('debug')('api:server');
-
 class UserRepository {
   constructor() {
     this.users = {};
@@ -27,7 +24,6 @@ class UserRepository {
   findOneByEmail(email) {
     const users = [];
     Object.keys(this.users).forEach(((key, index, array) => {
-      debug(`key ${key} index ${index} array of ${array}`);
       const user = this.users[key];
       if (user.email === email) {
         users.push(user);
@@ -45,7 +41,6 @@ class UserRepository {
   findAll() {
     const users = [];
     Object.keys(this.users).forEach(((value, index, array) => {
-      debug(`key ${value} index ${index} array of ${array}`);
       users.push(this.users[value]);
     }));
     return users;
