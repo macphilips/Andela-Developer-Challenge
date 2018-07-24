@@ -1,4 +1,4 @@
-import Util from '../util/util';
+import Util from '../functions/util';
 import entriesRepository from '../repository/entries';
 
 export default class EntriesController {

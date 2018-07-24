@@ -2,8 +2,8 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import bcrypt from 'bcryptjs';
-import server from '../../../main/app';
-import userRepository from '../../../main/repository/users';
+import server from '../../../app';
+import userRepository from '../../../repository/users';
 
 chai.use(chaiHttp);
 

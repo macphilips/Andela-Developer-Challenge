@@ -2,11 +2,11 @@ import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import Auth from './security/jwt-filter';
+import Auth from './middlewares/jwt-filter';
 import accountRouter from './routes/v1/account';
 import entriesRouter from './routes/v1/entries';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
-import config from './config';
+import config from './config/config';
 
 const app = express();
 
@@ -34,7 +34,6 @@ app.use((err, req, res) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
   const code = err.status || 500;
   res.status(code);
   res.send({ code, message: err.message });

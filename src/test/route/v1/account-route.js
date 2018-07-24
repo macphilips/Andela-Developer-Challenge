@@ -1,9 +1,9 @@
 // Require the dev-dependencies
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import server from '../../../main/app';
-import userRepository from '../../../main/repository/users';
-import TokenProvider from '../../../main/security/jwt-provider';
+import server from '../../../app';
+import userRepository from '../../../repository/users';
+import TokenProvider from '../../../middlewares/jwt-provider';
 
 chai.use(chaiHttp);
 const should = chai.should();

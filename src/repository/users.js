@@ -23,7 +23,7 @@ class UserRepository {
 
   findOneByEmail(email) {
     const users = [];
-    Object.keys(this.users).forEach(((key, index, array) => {
+    Object.keys(this.users).forEach(((key) => {
       const user = this.users[key];
       if (user.email === email) {
         users.push(user);
@@ -40,7 +40,7 @@ class UserRepository {
 
   findAll() {
     const users = [];
-    Object.keys(this.users).forEach(((value, index, array) => {
+    Object.keys(this.users).forEach(((value) => {
       users.push(this.users[value]);
     }));
     return users;

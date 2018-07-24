@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import User from '../model/User';
-import { isEmpty } from '../util/util';
+import User from '../models/User';
+import { isEmpty } from '../functions/util';
 import userRepository from '../repository/users';
 
 export default class AccountController {

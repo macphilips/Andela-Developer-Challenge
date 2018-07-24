@@ -1,10 +1,10 @@
 import chai from 'chai';
 import bcrypt from 'bcryptjs';
 import chaiHttp from 'chai-http';
-import entriesRepository from '../../../main/repository/entries';
-import userRepository from '../../../main/repository/users';
-import server from '../../../main/app';
-import TokenProvider from '../../../main/security/jwt-provider';
+import entriesRepository from '../../../repository/entries';
+import userRepository from '../../../repository/users';
+import server from '../../../app';
+import TokenProvider from '../../../middlewares/jwt-provider';
 
 const entrySampleWithoutID = {
   content: 'Nam quis ultricies nisl. Nullam vel quam imperdiet, congue nunc dignissim, efficitur enim. Ut porta eu ipsum quis pellentesque. Suspendisse non molestie arcu. Cras nec convallis risus. Integer eu lectus vulputate, finibus sapien efficitur, consequat odio. In malesuada metus diam, non malesuada urna volutpat quis. ',
