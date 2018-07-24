@@ -7,8 +7,13 @@ function createToken(payload) {
   });
 }
 
-function validateToken(token, callback) {
-  jwt.verify(token, config.secret, callback);
+function validateToken(token) {
+  // jwt.verify(token, config.secret, callback);
+  try {
+    return jwt.verify(token, config.secret);
+  } catch (err) {
+    throw err;
+  }
 }
 
 module.exports = { createToken, validateToken };

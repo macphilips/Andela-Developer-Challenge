@@ -24,16 +24,6 @@ class EntryRepository {
     return this.entries[entry.id];
   }
 
-  /*
-  findAll() {
-    const entries = [];
-    Object.keys(this.entries).forEach(((value) => {
-      entries.push(this.entries[value]);
-    }));
-    return entries;
-  }
-  */
-
   findAllByCreator(userId) {
     const entries = [];
     Object.keys(this.entries).forEach(((key) => {

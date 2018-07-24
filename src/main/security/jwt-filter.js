@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import TokenProvider from './jwt-provider';
 import Builder from '../util/ant-matcher';
 
@@ -14,15 +15,13 @@ function doFilter(req, res, next) {
       return res.status(401).send({ auth: false, message: 'No token provided.' });
     }
     // verifies secret and checks exp
-    TokenProvider.validateToken(token, (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ auth: false, message: err.message });
-      }
-      // if everything is good, save to request for use in other routes
+    try {
+      const decoded = TokenProvider.validateToken(token);
       req.userId = decoded.id;
-      next();
-      return res;
-    });
+      return next();
+    } catch (err) {
+      return res.status(401).send({ auth: false, message: err.message });
+    }
   }
   return next();
 }
