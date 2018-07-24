@@ -1,16 +1,16 @@
-/* eslint-disable */
+
 function MainView() {
   this._view = document.getElementById('main');
 }
 
 MainView.prototype = {
-  addChild: function (content) {
-    //this._view.innerHTML = '';
+  addChild(content) {
+    // this._view.innerHTML = '';
     this._view.appendChild(content);
   },
-  removeChild: function (content) {
+  removeChild(content) {
     this._view.removeChild(content);
-  }
+  },
 };
 
 function MainViewController(mainView) {
@@ -22,32 +22,32 @@ function MainViewController(mainView) {
 }
 
 MainViewController.prototype = {
-  initialize: function () {
-    if (typeof(Storage) !== "undefined") {
+  initialize() {
+    if (typeof (Storage) !== 'undefined') {
       // Code for localStorage/sessionStorage.
-      if (!!localStorage.authenticationToken) {
-        var self = this;
-        let loadingView = new LoadingView();
+      if (localStorage.authenticationToken) {
+        const self = this;
+        const loadingView = new LoadingView();
         this._mainView.addChild(this.view.getViewElement());
         this._mainView.addChild(loadingView.getViewElement());
         this.entryTableController.initialize();
-        this.entryTableController.onReady.attach(function () {
+        this.entryTableController.onReady.attach(() => {
           self._mainView.removeChild(loadingView.getViewElement());
-        })
+        });
       } else {
-        window.location.replace('signin.html')
+        window.location.replace('signin.html');
       }
     } else {
       // Sorry! No Web Storage support..
     }
-  }
+  },
 };
 
-document.addEventListener("DOMContentLoaded", function (event) {
-  var main = new MainViewController(new MainView());
+document.addEventListener('DOMContentLoaded', (event) => {
+  const main = new MainViewController(new MainView());
   main.initialize();
   logout.onclick = function (e) {
     localStorage.clear('authenticationToken');
     window.location.replace('signin.html');
-  }
+  };
 });

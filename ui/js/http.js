@@ -1,26 +1,25 @@
-/* eslint-disable */
 function request(method, url, body) {
-  return new Promise(function (resolve, reject) {
-    var req = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+  return new Promise(((resolve, reject) => {
+    const req = (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
     req.open(method, url);
     req.setRequestHeader('Content-Type', 'application/json');
-    if (!!localStorage.authenticationToken) {
+    if (localStorage.authenticationToken) {
       req.setRequestHeader('X-Access-Token', localStorage.authenticationToken);
     }
-    req.onload = function () {
-      var status = req.status;
+    req.onload = () => {
+      const { status } = req;
       if (status < 400 || status >= 600) {
         resolve(JSON.parse(req.response));
       } else {
-        var err = (req.getResponseHeader('content-type').match('application/json')) ? JSON.parse(req.response) : req.statusText;
+        const err = (req.getResponseHeader('content-type').match('application/json')) ? JSON.parse(req.response) : req.statusText;
         reject((err));
       }
     };
-    req.onerror = function () {
-      reject(Error("Network Error"));
+    req.onerror = () => {
+      reject(Error('Network Error'));
     };
     req.send(JSON.stringify(body));
-  });
+  }));
 }
 
 function get(url) {

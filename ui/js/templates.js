@@ -9,7 +9,7 @@ var deleteDialogTemple = `
             <span class="modal-header-title" role="heading">
                 Confirm Delete
             </span>
-            <span tc-data-dismiss="modal"  class="close-btn close" role="button" tabindex="0" aria-label="Close"></span>
+            <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
         </div>
         <div tc-data-model="message" class="modal-body">This action delete entry from database. Are you sure you want to continue?
         </div>
@@ -74,7 +74,7 @@ var createEntryTemplate = `
             <span tc-data-model="title" class="modal-header-title" role="heading">
                Create New Diary Entry
             </span>
-            <span tc-data-dismiss="modal"  class="close-btn close" role="button" tabindex="0" aria-label="Close"></span>
+            <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
         </div>         
         <hr>        
         <div class="modal-body"> 
