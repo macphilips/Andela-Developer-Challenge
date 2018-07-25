@@ -1045,7 +1045,7 @@ table {
     font-size: .85rem;
 }
 
-.time-switch {
+.time-spinner {
     display: flex;
     align-items: center;
     background-color: #fff;
@@ -1058,7 +1058,7 @@ table {
     width: 4rem;
 }
 
-.time-switch input {
+.time-spinner input {
 }
 
 .time-input {
