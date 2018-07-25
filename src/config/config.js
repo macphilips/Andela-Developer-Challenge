@@ -1,7 +1,7 @@
 module.exports = {
-  secret: process.env.JWT_SERCRET || '3c4d6ee9b1a6904205d2249fcefbef02e350b851',
-  validity: process.env.TOKEN_VALIDITY || 86400, // expires in 24 hours,
-  nodeEnv: process.env.NODE_ENV || 'dev',
+  secret: process.env.JWT_SECRET,
+  validity: process.env.TOKEN_VALIDITY,
+  nodeEnv: process.env.NODE_ENV,
   cors: {
     origins: '*',
     methods: '*',
@@ -14,4 +14,5 @@ module.exports = {
       authenticated: ['/api/v1/**'],
     },
   },
+  dbUrl: process.env.DB_URL,
 };
