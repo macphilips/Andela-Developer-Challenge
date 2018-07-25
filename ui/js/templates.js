@@ -1,10 +1,10 @@
 /* eslint-disable */
-var modalBoxTemplate = `
+const modalBoxTemplate = `
 <div id="modal-box" class="modal">
     <div class="modal-content"></div>
 </div>`;
 
-var deleteDialogTemple = `
+const deleteDialogTemple = `
         <div class="modal-header">
             <span class="modal-header-title" role="heading">
                 Confirm Delete
@@ -17,7 +17,7 @@ var deleteDialogTemple = `
             <button tc-data-action="ok" name="ok" class="btn-ok">OK</button>
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
-var entryTableHeadTemplate = `
+const entryTableHeadTemplate = `
             <tr class="header-filter">
                 <td colspan="3">
                     Diary Entries
@@ -45,7 +45,7 @@ var entryTableHeadTemplate = `
                 <td>Last Modified</td>
                 <td></td>
             </tr>`;
-var entryTableBodyRowTemplate = `
+const entryTableBodyRowTemplate = `
             <tr>
                 <td><label class="custom-checkbox">
                         <input data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
@@ -68,7 +68,7 @@ var entryTableBodyRowTemplate = `
                 </td>
             </tr>`;
 
-var createEntryTemplate = `
+const createEntryTemplate = `
     <form>    
         <div class="modal-header">
             <span tc-data-model="title" class="modal-header-title" role="heading">
@@ -86,7 +86,7 @@ var createEntryTemplate = `
         </div>
     </form>
 `;
-var loadingTemplate = `
+const loadingTemplate = `
     <div class="loading-container">
         <div class="loading-ring">
             <div></div>
@@ -95,3 +95,20 @@ var loadingTemplate = `
             <div></div>
         </div>
     </div>`;
+
+const navbarHeaderTemplate = `    
+    <header class="nav-header">
+        <a href="/" class="header-logo">
+            <span class="logo-img"></span>            
+        </a>
+        <div class="nav">
+            <ul>
+                <li>
+                    <a href="profile.html">Profile</a>
+                </li>
+                <li>
+                    <a id="logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </header>`;

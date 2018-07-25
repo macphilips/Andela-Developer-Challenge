@@ -1,4 +1,3 @@
-
 function MainView() {
   this._view = document.getElementById('main');
 }
@@ -19,6 +18,7 @@ function MainViewController(mainView) {
   this.adapter = new EntryTableViewAdapter(this.modalService);
   this.view = new EntryTableView(this.adapter);
   this.entryTableController = new EntryTableController(this.view, this.modalService);
+  this.navbar = new NavBarView();
 }
 
 MainViewController.prototype = {
@@ -28,6 +28,7 @@ MainViewController.prototype = {
       if (localStorage.authenticationToken) {
         const self = this;
         const loadingView = new LoadingView();
+        this.navbar.render();
         this._mainView.addChild(this.view.getViewElement());
         this._mainView.addChild(loadingView.getViewElement());
         this.entryTableController.initialize();
@@ -43,11 +44,7 @@ MainViewController.prototype = {
   },
 };
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', () => {
   const main = new MainViewController(new MainView());
   main.initialize();
-  logout.onclick = function (e) {
-    localStorage.clear('authenticationToken');
-    window.location.replace('signin.html');
-  };
 });
