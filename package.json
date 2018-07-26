@@ -9,7 +9,7 @@
     "clean": "rimraf build/",
     "build-babel": "babel src -d build/src",
     "build": "npm run clean && npm run build-babel",
-    "start": "npm run build && node ./bin/server",
+    "start": "npm run build && node --require dotenv/config ./bin/server",
     "test": "cross-env NODE_ENV=test nyc mocha \"src/test/**/*.js\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
@@ -25,6 +25,7 @@
     "http-errors": "~1.6.2",
     "jsonwebtoken": "^8.3.0",
     "morgan": "~1.9.0",
+    "pg-promise": "^8.4.5",
     "randomstring": "^1.1.5",
     "rimraf": "^2.6.2"
   },
@@ -45,7 +46,8 @@
   },
   "nyc": {
     "require": [
-      "babel-register"
+      "babel-register",
+      "dotenv/config"
     ],
     "reporter": [
       "lcov",

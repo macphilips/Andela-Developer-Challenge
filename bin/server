@@ -3,7 +3,6 @@
 /**
  * Module dependencies.
  */
-
 const debug = require('debug')('api:server');
 const http = require('http');
 const app = require('../build/src/app');
