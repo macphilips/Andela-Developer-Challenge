@@ -1,7 +1,7 @@
 module.exports = {
   secret: process.env.JWT_SECRET,
   validity: process.env.TOKEN_VALIDITY,
-  nodeEnv: process.env.NODE_ENV,
+  nodeEnv: process.env.NODE_ENV || 'dev',
   cors: {
     origins: '*',
     methods: '*',

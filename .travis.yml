@@ -24,6 +24,7 @@ addons:
 
 before_script:
       - npm install codeclimate-test-reporter -g
+      - mv .env.sample .env
 
 after_success:
   - npm run coverage
