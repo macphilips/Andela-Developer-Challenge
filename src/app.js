@@ -8,7 +8,8 @@ import entriesRouter from './routes/v1/entries';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
 import config from './config/config';
 
-const app = express();
+// eslint-disable-next-line import/prefer-default-export
+export const app = express();
 
 if (config.nodeEnv !== 'test') {
   app.use(logger('combined'));
@@ -38,5 +39,3 @@ app.use((err, req, res) => {
   res.status(code);
   res.send({ code, message: err.message });
 });
-
-module.exports = app;

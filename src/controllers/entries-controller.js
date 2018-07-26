@@ -1,27 +1,65 @@
-import Util from '../functions/util';
-import entriesRepository from '../repository/entries';
+import { getTimeString } from '../functions/util';
+import db from '../db';
 
 export default class EntriesController {
   static getEntries(req, res) {
-    const entries = entriesRepository.findAllByCreator(req.userId);
-    res.status(200).send(EntriesController.convertEntries(entries));
+    db.connection.entries.findAllByCreator(req.userId)
+      .then((entries) => {
+        res.status(200).send(EntriesController.convertEntries(entries));
+      }).catch((err) => {
+        res.status(500).send({ message: err.message });
+      });
   }
 
   static createEntry(req, res) {
     const { title, content, id } = req.body;
-    if (id) return res.status(400).send({});
+    Promise.resolve(id).then((result) => {
+      if (result) return Promise.reject(Error('Use PUT Request to update entry'));
+
+      const creatorID = req.userId;
+      return db.connection.entries.save({
+        title,
+        content,
+        creatorID,
+      });
+    }).then(result => res.status(201).send(EntriesController.convertEntry(result)))
+      .catch(err => res.status(400).send({ message: err.message }));
+  }
+
+  static updateEntry(req, res) {
+    const { title, content } = req.body;
+    const { id } = req.params;
     const creatorID = req.userId;
-    return res.status(201).send(EntriesController.convertEntry(entriesRepository.save({
-      title,
-      content,
-      creatorID,
-    })));
+    db.connection.entries.findByIdAndByOwner(id, creatorID).then((data) => {
+      console.log('update entry => ', data);
+      if (data) {
+        return db.connection.entries.save({
+          title, content, id, creatorID,
+        });
+      }
+      return Promise.reject(new Error('Entry you\'re trying to modified not found'));
+    }).then((result) => {
+      res.status(200).send(EntriesController.convertEntry(result));
+    }).catch(err => res.status(404).send({ message: err.message }));
+  }
+
+  static getEntry(req, res) {
+    const { id } = req.params;
+    const creatorID = req.userId;
+    db.connection.entries.findByIdAndByOwner(id, creatorID).then((data) => {
+      if (data) {
+        return Promise.resolve(data);
+      }
+      return Promise.reject(new Error());
+    }).then((result) => {
+      res.status(200).send(EntriesController.convertEntry(result));
+    }).catch(() => res.status(404).send({ message: 'Entry you\'re access not found' }));
   }
 
   static convertEntry(entry) {
     const value = { ...entry };
-    value.createdDate = Util.getTimeString(value.createdDate);
-    value.lastModified = Util.getTimeString(value.lastModified);
+    value.createdDate = getTimeString(value.createdDate);
+    value.lastModified = getTimeString(value.lastModified);
     return value;
   }
 
@@ -31,36 +69,5 @@ export default class EntriesController {
       result.push(EntriesController.convertEntry(entry));
     });
     return result;
-  }
-
-  static updateEntry(req, res) {
-    const { title, content } = req.body;
-    const { id } = req.params;
-    const creatorID = req.userId;
-    const entry = entriesRepository.findById(id);
-    if (entry && entry.creatorID === creatorID) {
-      res.status(200).send(EntriesController.convertEntry(entriesRepository.save({
-        title, content, id,
-      })));
-    } else {
-      res.status(400).send({
-        message: 'Entry you\'re trying to modified does not belong to you',
-      });
-    }
-  }
-
-  static getEntry(req, res) {
-    const { id } = req.params;
-    const creatorID = req.userId;
-    const entry = entriesRepository.findById(id);
-    if (entry) {
-      if (entry.creatorID === creatorID) {
-        res.status(200).send(EntriesController.convertEntry(entry));
-      } else {
-        res.status(403).send({ message: `Entry with id ${id} doesn't belong to you` });
-      }
-    } else {
-      res.status(404).send({ message: `Entry with id ${id} not found` });
-    }
   }
 }

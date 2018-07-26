@@ -1,19 +1,19 @@
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 
-function createToken(payload) {
+export function createToken(payload) {
   return jwt.sign(payload, config.secret, {
     expiresIn: config.validity,
   });
 }
 
-function validateToken(token) {
-  // jwt.verify(token, config.secret, callback);
-  try {
-    return jwt.verify(token, config.secret);
-  } catch (err) {
-    throw err;
-  }
+export function validateToken(token) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, config.secret, (err, decoded) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(decoded);
+    });
+  });
 }
-
-module.exports = { createToken, validateToken };

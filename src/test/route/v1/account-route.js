@@ -2,8 +2,8 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../../../app';
-import userRepository from '../../../repository/users';
-import TokenProvider from '../../../middlewares/jwt-provider';
+import userRepository from '../../../db/repository/users';
+import {createToken} from '../../../middlewares/jwt-provider';
 
 chai.use(chaiHttp);
 const should = chai.should();
@@ -83,7 +83,7 @@ describe('Account API test', () => {
     });
     it('it should not allow access to resource when provided with an invalid token', (done) => {
       const user = userRepository.save({ name: 'Jane Doe', email: 'user@local' });
-      const token = TokenProvider.createToken({ id: user.id }).substring(2);
+      const token = createToken({ id: user.id }).substring(2);
       chai.request(server)
         .get('/api/v1/account/me')
         .set('x-access-token', token)
@@ -96,7 +96,7 @@ describe('Account API test', () => {
     });
     it('it should GET current user with the provided token', (done) => {
       const user = userRepository.save({ name: 'Jane Doe', email: 'user@local' });
-      const token = TokenProvider.createToken({ id: user.id });
+      const token = createToken({ id: user.id });
       chai.request(server)
         .get('/api/v1/account/me')
         .set('x-access-token', token)

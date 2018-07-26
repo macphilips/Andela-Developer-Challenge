@@ -113,7 +113,6 @@ class AntPathMatcher {
     if (this.ignoreCase) {
       result = pathChar.toLowerCase() === patternChar.toLowerCase();
     }
-    // console.log('equal ',this.ignoreCase, pathChar, patternChar, result);
     return result;
   }
 }

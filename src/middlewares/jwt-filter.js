@@ -1,7 +1,7 @@
-import TokenProvider from './jwt-provider';
+import { validateToken } from './jwt-provider';
 import Builder from '../functions/ant-matcher';
 
-function doFilter(req, res, next) {
+export default function doFilter(req, res, next) {
   const antPathMatcher = new Builder().create();
   const url = req.originalUrl;
   if (antPathMatcher.isMatch('/api/v1/account/register', url)
@@ -9,20 +9,27 @@ function doFilter(req, res, next) {
     return next();
   }
   if (antPathMatcher.isMatch('/api/v1/**', url)) {
-    const token = req.body.token || req.query.token || req.headers['x-access-token'];
-    if (!token) {
-      return res.status(401).send({ auth: false, message: 'No token provided.' });
-    }
-    // verifies secret and checks exp
-    try {
-      const decoded = TokenProvider.validateToken(token);
-      req.userId = decoded.id;
-      return next();
-    } catch (err) {
-      return res.status(401).send({ auth: false, message: err.message });
-    }
+    // const token = req.body.token || req.query.token || req.headers['x-access-token'];
+    Promise.resolve(req.body.token || req.query.token || req.headers['x-access-token'])
+      .then((token) => {
+        let promise = null;
+        if (!token) {
+          promise = Promise.reject(new Error('No token provided.'));
+        }
+        // verifies secret and checks exp
+        try {
+          promise = validateToken(token);
+        } catch (err) {
+          promise = Promise.reject(err);
+        }
+        return promise;
+      }).then((decoded) => {
+        req.userId = decoded.id;
+        next();
+      }).catch((err) => {
+        res.status(401).send({ auth: false, message: err.message });
+      });
+    return null;
   }
   return next();
 }
-
-module.exports = doFilter;

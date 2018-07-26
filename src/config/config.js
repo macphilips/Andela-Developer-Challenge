@@ -1,6 +1,6 @@
-module.exports = {
+export default {
   secret: process.env.JWT_SECRET,
-  validity: process.env.TOKEN_VALIDITY,
+  validity: parseInt(process.env.TOKEN_VALIDITY, 10),
   nodeEnv: process.env.NODE_ENV || 'dev',
   cors: {
     origins: '*',

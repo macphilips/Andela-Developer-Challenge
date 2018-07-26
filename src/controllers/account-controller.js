@@ -1,30 +1,49 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/User';
 import { isEmpty } from '../functions/util';
-import userRepository from '../repository/users';
+import db from '../db/index';
+
+function removePasswordField(data) {
+  const { password, ...result } = data;
+  return result;
+}
 
 export default class AccountController {
   static getCurrentLoggedInUser(req, res) {
-    const user = userRepository.findById(req.userId);
-    const { password, ...result } = user;
-    return res.status(200).send(result);
+    const user = db.connection.users.findById(req.userId);
+    user.then((result) => {
+      res.status(200).send(result);
+    }).catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
   }
 
   static registerUser(req, res) {
     const { email, password } = req.body;
-
-    if (isEmpty(email) || isEmpty(password)) {
-      return res.status(400).send({ code: 400, message: 'Email or password cannot be empty' });
-    }
-
-    let user = userRepository.findOneByEmail(email.toLowerCase());
-    if (user) return res.status(400).send({ code: 400, message: `Email [${email}] already in user` });
-    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-    user = new User();
-    user.name = req.body.name;
-    user.email = email;
-    user.password = hashedPassword;
-    user = userRepository.save(user);
-    return res.status(201).send({ id: user.id, email: user.email, name: user.name });
+    const promise = Promise.resolve(!(isEmpty(email) || isEmpty(password)));
+    promise
+      .then((validate) => {
+        if (validate) {
+          return db.connection.users.findOneByEmail(email);
+        }
+        return Promise.reject(Error('Email or password cannot be empty'));
+      })
+      .then((data) => {
+        if (!data) {
+          const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+          const newUser = new User();
+          newUser.firstName = req.body.firstName;
+          newUser.lastName = req.body.lastName;
+          newUser.email = email;
+          newUser.login = email;
+          newUser.password = hashedPassword;
+          return db.connection.users.save(newUser);
+        }
+        return Promise.reject(Error(`Email [${email}] already in user`));
+      })
+      .then((data) => {
+        res.status(201).send(removePasswordField(data));
+      })
+      .catch(err => res.status(400).send({ message: err.message }));
   }
 }

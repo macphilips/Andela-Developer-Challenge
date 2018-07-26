@@ -1,10 +1,10 @@
 import chai from 'chai';
 import bcrypt from 'bcryptjs';
 import chaiHttp from 'chai-http';
-import entriesRepository from '../../../repository/entries';
-import userRepository from '../../../repository/users';
+import entriesRepository from '../../../db/repository/entries';
+import userRepository from '../../../db/repository/users';
 import server from '../../../app';
-import TokenProvider from '../../../middlewares/jwt-provider';
+import {createToken} from '../../../middlewares/jwt-provider';
 
 const entrySampleWithoutID = {
   content: 'Nam quis ultricies nisl. Nullam vel quam imperdiet, congue nunc dignissim, efficitur enim. Ut porta eu ipsum quis pellentesque. Suspendisse non molestie arcu. Cras nec convallis risus. Integer eu lectus vulputate, finibus sapien efficitur, consequat odio. In malesuada metus diam, non malesuada urna volutpat quis. ',
@@ -37,7 +37,7 @@ describe('Entries API test', () => {
   describe('POST /api/v1/entries Create new entry', () => {
     it('it should create a new entry', (done) => {
       const users = userRepository.findAll();
-      const token = TokenProvider.createToken({ id: users[0].id });
+      const token = createToken({ id: users[0].id });
       chai.request(server)
         .post('/api/v1/entries')
         .set('x-access-token', token)
@@ -54,7 +54,7 @@ describe('Entries API test', () => {
     });
     it('it should not allow modification of entry using POST request', (done) => {
       const users = userRepository.findAll();
-      const token = TokenProvider.createToken({ id: users[0].id });
+      const token = createToken({ id: users[0].id });
       const entry = entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
       chai.request(server)
         .post('/api/v1/entries')
@@ -70,8 +70,8 @@ describe('Entries API test', () => {
   describe('GET /api/v1/entries Get all entries', () => {
     it('it should list all entries owned by user with provided token', (done) => {
       const users = userRepository.findAll();
-      const user1Token = TokenProvider.createToken({ id: users[0].id });
-      // const user2Token = TokenProvider.createToken({id: users[1].id});
+      const user1Token = createToken({ id: users[0].id });
+      // const user2Token = createToken({id: users[1].id});
       entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
       entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
       entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
@@ -92,7 +92,7 @@ describe('Entries API test', () => {
   describe('PUT /api/v1/entries/:id Modify entry', () => {
     it('it should modify entry owned by user', (done) => {
       const users = userRepository.findAll();
-      const token = TokenProvider.createToken({ id: users[0].id });
+      const token = createToken({ id: users[0].id });
       const entry = entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
       entry.content = 'Modified content';
       chai.request(server)
@@ -112,7 +112,7 @@ describe('Entries API test', () => {
     });
     it('it should not modify entry not owned by user', (done) => {
       const users = userRepository.findAll();
-      const token = TokenProvider.createToken({ id: users[0].id });
+      const token = createToken({ id: users[0].id });
       const entry = entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[1].id });
       entry.content = 'Modified content';
       chai.request(server)
@@ -130,8 +130,8 @@ describe('Entries API test', () => {
   describe('GET /api/v1/entries/:id Get Entry with given id', () => {
     it('it should get entry owned by user with provided token', (done) => {
       const users = userRepository.findAll();
-      const user1Token = TokenProvider.createToken({ id: users[0].id });
-      // const user2Token = TokenProvider.createToken({id: users[1].id});
+      const user1Token = createToken({ id: users[0].id });
+      // const user2Token = createToken({id: users[1].id});
       const entry1 = entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
 
       chai.request(server)
@@ -150,8 +150,8 @@ describe('Entries API test', () => {
     });
     it('it not should get entry not owned by user with given token', (done) => {
       const users = userRepository.findAll();
-      const user1Token = TokenProvider.createToken({ id: users[0].id });
-      // const user2Token = TokenProvider.createToken({id: users[1].id});
+      const user1Token = createToken({ id: users[0].id });
+      // const user2Token = createToken({id: users[1].id});
       entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
       const entry2 = entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[1].id });
 
@@ -167,8 +167,8 @@ describe('Entries API test', () => {
     });
     it('it should return 404 error when entry with the given id doesn\'t exists', (done) => {
       const users = userRepository.findAll();
-      const user1Token = TokenProvider.createToken({ id: users[0].id });
-      // const user2Token = TokenProvider.createToken({id: users[1].id});
+      const user1Token = createToken({ id: users[0].id });
+      // const user2Token = createToken({id: users[1].id});
       entriesRepository.save({ ...entrySampleWithoutID, creatorID: users[0].id });
 
       chai.request(server)

@@ -5,7 +5,7 @@
  */
 const debug = require('debug')('api:server');
 const http = require('http');
-const app = require('../build/src/app');
+const {app} = require('../build/src/app');
 
 /**
  * Get port from environment and store in Express.

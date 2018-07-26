@@ -7,4 +7,4 @@ router.get('/', EntriesController.getEntries);
 router.post('/', EntriesController.createEntry);
 router.put('/:id', EntriesController.updateEntry);
 router.get('/:id', EntriesController.getEntry);
-module.exports = router;
+export default router;

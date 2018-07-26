@@ -3,7 +3,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import bcrypt from 'bcryptjs';
 import server from '../../../app';
-import userRepository from '../../../repository/users';
+import userRepository from '../../../db/repository/users';
 
 chai.use(chaiHttp);
 
