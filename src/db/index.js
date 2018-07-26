@@ -11,6 +11,7 @@ import config from '../config/config';
 import UserRepository from './repository/users';
 import EntriesRepository from './repository/entries';
 import sql from './sql';
+import ReminderRepository from './repository/reminder';
 
 class Database {
   get connection() {
@@ -23,6 +24,7 @@ class Database {
       extend(obj) {
         obj.users = new UserRepository(obj);
         obj.entries = new EntriesRepository(obj);
+        obj.reminder = new ReminderRepository(obj);
       },
     };
 
