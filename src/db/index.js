@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+
 /**
  * This implementation is based on examples from pg-promise repo:
  * https://github.com/vitaly-t/pg-promise-demo/tree/master/JavaScript
@@ -33,10 +34,10 @@ class Database {
   }
 
   init() {
-    this.connection.none(sql.myDiary);
+    return this.connection.none(sql.myDiary);
   }
 }
 
 const db = new Database();
-db.init();
+// db.init();
 export default db;

@@ -1,63 +1,87 @@
-import { getTimeString } from '../functions/util';
+import {getTimeString} from '../functions/util';
 import db from '../db';
+import {HttpError} from '../errors/HttpError';
 
 export default class EntriesController {
   static getEntries(req, res) {
     db.connection.entries.findAllByCreator(req.userId)
       .then((entries) => {
-        res.status(200).send(EntriesController.convertEntries(entries));
-      }).catch((err) => {
-        res.status(500).send({ message: err.message });
+        if (entries.length > 0) {
+          return Promise.resolve(EntriesController.convertEntries(entries));
+        }
+        return Promise.reject(new HttpError('No Entries found', 404));
+      })
+      .then((entries) => {
+        res.status(200).send({entries});
+      })
+      .catch((err) => {
+        EntriesController.sendError(err, res);
       });
   }
 
-  static createEntry(req, res) {
-    const { title, content, id } = req.body;
+  static createEntry(req, res){
+    const {title, content, id} = req.body;
     Promise.resolve(id).then((result) => {
-      if (result) return Promise.reject(Error('Use PUT Request to update entry'));
-
-      const creatorID = req.userId;
+      if (result) return Promise.reject(new HttpError('Use PUT Request to update entry', 403));
+      const userID = parseInt(req.userId, 10);
       return db.connection.entries.save({
         title,
         content,
-        creatorID,
+        userID,
       });
     }).then(result => res.status(201).send(EntriesController.convertEntry(result)))
-      .catch(err => res.status(400).send({ message: err.message }));
+      .catch((err) => {
+        EntriesController.sendError(err, res);
+      });
   }
 
   static updateEntry(req, res) {
-    const { title, content } = req.body;
-    const { id } = req.params;
-    const creatorID = req.userId;
-    db.connection.entries.findByIdAndByOwner(id, creatorID).then((data) => {
-      console.log('update entry => ', data);
-      if (data) {
+    const {title, content} = req.body;
+    const {id} = req.params;
+    const userID = req.userId;
+    db.connection.entries.findById(id).then((data) => {
+      if (!data) {
+        return Promise.reject(new HttpError(`No entries found with id:${id}`, 404));
+      }
+      if (data && data.userID === userID) {
         return db.connection.entries.save({
-          title, content, id, creatorID,
+          title, content, id, userID,
         });
       }
-      return Promise.reject(new Error('Entry you\'re trying to modified not found'));
+      return Promise.reject(new HttpError('You do not have permission to modified this entry', 403));
     }).then((result) => {
       res.status(200).send(EntriesController.convertEntry(result));
-    }).catch(err => res.status(404).send({ message: err.message }));
+    }).catch((err) => {
+      EntriesController.sendError(err, res);
+    });
   }
 
   static getEntry(req, res) {
-    const { id } = req.params;
-    const creatorID = req.userId;
-    db.connection.entries.findByIdAndByOwner(id, creatorID).then((data) => {
-      if (data) {
+    const {id} = req.params;
+    const userID = req.userId;
+    db.connection.entries.findById(id).then((data) => {
+      if (!data) {
+        return Promise.reject(new HttpError(`No entries found with id:${id}`, 404));
+      }
+      if (data && data.userID === userID) {
         return Promise.resolve(data);
       }
-      return Promise.reject(new Error());
+      return Promise.reject(new HttpError('This entry does not belong to you', 403));
     }).then((result) => {
       res.status(200).send(EntriesController.convertEntry(result));
-    }).catch(() => res.status(404).send({ message: 'Entry you\'re access not found' }));
+    }).catch((err) => {
+      EntriesController.sendError(err, res);
+    });
+  }
+
+  static sendError(err, res) {
+    const code = err.code || 500;
+    const {message} = err;
+    res.status(code).send({message});
   }
 
   static convertEntry(entry) {
-    const value = { ...entry };
+    const value = {...entry};
     value.createdDate = getTimeString(value.createdDate);
     value.lastModified = getTimeString(value.lastModified);
     return value;

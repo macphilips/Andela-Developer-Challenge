@@ -1,6 +1,6 @@
 export default class Entry {
   constructor(id, title, content, created, LastModified) {
-    this.creatorID = '';
+    this.userID = '';
     this.id = id;
     this.title = title;
     this.content = content;
@@ -14,7 +14,7 @@ export default class Entry {
     entry.id = entity.id;
     entry.title = entity.title;
     entry.content = entity.content;
-    entry.creatorID = entity.owner_id;
+    entry.userID = entity.user_id;
     entry.createdDate = entity.created_date;
     entry.lastModified = entity.last_modified_date;
 

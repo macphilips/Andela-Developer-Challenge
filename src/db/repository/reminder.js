@@ -1,6 +1,11 @@
 import sql from '../sql';
 import Reminder from '../../models/Reminder';
 
+/**
+ * This implementation is based on examples from pg-promise repo:
+ * https://github.com/vitaly-t/pg-promise-demo/tree/master/JavaScript
+ *
+ */
 export default class ReminderRepository {
   constructor(db) {
     this.db = db;
@@ -29,9 +34,5 @@ export default class ReminderRepository {
 
   clear() {
     this.users = {};
-  }
-
-  create() {
-    return this.db.none(sql.reminder.create);
   }
 }

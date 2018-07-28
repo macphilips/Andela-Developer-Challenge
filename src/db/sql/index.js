@@ -1,8 +1,13 @@
 import { QueryFile } from 'pg-promise';
 import path from 'path';
+import config from '../../config/config';
 
-// /////////////////////////////////////////////
-// Helper for linking to external query files;
+/**
+ * This implementation is based on examples from pg-promise repo:
+ * https://github.com/vitaly-t/pg-promise-demo/tree/master/JavaScript
+ *
+ */
+
 function sql(file) {
   const fullPath = path.join(__dirname, file); // generating full path;
 
@@ -13,33 +18,35 @@ function sql(file) {
     },
   };
 
-  const qf = new QueryFile(fullPath, options);
+  const queryFile = new QueryFile(fullPath, options);
 
-  if (qf.error) {
-    console.error(qf.error);
+  if (queryFile.error) {
+    console.error(queryFile.error);
   }
 
-  return qf;
+  return queryFile;
 }
 
+const root = (process.env.NODE_ENV === 'test') ? '../../../' : '../../../../';
+
 export default {
-  myDiary: sql('../../../../scripts/my_diary.sql'),
+  myDiary: sql(`${root}scripts/my_diary.sql`),
   users: {
-    add: sql('../../../../scripts/users/add.sql'),
-    create: sql('../../../../scripts/users/create.sql'),
-    empty: sql('../../../../scripts/users/empty.sql'),
+    add: sql(`${root}scripts/users/add.sql`),
+    create: sql(`${root}scripts/users/create.sql`),
+    empty: sql(`${root}scripts/users/empty.sql`),
   },
   entries: {
-    add: sql('../../../../scripts/entries/add.sql'),
-    create: sql('../../../../scripts/entries/create.sql'),
-    constraints: sql('../../../../scripts/entries/constraints.sql'),
-    find: sql('../../../../scripts/entries/find.sql'),
-    empty: sql('../../../../scripts/entries/empty.sql'),
-    update: sql('../../../../scripts/entries/update.sql'),
+    add: sql(`${root}scripts/entries/add.sql`),
+    create: sql(`${root}scripts/entries/create.sql`),
+    constraints: sql(`${root}scripts/entries/constraints.sql`),
+    find: sql(`${root}scripts/entries/find.sql`),
+    empty: sql(`${root}scripts/entries/empty.sql`),
+    update: sql(`${root}scripts/entries/update.sql`),
   },
   reminder: {
-    add: sql('../../../../scripts/reminder/add.sql'),
-    create: sql('../../../../scripts/reminder/create.sql'),
-    empty: sql('../../../../scripts/reminder/empty.sql'),
+    add: sql(`${root}scripts/reminder/add.sql`),
+    create: sql(`${root}scripts/reminder/create.sql`),
+    empty: sql(`${root}scripts/reminder/empty.sql`),
   },
 };

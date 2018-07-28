@@ -1,6 +1,11 @@
 language: node_js
 node_js:
   - "stable"
+addons:
+  chrome: stable
+  code_climate:
+    repo_token: $CLIMATE_CODE_REPORTER
+  postgresql: "9.4"
 
 deploy:
   provider: pages
@@ -11,20 +16,24 @@ deploy:
   on:
     branch: master
 
+dist: trusty
+
+env:
+  global:
+  - PGPORT=5433
+  - DB_URL=postgres://postgres:@localhost:5432/travis_ci_test
+
 notifications:
   email: false
   slack:
     on_success: never
-dist: trusty
-
-addons:
-  chrome: stable
-  code_climate:
-    repo_token: $CLIMATE_CODE_REPORTER
+services:
+  - postgresql
 
 before_script:
       - npm install codeclimate-test-reporter -g
       - mv .env.sample .env
+      - psql -c 'create database travis_ci_test;' -U postgres
 
 after_success:
   - npm run coverage

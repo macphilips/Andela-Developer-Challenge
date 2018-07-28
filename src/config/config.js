@@ -14,5 +14,5 @@ export default {
       authenticated: ['/api/v1/**'],
     },
   },
-  dbUrl: process.env.DB_URL,
+  dbUrl: (process.env.TEST_DB_URL && process.env.NODE_ENV === 'test') ? process.env.TEST_DB_URL : process.env.DB_URL,
 };

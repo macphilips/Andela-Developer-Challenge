@@ -12,7 +12,7 @@ export default class AccountController {
   static getCurrentLoggedInUser(req, res) {
     const user = db.connection.users.findById(req.userId);
     user.then((result) => {
-      res.status(200).send(result);
+      res.status(200).send(removePasswordField(result));
     }).catch((err) => {
       res.status(500).send({ message: err.message });
     });

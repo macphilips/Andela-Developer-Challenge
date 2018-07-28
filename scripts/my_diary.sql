@@ -2,7 +2,6 @@ CREATE SCHEMA IF NOT EXISTS ${schema~};
 
 CREATE TABLE IF NOT EXISTS ${schema~}.md_user (
   id                 SERIAL PRIMARY KEY,
-  login              VARCHAR(50)  NOT NULL,
   password_hash      VARCHAR(60)  NULL,
   first_name         VARCHAR(50)  NULL,
   last_name          VARCHAR(50)  NULL,
@@ -10,7 +9,6 @@ CREATE TABLE IF NOT EXISTS ${schema~}.md_user (
   created_date       TIMESTAMP    NOT NULL,
   last_modified_date TIMESTAMP    NULL,
 
-  CONSTRAINT ux_user_login UNIQUE (login),
   CONSTRAINT ux_user_email UNIQUE (email)
 );
 
@@ -19,10 +17,10 @@ CREATE TABLE IF NOT EXISTS ${schema~}.entries
   id                 SERIAL PRIMARY KEY,
   title              VARCHAR(255)                        NULL,
   content            TEXT                                NULL,
-  owner_id           BIGINT                              NULL,
+  user_id           INT                              NULL,
   created_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   last_modified_date TIMESTAMP                           NULL,
-  CONSTRAINT fk_entries_owner_id  FOREIGN KEY (owner_id) REFERENCES md_user (id)
+  CONSTRAINT fk_entries_user_id  FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
 CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
@@ -33,7 +31,7 @@ CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
   to_date   TIMESTAMP   NULL,
   daily     BOOLEAN DEFAULT TRUE,
 
-  CONSTRAINT fk_entries_owner_id  FOREIGN KEY (user_id) REFERENCES md_user (id)
+  CONSTRAINT fk_entries_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
 /*

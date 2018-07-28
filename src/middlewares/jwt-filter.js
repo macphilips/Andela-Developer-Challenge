@@ -15,16 +15,17 @@ export default function doFilter(req, res, next) {
         let promise = null;
         if (!token) {
           promise = Promise.reject(new Error('No token provided.'));
-        }
-        // verifies secret and checks exp
-        try {
-          promise = validateToken(token);
-        } catch (err) {
-          promise = Promise.reject(err);
+        } else {
+          // verifies secret and checks exp
+          try {
+            promise = validateToken(token);
+          } catch (err) {
+            promise = Promise.reject(new Error('Invalid Token'));
+          }
         }
         return promise;
       }).then((decoded) => {
-        req.userId = decoded.id;
+        req.userId = parseInt(decoded.id, 10);
         next();
       }).catch((err) => {
         res.status(401).send({ auth: false, message: err.message });

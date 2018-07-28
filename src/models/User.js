@@ -22,4 +22,12 @@ export default class User {
     user.lastModified = entity.last_modified_date;
     return user;
   }
+
+  static mapDBUserArrayToUsers(array) {
+    const users = [];
+    array.forEach((item) => {
+      users.push(User.mapDBUserEntityToUser(item));
+    });
+    return users;
+  }
 }

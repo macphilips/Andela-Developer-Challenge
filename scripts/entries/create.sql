@@ -10,13 +10,13 @@ CREATE TABLE IF NOT EXISTS ${schema~}.entries
   id                 SERIAL PRIMARY KEY,
   title              VARCHAR(255)                        NULL,
   content            TEXT                                NULL,
-  owner_id           BIGINT                              NULL,
+  user_id           BIGINT                              NULL,
   created_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   last_modified_date TIMESTAMP                           NULL
 );
 /*
 
-    CONSTRAINT fk_entries_owner_id  FOREIGN KEY (owner_id) REFERENCES md_user (id)
+    CONSTRAINT fk_entries_owner_id  FOREIGN KEY (user_id) REFERENCES md_user (id)
 
 
  */
