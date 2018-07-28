@@ -1,6 +1,6 @@
-module.exports = {
+export default {
   secret: process.env.JWT_SECRET,
-  validity: process.env.TOKEN_VALIDITY,
+  validity: parseInt(process.env.TOKEN_VALIDITY, 10),
   nodeEnv: process.env.NODE_ENV || 'dev',
   cors: {
     origins: '*',
@@ -14,5 +14,5 @@ module.exports = {
       authenticated: ['/api/v1/**'],
     },
   },
-  dbUrl: process.env.DB_URL,
+  dbUrl: (process.env.TEST_DB_URL && process.env.NODE_ENV === 'test') ? process.env.TEST_DB_URL : process.env.DB_URL,
 };

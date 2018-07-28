@@ -1,14 +1,21 @@
-import createError from 'http-errors';
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
+import createError from 'http-errors';
 import Auth from './middlewares/jwt-filter';
 import accountRouter from './routes/v1/account';
 import entriesRouter from './routes/v1/entries';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
 import config from './config/config';
+import db from './db';
 
-const app = express();
+if (config.nodeEnv !== 'test') {
+  db.init().then(() => {
+    console.log('setting up database');
+  });
+}
+// eslint-disable-next-line import/prefer-default-export
+export const app = express();
 
 if (config.nodeEnv !== 'test') {
   app.use(logger('combined'));
@@ -24,13 +31,16 @@ app.use(`${apiVersion}/authenticate`, authenticateRouter);
 app.use(`${apiVersion}/entries`, entriesRouter);
 
 // catch 404 and forward to error handler
+
 app.use((req, res, next) => {
   next(createError(404));
 });
 
+
 // error handler
 app.use((err, req, res) => {
   // set locals, only providing error in development
+  console.log('req => ', req);
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
@@ -38,5 +48,3 @@ app.use((err, req, res) => {
   res.status(code);
   res.send({ code, message: err.message });
 });
-
-module.exports = app;

@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.post('/', AuthenticateController.authenticate);
 
-module.exports = router;
+export default router;

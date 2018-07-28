@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "lint": "eslint src/**/*.js",
-    "prebuild": "npm run lint",
     "lint:fix": "npm run lint -- --fix",
     "clean": "rimraf build/",
     "build-babel": "babel src -d build/src",
@@ -27,7 +26,8 @@
     "morgan": "~1.9.0",
     "pg-promise": "^8.4.5",
     "randomstring": "^1.1.5",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "bluebird": "~3.5.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
