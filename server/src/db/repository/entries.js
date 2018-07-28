@@ -1,6 +1,6 @@
 import sql from '../sql';
 import Entry from '../../models/Entry';
-import { wrapAndThrowError,HttpError } from '../../errors/HttpError';
+import { wrapAndThrowError, HttpError } from '../../errors/HttpError';
 
 
 export default class EntryRepository {
