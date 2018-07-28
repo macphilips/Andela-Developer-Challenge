@@ -1,7 +1,7 @@
 import sql from '../sql';
 import User from '../../models/User';
 import Entry from '../../models/Entry';
-import {wrapAndThrowError} from "../../errors/HttpError";
+import { wrapAndThrowError } from '../../errors/HttpError';
 
 /**
  * This implementation is based on examples from pg-promise repo:

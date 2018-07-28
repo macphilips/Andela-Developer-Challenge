@@ -1,6 +1,6 @@
-import {getTimeString} from '../functions/util';
+import { getTimeString } from '../functions/util';
 import db from '../db';
-import {HttpError} from '../errors/HttpError';
+import { HttpError } from '../errors/HttpError';
 
 export default class EntriesController {
   static getEntries(req, res) {
@@ -12,15 +12,15 @@ export default class EntriesController {
         return Promise.reject(new HttpError('No Entries found', 404));
       })
       .then((entries) => {
-        res.status(200).send({entries});
+        res.status(200).send({ entries });
       })
       .catch((err) => {
         EntriesController.sendError(err, res);
       });
   }
 
-  static createEntry(req, res){
-    const {title, content, id} = req.body;
+  static createEntry(req, res) {
+    const { title, content, id } = req.body;
     Promise.resolve(id).then((result) => {
       if (result) return Promise.reject(new HttpError('Use PUT Request to update entry', 403));
       const userID = parseInt(req.userId, 10);
@@ -36,8 +36,8 @@ export default class EntriesController {
   }
 
   static updateEntry(req, res) {
-    const {title, content} = req.body;
-    const {id} = req.params;
+    const { title, content } = req.body;
+    const { id } = req.params;
     const userID = req.userId;
     db.connection.entries.findById(id).then((data) => {
       if (!data) {
@@ -57,7 +57,7 @@ export default class EntriesController {
   }
 
   static getEntry(req, res) {
-    const {id} = req.params;
+    const { id } = req.params;
     const userID = req.userId;
     db.connection.entries.findById(id).then((data) => {
       if (!data) {
@@ -76,12 +76,12 @@ export default class EntriesController {
 
   static sendError(err, res) {
     const code = err.code || 500;
-    const {message} = err;
-    res.status(code).send({message});
+    const { message } = err;
+    res.status(code).send({ message });
   }
 
   static convertEntry(entry) {
-    const value = {...entry};
+    const value = { ...entry };
     value.createdDate = getTimeString(value.createdDate);
     value.lastModified = getTimeString(value.lastModified);
     return value;
