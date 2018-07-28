@@ -2,6 +2,9 @@ language: node_js
 node_js:
   - "stable"
 
+env:
+  - DB_URL=postgres://postgres:oreoluwa@localhost:5432/mydiary_test
+
 deploy:
   provider: pages
   skip-cleanup: true
@@ -25,7 +28,6 @@ addons:
 
 #services:
 #  - postgresql
-
 before_script:
       - psql -c 'create database mydiary_test;' -U postgres
       - npm install codeclimate-test-reporter -g
