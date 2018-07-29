@@ -29,10 +29,10 @@ describe('Account API test', () => {
             res.should.have.status(401);
             res.body.should.be.a('object');
             res.body.should.have.property('message');
-          })
-          .catch((err) => {
-            throw err;
           }));
+      // .catch((err) => {
+      //    throw err;
+      //  }));
       it('it should not allow access to resource when provided with an invalid token',
         () => userRepository.save({
           firstName: 'John', lastName: 'Doe', password: 'topsecret', email: 'user@local',
@@ -46,12 +46,12 @@ describe('Account API test', () => {
                 res.should.have.status(401);
                 res.body.should.be.a('object');
                 res.body.should.have.property('message');
-                console.log('body => ', res.body);
               });
-          })
-          .catch((err) => {
-            throw err;
           }));
+      // .catch((err) => {
+      //   throw err;
+      // }));
+
       it('it should GET current user with the provided token', () => userRepository.save({
         firstName: 'John',
         lastName: 'Doe',
@@ -71,18 +71,39 @@ describe('Account API test', () => {
               res.body.should.have.property('email').eql(user.email);
               res.body.should.have.property('id').eql(user.id);
               res.body.should.not.have.property('password');
-            })
-            .catch((err) => {
-              throw err;
             });
+          // .catch((err) => {
+          //   throw err;
+          // });
         }));
     });
-    describe('POST /api/v1/account/change-password', () => {
-      before(() => userRepository.clear());
-      it('should change user password this endpoint requires user should be authenticated',
+    describe('POST /api/v1/account/change-password update user for authorized user', () => {
+      beforeEach(() => userRepository.clear());
+      it('should not update password when old password is incorrect', () => userRepository
+        .save({
+          firstName: 'John', lastName: 'Doe', password: bcrypt.hashSync('topsecret', 8), email: 'user@local',
+        })
+        .then(user => chai.request(app)
+          .post('/api/v1/account/change-password')
+          .set('x-access-token', createToken({ id: user.id }))
+          .send({ oldPassword: 'incorrect', newPassword: 'new password' })
+          .then((res) => {
+            res.should.have.status(403);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message');
+            return userRepository.findOneByEmail(user.email);
+          })
+          .then((result) => {
+            assertTrue(!bcrypt.compareSync('new password', result.password));
+          })));
+      // .catch((err) => {
+      //   throw err;
+      // })
+
+      it('should update user password, this endpoint requires user should be authenticated',
         () => userRepository
           .save({
-            firstName: 'John', lastName: 'Doe', password: 'topsecret', email: 'user@local',
+            firstName: 'John', lastName: 'Doe', password: bcrypt.hashSync('topsecret', 8), email: 'user@local',
           })
           .then(user => chai.request(app)
             .post('/api/v1/account/change-password')
@@ -97,6 +118,9 @@ describe('Account API test', () => {
             .then((result) => {
               assertTrue(bcrypt.compareSync('new password', result.password));
             })));
+      // .catch((err) => {
+      //   throw err;
+      // })
     });
   });
   describe('Reminder test', () => {
@@ -122,7 +146,7 @@ describe('Account API test', () => {
                 });
             })
             .then(() => chai.request(app)
-              .post(url)
+              .put(url)
               .set('x-access-token', token)
               .send({ time: 'wefgyrgf' })
               .then((res) => {
@@ -131,7 +155,7 @@ describe('Account API test', () => {
                 res.body.should.have.property('message');
               }))
             .then(() => chai.request(app)
-              .post(url)
+              .put(url)
               .set('x-access-token', token)
               .send({ time: '67:90' })
               .then((res) => {
@@ -140,39 +164,49 @@ describe('Account API test', () => {
                 res.body.should.have.property('message');
               }))
             .then(() => chai.request(app)
-              .post(url)
+              .put(url)
               .set('x-access-token', token)
               .send({ time: '-21:22' })
               .then((res) => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
                 res.body.should.have.property('message');
-              }))
-            .catch((err) => {
-              throw err;
-            });
+              }));
+          // .catch((err) => {
+          //   throw err;
+          // });
         });
-      it('it should POST a reminder settings', () => userRepository.save({
-        firstName: 'John', lastName: 'Doe', password: 'topsecret', email: 'example@local',
-      })
-        .then((user) => {
-          const url = '/api/v1/account/user/reminder/settings';
-          const token = createToken({ id: user.id });
-          const time = '18:23';
-          return chai.request(app)
-            .put(url)
-            .set('x-access-token', token)
-            .send({ time })
-            .then((res) => {
-              res.should.have.status(200);
-              res.body.should.be.a('object');
-              res.body.should.have.property('time').eql(time);
-              res.body.should.have.property('userId').eql(user.id);
-            })
-            .catch((err) => {
-              throw err;
+      it('it should PUT a reminder settings', () => {
+        let token;
+        userRepository.save({
+          firstName: 'John', lastName: 'Doe', password: 'topsecret', email: 'example@local',
+        })
+          .then((user) => {
+            token = createToken({ id: user.id });
+            return reminderRepository.save({
+              from: 'Monday', to: 'Sunday', time: '19:10', userId: user.id,
             });
-        }));
+          })
+          .then((reminder) => {
+            const url = '/api/v1/account/user/reminder/settings';
+            const settings = { time: '18:23', from: 'TUESDAY', to: 'FRIDAY' };
+            return chai.request(app)
+              .put(url)
+              .set('x-access-token', token)
+              .send(settings)
+              .then((res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('time').eql(settings.time);
+                res.body.should.have.property('from').eql(settings.from);
+                res.body.should.have.property('to').eql(settings.to);
+                res.body.should.have.property('userId').eql(reminder.userId);
+              });
+            // .catch((err) => {
+            //   throw err;
+            // });
+          });
+      });
     });
     describe('GET /api/v1/account/user/reminder/settings Get reminder settings', () => {
       beforeEach(() => userRepository.clear());
@@ -183,11 +217,10 @@ describe('Account API test', () => {
             res.should.have.status(401);
             res.body.should.be.a('object');
             res.body.should.have.property('message');
-          })
-          .catch((err) => {
-            throw err;
           }));
-
+      // .catch((err) => {
+      //   throw err;
+      // })
       it('it should GET current user reminder setting when provided with a valid token',
         () => {
           let token = '';
@@ -211,11 +244,11 @@ describe('Account API test', () => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('time').eql(result.time);
-                res.body.should.have.property('userId').eql(user.id);
-              })
-              .catch((err) => {
-                throw err;
+                res.body.should.have.property('userId').eql(result.userId);
               }));
+          // .catch((err) => {
+          //   throw err;
+          // })
         });
     });
   });
