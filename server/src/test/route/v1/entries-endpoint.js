@@ -32,10 +32,11 @@ describe('Entries API test', () => {
       password: bcrypt.hashSync('topsecret', 8),
       firstName: 'Jane',
       lastName: 'Doe',
-    }))
-    .catch((err) => {
-      throw err;
-    }));
+    })));
+  // .catch((err) => {
+  //   throw err;
+  // })
+
   beforeEach(() => entriesRepository.clear());
   describe('POST /api/v1/entries Create new entry', () => {
     it('it should create a new entry', () => userRepository.findAll()
@@ -73,9 +74,10 @@ describe('Entries API test', () => {
               res.body.should.be.a('object');
               res.body.should.have.property('message');
             });
-        }).catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
   });
   describe('GET /api/v1/entries Get all entries', () => {
@@ -98,10 +100,10 @@ describe('Entries API test', () => {
               res.body.should.be.a('object');
               res.body.should.have.property('message');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     it('it should list all entries owned by user with provided token', () => {
       let users;
@@ -125,10 +127,10 @@ describe('Entries API test', () => {
               res.body.should.have.property('entries');
               res.body.entries.length.should.be.eql(3);
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
   });
   describe('PUT /api/v1/entries/:id Modify entry', () => {
@@ -139,15 +141,39 @@ describe('Entries API test', () => {
           return chai.request(app)
             .put('/api/v1/entries/93764623')
             .set('x-access-token', token)
-            .send({ ...entrySampleWithoutID, id: 93764623, userID: user.id })
+            .send({ ...entrySampleWithoutID, id: 764623, userID: user.id })
             .then((res) => {
               res.should.have.status(404);
               res.body.should.be.a('object');
             });
-        })
-        .catch((err) => {
-          throw err;
         }));
+    // .catch((err) => {
+    //   throw err;
+    // })
+
+    it('it should return 400 error when entry with invalid id is provided', () => {
+      let user;
+      return userRepository.findAll()
+        .then((users) => {
+          [user] = users;
+          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+        })
+        .then(() => {
+          const user1Token = createToken({ id: user.id });
+          return chai.request(app)
+            .put('/api/v1/entries/5yh90ik')
+            .set('x-access-token', user1Token)
+            .send({ ...entrySampleWithoutID, id: '5yh90ik', userID: user.id })
+            .then((res) => {
+              res.should.have.status(400);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+            });
+        });
+      // .catch((err) => {
+      //   throw err;
+      // });
+    });
     it('it should modify entry owned by user', () => {
       let users;
       return userRepository.findAll()
@@ -172,10 +198,10 @@ describe('Entries API test', () => {
               res.body.should.have.property('createdDate');
               res.body.should.have.property('lastModified');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     it('it should not modify entry not owned by user', () => {
       let users;
@@ -197,10 +223,10 @@ describe('Entries API test', () => {
               res.body.should.be.a('object');
               res.body.should.have.property('message');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     it('should not modify entry after day it was created', () => {
       let users;
@@ -209,7 +235,8 @@ describe('Entries API test', () => {
         .then((result) => {
           users = result;
           const now = new Date();
-          aDayB4 = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 1);
+          aDayB4 = new Date(now.getTime() - (864e5));
+
           return entriesRepository.save({
             ...entrySampleWithoutID,
             createdDate: aDayB4,
@@ -233,10 +260,10 @@ describe('Entries API test', () => {
             });
         }).then((entry) => {
           assert.equal(entry.lastModified.getDay() === aDayB4.getDay(), true);
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     // it('should modify entry within the same day it was created', () => {
     //   let users;
@@ -296,10 +323,10 @@ describe('Entries API test', () => {
               res.body.should.have.property('createdDate');
               res.body.should.have.property('lastModified');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     it('it not should get entry not owned by user with given token', () => {
       let users;
@@ -319,10 +346,10 @@ describe('Entries API test', () => {
               res.body.should.be.a('object');
               res.body.should.have.property('message');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
     it('it should return 404 error when entry with the given id doesn\'t exists', () => {
       let users;
@@ -341,32 +368,32 @@ describe('Entries API test', () => {
               res.body.should.be.a('object');
               res.body.should.have.property('message');
             });
-        })
-        .catch((err) => {
-          throw err;
         });
+      // .catch((err) => {
+      //   throw err;
+      // });
     });
-    // it('it should return 404 error when entry with the given id doesn\'t exists', () => {
-    //   let users;
-    //   return userRepository.findAll()
-    //     .then((result) => {
-    //       users = result;
-    //       return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
-    //     })
-    //     .then(() => {
-    //       const user1Token = createToken({id: users[0].id});
-    //       return chai.request(app)
-    //         .get('/api/v1/entries/5yh90ik')
-    //         .set('x-access-token', user1Token)
-    //         .then((res) => {
-    //           res.should.have.status(404);
-    //           res.body.should.be.a('object');
-    //           res.body.should.have.property('message');
-    //         });
-    //     })
-    //     .catch((err) => {
-    //       throw err;
-    //     });
-    // });
+    it('it should return 400 error when entry with invalid id is provided', () => {
+      let users;
+      return userRepository.findAll()
+        .then((result) => {
+          users = result;
+          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+        })
+        .then(() => {
+          const user1Token = createToken({ id: users[0].id });
+          return chai.request(app)
+            .get('/api/v1/entries/5yh90ik')
+            .set('x-access-token', user1Token)
+            .then((res) => {
+              res.should.have.status(400);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+            });
+        });
+      // .catch((err) => {
+      //   throw err;
+      // });
+    });
   });
 });
