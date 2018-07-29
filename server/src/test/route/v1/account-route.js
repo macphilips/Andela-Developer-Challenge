@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { createToken } from '../../../middlewares/jwt-provider';
 import db from '../../../db';
 import { app } from '../../../app';
+import AuthenticationMiddleware from '../../../middlewares/jwt-filter';
 
 chai.use(chaiHttp);
 const should = chai.should();
@@ -41,7 +42,7 @@ describe('Account API test', () => {
             const token = createToken({ id: user.id }).substring(2);
             return chai.request(app)
               .get('/api/v1/account/me')
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .then((res) => {
                 res.should.have.status(401);
                 res.body.should.be.a('object');
@@ -62,7 +63,7 @@ describe('Account API test', () => {
           const token = createToken({ id: user.id });
           return chai.request(app)
             .get('/api/v1/account/me')
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
@@ -85,7 +86,7 @@ describe('Account API test', () => {
         })
         .then(user => chai.request(app)
           .post('/api/v1/account/change-password')
-          .set('x-access-token', createToken({ id: user.id }))
+          .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, createToken({ id: user.id }))
           .send({ oldPassword: 'incorrect', newPassword: 'new password' })
           .then((res) => {
             res.should.have.status(403);
@@ -107,7 +108,7 @@ describe('Account API test', () => {
           })
           .then(user => chai.request(app)
             .post('/api/v1/account/change-password')
-            .set('x-access-token', createToken({ id: user.id }))
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, createToken({ id: user.id }))
             .send({ oldPassword: 'topsecret', newPassword: 'new password' })
             .then((res) => {
               res.should.have.status(200);
@@ -137,7 +138,7 @@ describe('Account API test', () => {
               token = createToken({ id: user.id });
               return chai.request(app)
                 .put(url)
-                .set('x-access-token', token)
+                .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
                 .send({ time: '' })
                 .then((res) => {
                   res.should.have.status(400);
@@ -147,7 +148,7 @@ describe('Account API test', () => {
             })
             .then(() => chai.request(app)
               .put(url)
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .send({ time: 'wefgyrgf' })
               .then((res) => {
                 res.should.have.status(400);
@@ -156,7 +157,7 @@ describe('Account API test', () => {
               }))
             .then(() => chai.request(app)
               .put(url)
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .send({ time: '67:90' })
               .then((res) => {
                 res.should.have.status(400);
@@ -165,7 +166,7 @@ describe('Account API test', () => {
               }))
             .then(() => chai.request(app)
               .put(url)
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .send({ time: '-21:22' })
               .then((res) => {
                 res.should.have.status(400);
@@ -176,9 +177,10 @@ describe('Account API test', () => {
           //   throw err;
           // });
         });
+
       it('it should PUT a reminder settings', () => {
         let token;
-        userRepository.save({
+        return userRepository.save({
           firstName: 'John', lastName: 'Doe', password: 'topsecret', email: 'example@local',
         })
           .then((user) => {
@@ -192,7 +194,7 @@ describe('Account API test', () => {
             const settings = { time: '18:23', from: 'TUESDAY', to: 'FRIDAY' };
             return chai.request(app)
               .put(url)
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .send(settings)
               .then((res) => {
                 res.should.have.status(200);
@@ -239,7 +241,7 @@ describe('Account API test', () => {
             })
             .then(result => chai.request(app)
               .get('/api/v1/account/user/reminder/settings')
-              .set('x-access-token', token)
+              .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
               .then((res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');

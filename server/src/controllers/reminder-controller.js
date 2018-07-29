@@ -20,7 +20,10 @@ export default class ReminderController {
       .then((result) => {
         res.status(200).send((result));
       })
-      .catch(err => HttpError.sendError(err, res));
+      .catch((err) => {
+        // console.log(err);
+        HttpError.sendError(err, res);
+      });
   }
 
   static getReminder(req, res) {

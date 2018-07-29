@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { app } from '../../../app';
 import db from '../../../db';
 
+import AuthenticationMiddleware from '../../../middlewares/jwt-filter';
+
 chai.use(chaiHttp);
 const should = chai.should();
 
@@ -108,7 +110,7 @@ describe('Authentication API test', () => {
         .send(user)
         .then((res) => {
           res.should.have.status(201);
-          res.headers.should.have.property('x-access-token');
+          res.headers.should.have.property(AuthenticationMiddleware.AUTHORIZATION_HEADER);
           res.body.should.be.a('object');
           res.body.should.have.property('id');
           res.body.should.have.property('firstName');

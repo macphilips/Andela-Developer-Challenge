@@ -1,6 +1,8 @@
-import { validateToken } from './jwt-provider';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import Builder from '../functions/ant-matcher';
 import HttpError from '../errors/HttpError';
+import config from '../config/config';
+import {validateToken} from "./jwt-provider";
 
 class AuthenticationMiddleware {
   static get AUTHORIZATION_HEADER() {
@@ -14,30 +16,20 @@ class AuthenticationMiddleware {
       return next();
     }
     if (antPathMatcher.isMatch('/api/v1/**', url)) {
-      Promise.resolve(req.body.token || req.query.token
+      return Promise.resolve(req.body.token || req.query.token
         || req.headers[AuthenticationMiddleware.AUTHORIZATION_HEADER])
         .then((token) => {
-          let promise = null;
           if (!token) {
-            promise = Promise.reject(new HttpError('No token provided.', 401));
-          } else {
-            // verifies secret and checks exp
-            try {
-              promise = validateToken(token);
-            } catch (err) {
-              console.log('error occured while validating token');
-              console.log(err);
-              promise = Promise.reject(new HttpError('Invalid Token', 401));
-            }
+            return Promise.reject(new HttpError('No token provided.', 401));
           }
-          return promise;
+         return validateToken(token);
         }).then((decoded) => {
           req.userId = parseInt(decoded.id, 10);
           next();
         }).catch((err) => {
           HttpError.sendError(err, res);
+          // next(err);
         });
-      return null;
     }
     return next();
   }
