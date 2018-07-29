@@ -1,16 +1,16 @@
-export class HttpError extends Error {
+export default class HttpError extends Error {
   constructor(message, code) {
     super(message);
-    this.code = code;
+    this.code = code || 500;
   }
-}
 
-/**
- * This implementation is based on examples from pg-promise repo:
- * https://github.com/vitaly-t/pg-promise-demo/tree/master/JavaScript
- *
- */
+  static wrapAndThrowError(error) {
+    throw new HttpError(error.message);
+  }
 
-export function wrapAndThrowError(error) {
-  throw new HttpError(error.message, 500);
+  static sendError(err, res) {
+    const code = err.code || 500;
+    const { message } = err;
+    res.status(code).send({ message });
+  }
 }
