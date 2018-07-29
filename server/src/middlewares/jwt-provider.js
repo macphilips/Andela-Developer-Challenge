@@ -9,16 +9,13 @@ export function createToken(payload) {
 }
 
 export function validateToken(token) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, config.secret, (err, decoded) => {
-      if (err) {
-        let message = 'Invalid Token';
-        if (err instanceof TokenExpiredError) {
-          message = 'Access Token has Expired.';
-        }
-        reject(new HttpError(message, 401));
-      }
-      resolve(decoded);
-    });
-  });
+  try {
+    return Promise.resolve(jwt.verify(token, config.secret));
+  } catch (err) {
+    let message = 'Invalid Token';
+    if (err instanceof TokenExpiredError) {
+      message = 'Access Token has Expired.';
+    }
+    return Promise.reject(new HttpError(message, 401));
+  }
 }

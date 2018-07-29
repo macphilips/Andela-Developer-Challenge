@@ -9,7 +9,10 @@ export default class HttpError extends Error {
   }
 
   static sendError(err, res) {
-    const code = err.code || 500;
+    let code = err.code || 500;
+    if (code < 99 || code > 599) {
+      code = 500;
+    }
     const { message } = err;
     res.status(code).send({ message });
   }

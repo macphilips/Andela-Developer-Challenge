@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
   to_date   VARCHAR(10) NULL,
   daily     BOOLEAN DEFAULT TRUE,
 
-  CONSTRAINT fk_entries_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
+  CONSTRAINT fk_reminder_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
 /*
