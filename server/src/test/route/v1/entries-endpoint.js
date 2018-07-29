@@ -1,6 +1,7 @@
 import chai from 'chai';
 import bcrypt from 'bcryptjs';
 import chaiHttp from 'chai-http';
+import * as assert from 'assert';
 import { app } from '../../../app';
 import { createToken } from '../../../middlewares/jwt-provider';
 import db from '../../../db';
@@ -130,8 +131,23 @@ describe('Entries API test', () => {
         });
     });
   });
-
   describe('PUT /api/v1/entries/:id Modify entry', () => {
+    it('should return a 404 error when users try to modified entry that doesn\'t exists',
+      () => userRepository.findAll()
+        .then((user) => {
+          const token = createToken({ id: user.id });
+          return chai.request(app)
+            .put('/api/v1/entries/93764623')
+            .set('x-access-token', token)
+            .send({ ...entrySampleWithoutID, id: 93764623, userID: user.id })
+            .then((res) => {
+              res.should.have.status(404);
+              res.body.should.be.a('object');
+            });
+        })
+        .catch((err) => {
+          throw err;
+        }));
     it('it should modify entry owned by user', () => {
       let users;
       return userRepository.findAll()
@@ -139,8 +155,9 @@ describe('Entries API test', () => {
           users = result;
           return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
         })
-        .then((entry) => {
+        .then((result) => {
           const token = createToken({ id: users[0].id });
+          const entry = { ...result };
           entry.content = 'Modified content';
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
@@ -167,7 +184,8 @@ describe('Entries API test', () => {
           users = result;
           return entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id });
         })
-        .then((entry) => {
+        .then((result) => {
+          const entry = { ...result };
           entry.content = 'Modified content';
           const token = createToken({ id: users[0].id });
           return chai.request(app)
@@ -184,6 +202,78 @@ describe('Entries API test', () => {
           throw err;
         });
     });
+    it('should not modify entry after day it was created', () => {
+      let users;
+      let aDayB4;
+      return userRepository.findAll()
+        .then((result) => {
+          users = result;
+          const now = new Date();
+          aDayB4 = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 1);
+          return entriesRepository.save({
+            ...entrySampleWithoutID,
+            createdDate: aDayB4,
+            lastModified: aDayB4,
+            userID: users[0].id,
+          });
+        })
+        .then((result) => {
+          const token = createToken({ id: users[0].id });
+          const entry = { ...result };
+          entry.content = 'Modified content';
+          return chai.request(app)
+            .put(`/api/v1/entries/${entry.id}`)
+            .set('x-access-token', token)
+            .send(entry)
+            .then((res) => {
+              res.should.have.status(403);
+              res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              return entriesRepository.findById(entry.id);
+            });
+        }).then((entry) => {
+          assert.equal(entry.lastModified.getDay() === aDayB4.getDay(), true);
+        })
+        .catch((err) => {
+          throw err;
+        });
+    });
+    // it('should modify entry within the same day it was created', () => {
+    //   let users;
+    //   return userRepository.findAll()
+    //     .then((result) => {
+    //       users = result;
+    //       const now = new Date();
+    //       const aDayB4 = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 1);
+    //       return entriesRepository.save({
+    //         ...entrySampleWithoutID,
+    //         createdDate: aDayB4,
+    //         lastModified: aDayB4,
+    //         userID: users[0].id,
+    //       });
+    //     })
+    //     .then((result) => {
+    //       const token = createToken({ id: users[0].id });
+    //       const entry = { ...result };
+    //       entry.content = 'Modified content';
+    //       return chai.request(app)
+    //         .put(`/api/v1/entries/${entry.id}`)
+    //         .set('x-access-token', token)
+    //         .send(entry)
+    //         .then((res) => {
+    //           res.should.have.status(403);
+    //           res.body.should.be.a('object');
+    //           res.body.should.have.property('id').eql(entry.id);
+    //           res.body.should.have.property('content').eql(entry.content);
+    //           res.body.should.have.property('userID').eql(users[0].id);
+    //           res.body.should.have.property('createdDate');
+    //           res.body.should.have.property('lastModified');
+    //         });
+    //     })
+    //     .catch((err) => {
+    //       throw err;
+    //     });
+    // });
   });
   describe('GET /api/v1/entries/:id Get Entry with given id', () => {
     it('it should get entry owned by user with provided token', () => {
