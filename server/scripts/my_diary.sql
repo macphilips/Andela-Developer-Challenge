@@ -17,21 +17,21 @@ CREATE TABLE IF NOT EXISTS ${schema~}.entries
   id                 SERIAL PRIMARY KEY,
   title              VARCHAR(255)                        NULL,
   content            TEXT                                NULL,
-  user_id           INT                              NULL,
+  user_id            INT                                 NULL,
   created_date       TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   last_modified_date TIMESTAMP                           NULL,
-  CONSTRAINT fk_entries_user_id  FOREIGN KEY (user_id) REFERENCES md_user (id)
+  CONSTRAINT fk_entries_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
 CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
   id        SERIAL PRIMARY KEY,
   md_time   VARCHAR(50) NULL,
-  user_id   BIGINT      NULL,
-  from_date TIMESTAMP   NULL,
-  to_date   TIMESTAMP   NULL,
+  user_id   INT         NULL,
+  from_date VARCHAR(10) NULL,
+  to_date   VARCHAR(10) NULL,
   daily     BOOLEAN DEFAULT TRUE,
 
-  CONSTRAINT fk_entries_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
+  CONSTRAINT fk_reminder_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
 /*

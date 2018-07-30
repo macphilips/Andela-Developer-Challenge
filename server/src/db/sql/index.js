@@ -1,6 +1,5 @@
 import { QueryFile } from 'pg-promise';
 import path from 'path';
-import config from '../../config/config';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -35,6 +34,7 @@ export default {
     add: sql(`${root}scripts/users/add.sql`),
     create: sql(`${root}scripts/users/create.sql`),
     empty: sql(`${root}scripts/users/empty.sql`),
+    update: sql(`${root}scripts/users/update.sql`),
   },
   entries: {
     add: sql(`${root}scripts/entries/add.sql`),
@@ -48,5 +48,6 @@ export default {
     add: sql(`${root}scripts/reminder/add.sql`),
     create: sql(`${root}scripts/reminder/create.sql`),
     empty: sql(`${root}scripts/reminder/empty.sql`),
+    update: sql(`${root}scripts/reminder/update.sql`),
   },
 };

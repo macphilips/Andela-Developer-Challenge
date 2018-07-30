@@ -5,6 +5,7 @@ import * as assert from 'assert';
 import { app } from '../../../app';
 import { createToken } from '../../../middlewares/jwt-provider';
 import db from '../../../db';
+import AuthenticationMiddleware from '../../../middlewares/jwt-filter';
 
 const entrySampleWithoutID = {
   title: 'Test case 1',
@@ -44,7 +45,7 @@ describe('Entries API test', () => {
         const token = createToken({ id: users[0].id });
         return chai.request(app)
           .post('/api/v1/entries')
-          .set('x-access-token', token)
+          .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
           .send(entrySampleWithoutID)
           .then((res) => {
             res.should.have.status(201);
@@ -67,7 +68,7 @@ describe('Entries API test', () => {
           const token = createToken({ id: users[0].id });
           return chai.request(app)
             .post('/api/v1/entries')
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .send(entry)
             .then((res) => {
               res.should.have.status(403);
@@ -94,7 +95,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get('/api/v1/entries')
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(404);
               res.body.should.be.a('object');
@@ -120,7 +121,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get('/api/v1/entries')
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
@@ -140,7 +141,7 @@ describe('Entries API test', () => {
           const token = createToken({ id: user.id });
           return chai.request(app)
             .put('/api/v1/entries/93764623')
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .send({ ...entrySampleWithoutID, id: 764623, userID: user.id })
             .then((res) => {
               res.should.have.status(404);
@@ -162,7 +163,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: user.id });
           return chai.request(app)
             .put('/api/v1/entries/5yh90ik')
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .send({ ...entrySampleWithoutID, id: '5yh90ik', userID: user.id })
             .then((res) => {
               res.should.have.status(400);
@@ -187,7 +188,7 @@ describe('Entries API test', () => {
           entry.content = 'Modified content';
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .send(entry)
             .then((res) => {
               res.should.have.status(200);
@@ -216,7 +217,7 @@ describe('Entries API test', () => {
           const token = createToken({ id: users[0].id });
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .send(entrySampleWithoutID)
             .then((res) => {
               res.should.have.status(403);
@@ -250,7 +251,7 @@ describe('Entries API test', () => {
           entry.content = 'Modified content';
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
-            .set('x-access-token', token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
             .send(entry)
             .then((res) => {
               res.should.have.status(403);
@@ -285,7 +286,7 @@ describe('Entries API test', () => {
     //       entry.content = 'Modified content';
     //       return chai.request(app)
     //         .put(`/api/v1/entries/${entry.id}`)
-    //         .set('x-access-token', token)
+    //         .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
     //         .send(entry)
     //         .then((res) => {
     //           res.should.have.status(403);
@@ -314,7 +315,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get(`/api/v1/entries/${entry.id}`)
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
@@ -340,7 +341,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get(`/api/v1/entries/${entry2.id}`)
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(403);
               res.body.should.be.a('object');
@@ -362,7 +363,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get('/api/v1/entries/567829')
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(404);
               res.body.should.be.a('object');
@@ -384,7 +385,7 @@ describe('Entries API test', () => {
           const user1Token = createToken({ id: users[0].id });
           return chai.request(app)
             .get('/api/v1/entries/5yh90ik')
-            .set('x-access-token', user1Token)
+            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(400);
               res.body.should.be.a('object');
