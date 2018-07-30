@@ -76,3 +76,7 @@ Desktop.ini
 .coveralls.yml
 .nyc_output
 coverage/
+
+docker
+.env
+.env.test
