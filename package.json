@@ -3,21 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "lint": "eslint server/src/**/*.js",
-    "lint:fix": "npm run lint -- --fix",
-    "clean": "rimraf server/build/",
-    "build-babel": "babel server/src -d server/build/src",
+    "clean": "rimraf build/",
+    "build-babel": "babel src/main -d build/src/main",
     "build": "npm run clean && npm run build-babel",
-    "start": "npm run build && node --require dotenv/config ./server/bin/server",
-    "test": "cross-env NODE_ENV=test nyc mocha \"server/src/test/**/*.js\"",
+    "start": "npm run build && node ./bin/server",
+    "test": "cross-env NODE_ENV=test nyc mocha \"src/test/**/*.js\"",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "bluebird": "~3.5.1",
     "chai": "^3.5.0",
     "chai-http": "^4.0.0",
-    "cors": "^2.8.4",
     "debug": "~2.6.9",
     "dotenv": "^6.0.0",
     "express": "~4.16.0",
@@ -25,10 +21,8 @@
     "http-errors": "~1.6.2",
     "jsonwebtoken": "^8.3.0",
     "morgan": "~1.9.0",
-    "pg-promise": "^8.4.5",
     "randomstring": "^1.1.5",
-    "rimraf": "^2.6.2",
-    "validator": "^10.4.0"
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -47,8 +41,7 @@
   },
   "nyc": {
     "require": [
-      "babel-register",
-      "dotenv/config"
+      "babel-register"
     ],
     "reporter": [
       "lcov",

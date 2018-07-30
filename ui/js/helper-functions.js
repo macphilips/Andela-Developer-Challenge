@@ -1,35 +1,35 @@
 function loadEntries(callback) {
-  setTimeout(() => {
-    let xhttp = null;
+  setTimeout(function () {
+    var xhttp = null;
     if (window.XMLHttpRequest) {
       // code for modern browsers
       xhttp = new XMLHttpRequest();
     } else {
       // code for old IE browsers
-      xhttp = new ActiveXObject('Microsoft.XMLHTTP');
+      xhttp = new ActiveXObject("Microsoft.XMLHTTP");
     }
     xhttp.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         callback(JSON.parse(this.responseText));
       }
     };
-    xhttp.open('GET', 'asset/entries.json', true);
+    xhttp.open("GET", "asset/entries.json", true);
     xhttp.send();
-  }, 0);
+  }, 0)
 }
 
 function htmlToElement(html) {
-  const template = document.createElement('template');
+  var template = document.createElement('template');
   html = html.trim(); // Never return a text node of whitespace as the result
   template.innerHTML = html;
   return template.content.firstChild;
 }
 
 function bindPropertiesToElement(dataModelElements, model) {
-  let i;
+  var i;
   for (i = 0; i < dataModelElements.length; i++) {
-    const element = dataModelElements[i];
-    const data = element.getAttribute('tc-data-model');
+    var element = dataModelElements[i];
+    var data = element.getAttribute('tc-data-model');
     element.innerHTML = getValue(model, data);
   }
 }
@@ -45,7 +45,7 @@ function getSubstituteValue(context) {
 }
 
 function formatter(input, context) {
-  const regEx = /{{([^{]*?)}}/g;
+  var regEx = /{{([^{]*?)}}/g;
   if (requiresSubstitution(regEx, input)) {
     input = input.replace(regEx, getSubstituteValue(context));
   }
@@ -53,11 +53,14 @@ function formatter(input, context) {
 }
 
 function getValue(context, contextStr) {
-  const splitArray = contextStr.split('.');
-  let currentContext = context;
+  var splitArray = contextStr.split(".");
+  var currentContext = context;
   while (splitArray.length) {
-    const item = splitArray.shift().trim();
-    if (typeof (currentContext) === 'object' && item in currentContext) { currentContext = currentContext[item]; } else { return; }
+    var item = splitArray.shift().trim();
+    if (typeof(currentContext) === "object" && item in currentContext)
+      currentContext = currentContext[item];
+    else
+      return;
   }
   return currentContext;
 }

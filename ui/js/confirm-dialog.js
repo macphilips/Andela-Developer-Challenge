@@ -3,31 +3,31 @@ function ConfirmDeleteEntryView(message) {
   this._viewElement.innerHTML = deleteDialogTemple.trim();
   this.actionButtonClicked = new Event(this);
 
-  const model = { message: 'This action delete entry from database. Are you sure you want to continue?' };
+  var model = {message: 'This action delete entry from database. Are you sure you want to continue?'};
   if (message) {
     model.message = message;
   }
 
-  const dataModelElements = this._viewElement.querySelectorAll('[tc-data-model]');
+  var dataModelElements = this._viewElement.querySelectorAll('[tc-data-model]');
   bindPropertiesToElement(dataModelElements, model);
 
-  const okButton = this._viewElement.querySelector('[tc-data-action="ok"]');
-  const cancelButton = this._viewElement.querySelector('[tc-data-dismiss="cancel"]');
-  const self = this;
-  okButton.onclick = () => {
+  var okButton = this._viewElement.querySelector('[tc-data-action="ok"]');
+  var cancelButton = this._viewElement.querySelector('[tc-data-dismiss="cancel"]');
+  var self = this;
+  okButton.onclick = function () {
     // todo delete model from server
-    self.actionButtonClicked.notify({ action: 'ok' });
-    if (self.modalView) {
+    self.actionButtonClicked.notify({action: 'ok'});
+    if (self.modalView)
       self.modalView.dismiss();
-    }
   };
-  cancelButton.onclick = () => {
-    self.actionButtonClicked.notify({ action: 'cancel' });
-  };
+  cancelButton.onclick = function () {
+    self.actionButtonClicked.notify({action: 'cancel'});
+  }
+
 }
 
 ConfirmDeleteEntryView.prototype = {
-  getViewElement() {
+  getViewElement: function () {
     return this._viewElement;
-  },
+  }
 };
