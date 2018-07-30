@@ -1,9 +1,10 @@
 function CreateEntryView(model, action) {
   this._viewElement = document.createElement('div');
   this._viewElement.innerHTML = createEntryTemplate.trim();
-  var textArea = this._viewElement.querySelector('textarea');
+  const textArea = this._viewElement.querySelector('textarea');
 
-  var config = {title: 'Create New Diary Entry'}, mode = action || 'create';
+  let config = { title: 'Create New Diary Entry' },
+    mode = action || 'create';
   if (mode === 'view') {
     textArea.setAttribute('readonly', 'readonly');
     config.title = 'View Diary Entry';
@@ -12,7 +13,7 @@ function CreateEntryView(model, action) {
     config.title = 'Edit Diary Entry';
   }
 
-  var dataModelElements = this._viewElement.querySelectorAll('[tc-data-model]');
+  const dataModelElements = this._viewElement.querySelectorAll('[tc-data-model]');
   bindPropertiesToElement(dataModelElements, config);
   textArea.value = (model && model.content) ? model.content : '';
   textArea.focus();
@@ -20,15 +21,15 @@ function CreateEntryView(model, action) {
 }
 
 CreateEntryView.prototype = {
-  hideActionButton: function () {
-    var footer = this._viewElement.querySelector('.modal-footer');
+  hideActionButton() {
+    const footer = this._viewElement.querySelector('.modal-footer');
     footer.style.opacity = 0;
     footer.style.visibility = 'hidden';
   },
-  buttonClickHandler: function () {
-    var okButton = this._viewElement.querySelector('[tc-data-action="save"]');
-    var self = this;
-    okButton.onclick = function () {
+  buttonClickHandler() {
+    const okButton = this._viewElement.querySelector('[tc-data-action="save"]');
+    const self = this;
+    okButton.onclick = () => {
       // todo delete model from server
       if (self.resultCallback) {
 
@@ -36,9 +37,9 @@ CreateEntryView.prototype = {
       if (self.modalView) {
         self.modalView.dismiss();
       }
-    }
+    };
   },
-  getViewElement: function () {
+  getViewElement() {
     return this._viewElement;
   },
 };
