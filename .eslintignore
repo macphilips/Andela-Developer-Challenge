@@ -1,7 +1,0 @@
-# server/src/test
-node_modules
-coverage
-bin
-.nyc_output
-server/build
-

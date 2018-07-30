@@ -1,25 +1,25 @@
 function RowItemModel(obj) {
-  const self = this;
-  this.valueChangeObserver = new Event(this);
-  Object.keys(obj).forEach((key) => {
-    let value;
-    Object.defineProperty(self, key, {
-      set(newValue) {
-        value = newValue;
-        self.valueChangeObserver.notify();
-      },
-      get() {
-        return value;
-      },
-      enumerable: true,
+    var self = this;
+    this.valueChangeObserver = new Event(this);
+    Object.keys(obj).forEach(function (key) {
+        var value;
+        Object.defineProperty(self, key, {
+            set: function (newValue) {
+                value = newValue;
+                self.valueChangeObserver.notify();
+            },
+            get: function () {
+                return value;
+            },
+            enumerable: true
+        });
     });
-  });
-  Object.keys(obj).forEach((key) => {
-    self[key] = obj[key];
-  });
+    Object.keys(obj).forEach(function (key) {
+        self[key] = obj[key];
+    });
 }
 
 RowItemModel.prototype = {
-  bindPropToView(prop, view) {
-  },
+    bindPropToView: function (prop, view) {
+    }
 };
