@@ -1,0 +1,370 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://shielded-waters-94006.herokuapp.com/api/v1'
+info:
+  version: "1.0.0-oas3"
+  title: MyDiary Application
+  description: This is the API documentation of MyDiary Application.
+paths:
+  /entries:
+    get:
+      summary: Get List of User's diary Entries
+      description: >-
+        Returns the list of entry created by the user with the token provided
+        with the request. Access Token is required to use this endpoint.
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Entries'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No Entries found.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+    post:
+      summary: Create new entry
+      description: >-
+        This endpoint is used to create new diary entry. Updating an entry isn't
+        supported with this endpoint. Use a post request instead. Access Token
+        is required to use this endpoint.
+      responses:
+        '201':
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+      requestBody:
+        $ref: '#/components/requestBodies/EntryForm'
+  '/entries/{id}':
+    get:
+      summary: Gets an Entry.
+      description: >-
+        Returns a single entry with the {id} provided. Access Token is required
+        to use this endpoint. 404 Error is return when not entry is found.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the Entry to retrieve.
+          schema:
+            type: number
+      responses:
+        '200':
+          description: A Person
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: 'Invalid parameter {id}. {id} must an integer.'
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >-
+            Authenticated user trying to access this Entity doesn't permission
+            to retrieve Entity.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: 'No entries found with {id}.'
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+    put:
+      summary: Update Entry with given ID.
+      description: 'Update and Return the modified entry with provided {id}.'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the Entry to be updated
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Updated Entry with the given ID
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: Invalid parameter ID. ID must an integer.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: >-
+            Authenticated user trying to access this Entity doesn't permission
+            to modify Entity.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: 'No entries found with {id}.'
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+      requestBody:
+        $ref: '#/components/requestBodies/EntryForm'
+  /account/me:
+    get:
+      summary: Gets the user information
+      description: Returns the user information with the provided access token
+      responses:
+        '200':
+          description: A Person
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorizated Access.
+      tags:
+        - Account
+      security:
+        - UserSecurity: []
+  /account/user/reminder/settings:
+    get:
+      summary: Gets user reminder settings.
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Reminder'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Reminder
+      security:
+        - UserSecurity: []
+    put:
+      summary: Updates User reminder settings.
+      responses:
+        '200':
+          description: Updated Entry with the given ID
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Entry'
+        '400':
+          description: 'Bad Request. Example, Invalid Time input format HH:MM'
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorizated access.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      tags:
+        - Reminder
+      security:
+        - UserSecurity: []
+  /auth/signup:
+    post:
+      summary: Create User account
+      description: >-
+        This endpoint is used to create user account with a unique email
+        address.
+      tags:
+        - Account
+      responses:
+        '201':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request. User ID must be an integer and bigger than 0.
+        '403':
+          description: 'Email [xyz@example.com] already in use.'
+        '500':
+          description: Internal Server Error.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserForm'
+        description: User Information
+  /auth/login:
+    post:
+      summary: Sign in Account
+      description: This endpoint is used to sign in user with a valid email and password.
+      tags:
+        - Account
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                properties:
+                  token:
+                    type: string
+                type: object
+        '401':
+          description: Authorization Failed. Check if email or password are correct.
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              type: object
+        description: Login Information
+
+components:
+  schemas:
+    UserForm:
+      required:
+        - email
+        - password
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    User:
+      properties:
+        id:
+          type: number
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      type: object
+    EntryForm:
+      required:
+        - content
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+      type: object
+    Entry:
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        content:
+          type: string
+        createdDate:
+          type: string
+        lastModified:
+          type: string
+        userID:
+          type: number
+      type: object
+    Entries:
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entry'
+      type: object
+    Error:
+      properties:
+        message:
+          type: string
+      type: object
+    Reminder:
+      properties:
+        id:
+          type: number
+        time:
+          type: string
+        userId:
+          type: number
+      type: object
+  requestBodies:
+    EntryForm:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EntryForm'
+      description: Entry Information
+  securitySchemes:
+    UserSecurity:
+      type: apiKey
+      in: header
+      name: x-authorization

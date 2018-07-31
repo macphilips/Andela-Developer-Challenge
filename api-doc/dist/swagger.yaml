@@ -1,0 +1,335 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: MyDiary Application
+  description: This is the API documentation of MyDiary Application.
+
+securityDefinitions:
+    UserSecurity:
+      type: apiKey
+      in: header
+      name: x-access-token
+paths:
+  /entries:
+    get:
+      summary: Get List of User's diary Entries
+      description: Returns the list of entry created by the user with the token provided with the request. Access Token is required to use this endpoint.
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Entries"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No Entries found.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+    post:
+      summary: Create new entry
+      description: This endpoint is used to create new diary entry. Updating an entry isn't supported with this endpoint. Use a post request instead. Access Token is required to use this endpoint.
+      parameters:
+        - name: entry
+          in: body
+          description: Entry Information
+          schema:
+            $ref: "#/definitions/EntryForm"
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: "#/definitions/Entry"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+
+  /entries/{id}:
+    get:
+      summary: Gets an Entry.
+      description: Returns a single entry with the {id} provided. Access Token is required to use this endpoint. 404 Error is return when not entry is found.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the Entry to retrieve.
+          type: number
+      responses:
+        200:
+          description: A Person
+          schema:
+            $ref: "#/definitions/Entry"
+        400:
+          description: Invalid parameter {id}. {id} must an integer.
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: Authenticated user trying to access this Entity doesn't permission to retrieve Entity.
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No entries found with {id}.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+    put:
+      summary: Update Entry with given ID.
+      description: Update and Return the modified entry with provided {id}.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the Entry to be updated
+          type: number
+        - name: entry
+          in: body
+          description: Entry Information
+          schema:
+            $ref: "#/definitions/EntryForm"
+      responses:
+        200:
+          description: Updated Entry with the given ID
+          schema:
+            $ref: "#/definitions/Entry"
+        400:
+          description: Invalid parameter ID. ID must an integer.
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: Authenticated user trying to access this Entity doesn't permission to modify Entity.
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No entries found with {id}.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
+
+  /account/me:
+    get:
+      summary: Gets the user information
+      description: Returns the user information with the provided access token
+      responses:
+        200:
+          description: A Person
+          schema:
+            $ref: "#/definitions/User"
+        401:
+          description: Unauthorizated Access.
+      tags:
+        - Account
+      security:
+        - UserSecurity: []
+
+  /account/user/reminder/settings:
+    get:
+      summary: Gets user reminder settings.
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: "#/definitions/Reminder"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Reminder
+      security:
+        - UserSecurity: []
+    put:
+      summary: Updates User reminder settings.
+      responses:
+        200:
+          description: Updated Entry with the given ID
+          schema:
+            $ref: "#/definitions/Entry"
+        400:
+          description: Bad Request. Example, Invalid Time input format HH:MM
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Reminder
+      security:
+        - UserSecurity: []
+
+  /auth/signup:
+    post:
+      summary: Create User account
+      description: This endpoint is used to create user account with a unique email address.
+      parameters:
+        - name: user
+          in: body
+          description: User Information
+          schema:
+            $ref: "#/definitions/UserForm"
+      tags:
+        - Account
+      produces:
+        - application/json
+      responses:
+        201:
+          description: User Created
+          schema:
+               $ref: "#/definitions/User"
+        400:
+          description: Bad request. User ID must be an integer and bigger than 0.
+        403:
+          description: Email [xyz@example.com] already in use.
+        500:
+          description: Internal Server Error.
+  /auth/login:
+    post:
+      summary: Sign in Account
+      description: This endpoint is used to sign in user with a valid email and password.
+      parameters:
+        - name: entry
+          in: body
+          description: Login Information
+          schema:
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      tags:
+        - Account
+
+      responses:
+        200:
+          description: OK
+          schema:
+            properties:
+              token:
+                type: string
+        401:
+          description: Authorization Failed. Check if email or password are correct.
+          schema:
+            $ref: "#/definitions/Error"
+
+# Added by API Auto Mocking Plugin
+host: shielded-waters-94006.herokuapp.com
+basePath: /api/v1
+schemes:
+ - https
+
+definitions:
+
+  UserForm:
+    required:
+      - email
+      - password
+    properties:
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: DOe
+      email:
+        type: string
+        example: john.doe@example.com
+      password:
+        type: string
+        example: topsecret
+  User:
+    properties:
+      id:
+        type: number
+        example: 12
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: DOe
+      email:
+        type: string
+        example: john.doe@example.com
+      createdDate:
+        type: string
+        example: Jul 12, 2018
+      lastModified:
+        type: string
+        example: Jul 12, 2018
+
+  EntryForm:
+    required:
+      - content
+    properties:
+      title:
+        type: string
+        example: Nice Title
+      content:
+        type: string
+        example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue nulla sem, ut luctus turpis pulvinar sollicitudin. Aliquam ut hendrerit leo. Phasellus euismod vel dolor non rutrum. Morbi efficitur pellentesque odio, at ornare augue commodo ac. Quisque suscipit nisi quis urna tempus imperdiet. Cras congue, felis scelerisque luctus euismod, nibh leo sagittis odio, eget feugiat dolor libero quis tellus.
+  Entry:
+    properties:
+      id:
+        type: number
+      title:
+        type: string
+        example: Nice Title
+      content:
+        type: string
+        example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue nulla sem, ut luctus turpis pulvinar sollicitudin. Aliquam ut hendrerit leo. Phasellus euismod vel dolor non rutrum. Morbi efficitur pellentesque odio, at ornare augue commodo ac. Quisque suscipit nisi quis urna tempus imperdiet. Cras congue, felis scelerisque luctus euismod, nibh leo sagittis odio, eget feugiat dolor libero quis tellus.
+      createdDate:
+        type: string
+        example: Jul 12, 2018
+      lastModified:
+        type: string
+        example: Jul 12, 2018
+      userID:
+        type: number
+        example: 1
+
+  Entries:
+    properties:
+      entries:
+        type: array
+        items:
+          $ref: "#/definitions/Entry"
+  Error:
+    properties:
+      message:
+        type: string
+        example: Error Message
+  Reminder:
+    properties:
+      id:
+        type: number
+        example: 13
+      time:
+        type: string
+        example: 18:39
+      userId:
+        type: number
+        example: 1

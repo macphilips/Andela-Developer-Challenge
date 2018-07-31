@@ -28,6 +28,7 @@
     "pg-promise": "^8.4.5",
     "randomstring": "^1.1.5",
     "rimraf": "^2.6.2",
+    "swagger-ui-dist": "^3.17.6",
     "validator": "^10.4.0"
   },
   "devDependencies": {
