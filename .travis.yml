@@ -12,7 +12,7 @@ deploy:
   keep-history: true
   local-dir: ui
   on:
-    branch: master
+    branch: develop
 
 notifications:
   email: false
