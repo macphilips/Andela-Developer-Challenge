@@ -8,6 +8,7 @@ import reminderRouter from './routes/v1/reminder';
 import authenticateRouter from './routes/v1/user-jwt-authentication';
 import config from './config/config';
 import db from './db';
+import path from "path";
 
 // process.on('unhandledRejection', (error) => {
 //   // Will print "unhandledRejection err is not defined"
@@ -16,6 +17,10 @@ import db from './db';
 // eslint-disable-next-line import/prefer-default-export
 export const app = express();
 
+const pathToSwaggerUi = path.join(__dirname, '../../../api-doc/dist');
+console.log('API path => ', pathToSwaggerUi);
+app.use('/docs/api/v1', express.static(pathToSwaggerUi));
+
 if (config.nodeEnv !== 'test') {
   db.init().then();
   app.use(logger('combined'));
@@ -23,6 +28,7 @@ if (config.nodeEnv !== 'test') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(config.cors));
+
 
 app.use(AuthenticationMiddleware.doFilter);
 const apiVersion = '/api/v1';
