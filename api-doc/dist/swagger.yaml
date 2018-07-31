@@ -2,7 +2,8 @@ swagger: '2.0'
 info:
   version: '1.0.0'
   title: MyDiary Application
-  description: This is the API documentation of MyDiary Application.
+  description: MyDiary is an online journal where users can pen down their thoughts and feelings. MyDiary lets users view list of diary entries and alse create and update entries. It allows users to set daily reminder to create new diary contents.
+   This page contains the API documentations of MyDiary Application.
 
 securityDefinitions:
     UserSecurity:
