@@ -61,3 +61,28 @@ function getValue(context, contextStr) {
   }
   return currentContext;
 }
+
+let timer = null;
+
+function stopAlertTime() {
+  clearTimeout(timer);
+}
+
+function showAlert(msg, type) {
+  stopAlertTime();
+  const alert = document.getElementById('alert');
+  if (!alert) return;
+  alert.className = '';
+  alert.classList.add('alert');
+  alert.classList.add(type);
+  const msgElement = alert.querySelector('.alert-msg');
+  const closeElement = alert.querySelector('.close-btn');
+  const closeHandler = function () {
+    alert.style.display = 'none';
+  };
+  msgElement.innerHTML = msg;
+  alert.style.display = 'block';
+
+  closeElement.onclick = closeHandler;
+  timer = setTimeout(closeHandler, 8000);
+}

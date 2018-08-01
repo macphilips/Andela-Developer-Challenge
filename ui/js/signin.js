@@ -1,5 +1,3 @@
-let timer = null;
-
 function validateForm(form) {
   let valid = true;
   const inputForms = form.querySelectorAll('input');
@@ -33,34 +31,28 @@ function matchPassword(form) {
   return valid;
 }
 
-function stopAlertTime() {
-  clearTimeout(timer);
-}
-
-function showAlert(msg, type) {
-  stopAlertTime();
-  const alert = document.getElementById('alert');
-  if (!alert) return;
-  alert.className = '';
-  alert.classList.add('alert');
-  alert.classList.add(type);
-  const msgElement = alert.querySelector('.alert-msg');
-  const closeElement = alert.querySelector('.close-btn');
-  const closeHandler = function () {
-    alert.style.display = 'none';
-  };
-  msgElement.innerHTML = msg;
-  alert.style.display = 'block';
-
-  closeElement.onclick = closeHandler;
-  timer = setTimeout(closeHandler, 8000);
+function getFields(form) {
+  const data = {};
+  form.querySelectorAll('input').forEach((inputElement) => {
+    const name = inputElement.getAttribute('name');
+    data[name] = inputElement.value;
+  });
+  console.log(JSON.stringify(data));
+  return data;
 }
 
 function createAccount(e) {
   e.preventDefault();
   const form = document.getElementById('signupForm');
   if (validateForm(form) && matchPassword(form)) {
-
+    const data = getFields(form);
+    post(registrationEndpoint, data).then((res) => {
+      console.log(res);
+      showAlert('Successful', 'success');
+    }, (err) => {
+      console.log(err);
+      showAlert('Registration Failed', 'error');
+    });
   }
 }
 
@@ -69,14 +61,20 @@ function signIn(e) {
   const form = document.getElementById('signinForm');
   if (validateForm(form)) {
     const formJson = toJSONString(form);
-    // todo get authentication token from server
-    localStorage.authenticationToken = formJson;
-    window.location.replace('index.html');
+    const data = getFields(form);
+    post(authenticationEndpoint, data).then((res) => {
+      console.log(res);
+      localStorage.authenticationToken = res.token;
+      window.location.replace('index.html');
+    }, (err) => {
+      console.log(err);
+      showAlert('Authentication Failed, check email or password', 'error');
+    });
   }
 }
 
 function send(url, formData) {
-
+  post(url, formData);
 }
 
 function toJSONString(form) {

@@ -9,7 +9,7 @@ function padValue(value) {
 function inputChangeHandler(e) {
   const element = e.target;
   const unit = element.getAttribute('data-unit');
-  let {value} = element;
+  let { value } = element;
   if (unit && unit === 'hours') {
     if (value < 0) {
       value = 0;
@@ -38,7 +38,7 @@ function focusHandler(e) {
 function blurHandler(e) {
   const element = e.target;
   // element.classList.remove('hasFocus');
-  const {value} = element;
+  const { value } = element;
   element.value = padValue(value);
 }
 
@@ -91,7 +91,7 @@ function controlHandler(e) {
         ? 23 : ((hourValue > 23) ? '00' : padValue(hourValue));
     }
   }
-};
+}
 
 function timeInputController() {
   const hoursInput = document.getElementById('hours');

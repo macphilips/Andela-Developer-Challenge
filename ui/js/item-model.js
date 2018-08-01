@@ -1,6 +1,6 @@
 function RowItemModel(obj) {
   const self = this;
-  this.valueChangeObserver = new Event(this);
+  this.valueChangeObserver = new Event(null);
   Object.keys(obj).forEach((key) => {
     let value;
     Object.defineProperty(self, key, {

@@ -1,8 +1,8 @@
-const baseUrl = 'https://murmuring-citadel-13117.herokuapp.com';
+const baseUrl = 'http://localhost:3030';
 const apiVersion = '/api/v1';
 const apiUrl = baseUrl + apiVersion;
-const registrationEndpoint = `${apiUrl}/account/register`;
-const authenticationEndpoint = `${apiUrl}/authenticate`;
+const registrationEndpoint = `${apiUrl}/auth/signup`;
+const authenticationEndpoint = `${apiUrl}/auth/login`;
 const entriesEndpoint = `${apiUrl}/entries`;
 
 function getEntryUrlByID(id) {

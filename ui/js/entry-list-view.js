@@ -39,7 +39,7 @@ EntryTableView.prototype = {
       self.addButtonClicked.notify({});
     };
     deleteButton.onclick = () => {
-      self.deleteButtonClicked.notify({ items: self.itemToRemove });
+      self.deleteButtonClicked.notify({items: self.itemToRemove});
     };
     selectAllInput.onchange = () => {
       const checked = selectAllInput.checked;
@@ -50,7 +50,7 @@ EntryTableView.prototype = {
         }
       }
       self.showDeleteButton();
-      self.selectAll.notify({ checkedState: checked });
+      self.selectAll.notify({checkedState: checked});
     };
     return table_head;
   },
@@ -68,6 +68,7 @@ EntryTableView.prototype = {
       }
     } else {
       // todo
+      table_body.appendChild(htmlToElement(emptyListTemple.trim()));
     }
     return table_body;
   },
@@ -140,7 +141,15 @@ EntryTableViewAdapter.prototype = {
         });
         self._modalService.open(view);
       } else {
-        self._modalService.open(new CreateEntryView(arg.model, arg.action));
+        const entryView = new CreateEntryView(arg.model, arg.action);
+        entryView.buttonClicked.attach((context, result) => {
+          arg.model.content = result.content;
+          arg.model.lastModified = result.lastModified;
+          arg.model.createdDate = result.createdDate;
+          console.log('dismissing view => ')
+          self._modalService.getModalView().dismiss();
+        });
+        self._modalService.open(entryView);
       }
     });
     this._data.push(itemModel);
@@ -183,7 +192,12 @@ function EntryTableController(view, modalService) {
   const self = this;
   view.addButtonClicked.attach(() => {
     const component = new CreateEntryView();
-    component.modalView = modalService.getModalView();
+    // component.modalView = modalService.getModalView();
+    component.buttonClicked.attach((context, args) => {
+      console.log('result -> ', args);
+      modalService.getModalView().dismiss();
+      self._view.getAdapter().addItem(new RowItemModel(args));
+    });
     modalService.open(component);
   });
   view.selectAll.attach((context, args) => {
@@ -206,14 +220,18 @@ EntryTableController.prototype = {
   initialize() {
     const adapter = this._view.getAdapter();
     const self = this;
-    loadEntries((result) => {
+    get(entriesEndpoint).then((result) => {
+      const {entries} = result;
+      console.log('entries => ', entries)
       const models = [];
-      for (let i = 0; i < result.length; i++) {
-        models.push(new RowItemModel(result[i]));
+      for (let i = 0; i < entries.length; i++) {
+        models.push(new RowItemModel(entries[i]));
       }
       adapter.addItems(models);
       self.onReady.notify();
+    }, (error) => {
+      self.onReady.notify();
     });
-    -this._view.render();
+    this._view.render();
   },
 };

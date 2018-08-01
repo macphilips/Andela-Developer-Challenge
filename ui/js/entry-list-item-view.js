@@ -20,13 +20,13 @@ EntryRowView.prototype = {
     const self = this;
     // Dispatch onclick event when dropdown item is selected
     const dataActionElements = this._view.querySelectorAll('[tc-data-action]');
-    for (i = 0; i < dataActionElements.length; i++) {
+    for (let i = 0; i < dataActionElements.length; i += 1) {
       (function () {
         const dataActionElement = dataActionElements[i];
         const dataValue = dataActionElement.getAttribute('tc-data-action');
         if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
           dataActionElement.onclick = () => {
-            self.clickAction.notify({ action: dataValue, model: Object.assign({}, self._model) });
+            self.clickAction.notify({ action: dataValue, model: self._model });
             self.dismissDropDownMenu();
           };
         }

@@ -1,4 +1,3 @@
-/* eslint-disable */
 const modalBoxTemplate = `
 <div id="modal-box" class="modal">
     <div class="modal-content"></div>
@@ -20,7 +19,7 @@ const deleteDialogTemple = `
 const entryTableHeadTemplate = `
             <tr class="header-filter">
                 <td colspan="3">
-                    Diary Entries
+                    <span class="title">Diary Entries</span>
                 </td>
                 <td></td>
                 <td>
@@ -52,7 +51,7 @@ const entryTableBodyRowTemplate = `
                         <span class="check-mark"></span>
                     </label></td>
                 <td><p class="content" tc-data-model="content">This is a sample content</p></td>
-                <td tc-data-model="dateCreated">date created sample</td>
+                <td tc-data-model="createdDate">date created sample</td>
                 <td tc-data-model="lastModified">last modified</td>
                 <td>
                     <div>
@@ -75,13 +74,17 @@ const createEntryTemplate = `
                Create New Diary Entry
             </span>
             <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
-        </div>         
+        </div> 
+        <div id="alert" class="alert error">
+            <p class="alert-msg"></p>
+            <a href="javascript:void(0);" class="close-btn">&times;</a>
+        </div>        
         <hr>        
         <div class="modal-body"> 
         <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="20" autofocus></textarea></div>                
         </div> 
         <div class="modal-footer">
-            <button tc-data-action="save" type="submit" class="btn-save">Save</button>
+            <button tc-data-action="save" type="button" class="btn-save">Save</button>
             <button tc-data-dismiss="cancel" type="button" class="btn-cancel">Cancel</button>
         </div>
     </form>
@@ -95,6 +98,8 @@ const loadingTemplate = `
             <div></div>
         </div>
     </div>`;
+
+const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><span>No Entry</span></div></td></tr>';
 
 const navbarHeaderTemplate = `    
     <header class="nav-header">
