@@ -1,23 +1,3 @@
-function loadEntries(callback) {
-  setTimeout(() => {
-    let xhttp = null;
-    if (window.XMLHttpRequest) {
-      // code for modern browsers
-      xhttp = new XMLHttpRequest();
-    } else {
-      // code for old IE browsers
-      xhttp = new ActiveXObject('Microsoft.XMLHTTP');
-    }
-    xhttp.onreadystatechange = function () {
-      if (this.readyState === 4 && this.status === 200) {
-        callback(JSON.parse(this.responseText));
-      }
-    };
-    xhttp.open('GET', 'asset/entries.json', true);
-    xhttp.send();
-  }, 0);
-}
-
 function htmlToElement(html) {
   const template = document.createElement('template');
   html = html.trim(); // Never return a text node of whitespace as the result
@@ -57,7 +37,11 @@ function getValue(context, contextStr) {
   let currentContext = context;
   while (splitArray.length) {
     const item = splitArray.shift().trim();
-    if (typeof (currentContext) === 'object' && item in currentContext) { currentContext = currentContext[item]; } else { return; }
+    if (typeof (currentContext) === 'object' && item in currentContext) {
+      currentContext = currentContext[item];
+    } else {
+      return;
+    }
   }
   return currentContext;
 }
@@ -77,7 +61,7 @@ function showAlert(msg, type) {
   alert.classList.add(type);
   const msgElement = alert.querySelector('.alert-msg');
   const closeElement = alert.querySelector('.close-btn');
-  const closeHandler = function () {
+  const closeHandler = () => {
     alert.style.display = 'none';
   };
   msgElement.innerHTML = msg;
@@ -85,4 +69,17 @@ function showAlert(msg, type) {
 
   closeElement.onclick = closeHandler;
   timer = setTimeout(closeHandler, 8000);
+}
+
+function getFieldsAsObject(form) {
+  const data = {};
+  form.querySelectorAll('input').forEach((inputElement) => {
+    const name = inputElement.getAttribute('name');
+    data[name] = inputElement.value;
+  });
+  form.querySelectorAll('select').forEach((inputElement) => {
+    const name = inputElement.getAttribute('name');
+    data[name] = inputElement.options[inputElement.selectedIndex].value;
+  });
+  return data;
 }

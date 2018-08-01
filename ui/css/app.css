@@ -50,7 +50,16 @@ input:-webkit-autofill, textarea:-webkit-autofill {
 
 .container {
     margin: 1rem auto;
-    width: 80%;
+    width: 100%;
+}
+
+@media only screen and (min-width: 600px) {
+
+    .container {
+        margin: 1rem auto;
+        width: 80%;
+    }
+
 }
 
 hr {
@@ -144,11 +153,41 @@ section {
 
 .form-container {
     margin: 0 auto;
-    width: 50%;
+    width: 90%;
 }
 
-.form-container.signin {
-    width: 40%;
+@media only screen and (min-width: 1201px) {
+    .form-container {
+        margin: 0 auto;
+        width: 50%;
+    }
+
+    .form-container.signin {
+        width: 40%;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+    .form-container {
+        margin: 0 auto;
+        width: 60%;
+    }
+
+    .form-container.signin {
+        width: 50%;
+    }
+
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .form-container {
+        margin: 0 auto;
+        width: 70%;
+    }
+
+    .form-container.signin {
+        width: 60%;
+    }
 }
 
 .form-login-header {
@@ -837,12 +876,12 @@ table {
     position: relative;
 }
 
-.alert.success {
+.alert.success, .toast.success {
     color: #fff !important;
     background-color: rgba(76, 175, 80, 0.8) !important;
 }
 
-.alert.error {
+.alert.error, .toast.error {
     color: #fff !important;
     background-color: rgba(244, 67, 54, 0.8) !important;
 }
@@ -864,6 +903,91 @@ table {
     top: 0;
 }
 
+.toast {
+    padding: 20px;
+    background-color: #f44336;
+    color: white;
+
+    visibility: hidden;
+    min-width: 250px;
+    text-align: center;
+    border-radius: 2px;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    position: fixed;
+    font-size: 1rem;
+    transform: translate(-50%, 0);
+}
+
+#alert.dismiss {
+    -webkit-animation: fadeout 0.5s;
+    animation: fadeout 0.5s;
+}
+
+#alert.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+}
+
+.toast > .close-btn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes fadeout {
+    from {
+        visibility: visible;
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        visibility: hidden;
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
 /*Loading*/
 .loading-container {
     left: 0;
@@ -872,13 +996,18 @@ table {
     width: 100vw;
     position: fixed;
     z-index: 100;
-    color: #5f6368;
-    background: rgba(0, 0, 0, 0.47);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.loading-bg {
+
+    color: #5f6368;
+    background: rgba(0, 0, 0, 0.47);
+}
+
+/*https://loading.io/css/*/
 .loading-ring {
     display: inline-block;
     position: relative;
@@ -1017,8 +1146,15 @@ table {
 }
 
 .section {
-    width: 60%;
+    width: 90%;
     margin: auto auto 1.5rem;
+}
+
+@media only screen and (min-width: 768px) {
+    .section {
+        width: 60%;
+        margin: auto auto 1.5rem;
+    }
 }
 
 .section-title {

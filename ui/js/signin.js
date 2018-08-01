@@ -31,27 +31,18 @@ function matchPassword(form) {
   return valid;
 }
 
-function getFields(form) {
-  const data = {};
-  form.querySelectorAll('input').forEach((inputElement) => {
-    const name = inputElement.getAttribute('name');
-    data[name] = inputElement.value;
-  });
-  console.log(JSON.stringify(data));
-  return data;
-}
-
 function createAccount(e) {
   e.preventDefault();
   const form = document.getElementById('signupForm');
   if (validateForm(form) && matchPassword(form)) {
-    const data = getFields(form);
+    const data = getFieldsAsObject(form);
     post(registrationEndpoint, data).then((res) => {
-      console.log(res);
       showAlert('Successful', 'success');
+      location.replace('index.html');
     }, (err) => {
       console.log(err);
-      showAlert('Registration Failed', 'error');
+      const { message } = err;
+      showAlert(`Registration Failed:<br>${message}`, 'error');
     });
   }
 }
@@ -61,9 +52,8 @@ function signIn(e) {
   const form = document.getElementById('signinForm');
   if (validateForm(form)) {
     const formJson = toJSONString(form);
-    const data = getFields(form);
+    const data = getFieldsAsObject(form);
     post(authenticationEndpoint, data).then((res) => {
-      console.log(res);
       localStorage.authenticationToken = res.token;
       window.location.replace('index.html');
     }, (err) => {

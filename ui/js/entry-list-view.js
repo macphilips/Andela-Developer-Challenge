@@ -39,7 +39,7 @@ EntryTableView.prototype = {
       self.addButtonClicked.notify({});
     };
     deleteButton.onclick = () => {
-      self.deleteButtonClicked.notify({items: self.itemToRemove});
+      self.deleteButtonClicked.notify({ items: self.itemToRemove });
     };
     selectAllInput.onchange = () => {
       const checked = selectAllInput.checked;
@@ -50,7 +50,7 @@ EntryTableView.prototype = {
         }
       }
       self.showDeleteButton();
-      self.selectAll.notify({checkedState: checked});
+      self.selectAll.notify({ checkedState: checked });
     };
     return table_head;
   },
@@ -146,7 +146,7 @@ EntryTableViewAdapter.prototype = {
           arg.model.content = result.content;
           arg.model.lastModified = result.lastModified;
           arg.model.createdDate = result.createdDate;
-          console.log('dismissing view => ')
+          console.log('dismissing view => ');
           self._modalService.getModalView().dismiss();
         });
         self._modalService.open(entryView);
@@ -194,7 +194,6 @@ function EntryTableController(view, modalService) {
     const component = new CreateEntryView();
     // component.modalView = modalService.getModalView();
     component.buttonClicked.attach((context, args) => {
-      console.log('result -> ', args);
       modalService.getModalView().dismiss();
       self._view.getAdapter().addItem(new RowItemModel(args));
     });
@@ -209,7 +208,6 @@ function EntryTableController(view, modalService) {
     modalService.open(component);
     component.actionButtonClicked.attach(() => {
       // todo delete items from server
-      console.log('action ok deleting items from server =>', args.items);
       self._view.getAdapter().removeItems(args.items);
     });
   });
@@ -221,8 +219,7 @@ EntryTableController.prototype = {
     const adapter = this._view.getAdapter();
     const self = this;
     get(entriesEndpoint).then((result) => {
-      const {entries} = result;
-      console.log('entries => ', entries)
+      const { entries } = result;
       const models = [];
       for (let i = 0; i < entries.length; i++) {
         models.push(new RowItemModel(entries[i]));

@@ -1,3 +1,5 @@
+let user;
+
 function padValue(value) {
   let result = Number(value);
   if (result >= 0 && result < 10) {
@@ -117,6 +119,70 @@ function timeInputController() {
   }
 }
 
+
+function bindProfile(model) {
+  const profileSection = document.getElementById('profile');
+  const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
+  let i;
+  for (i = 0; i < profileDataModelElements.length; i += 1) {
+    const element = profileDataModelElements[i];
+    const data = element.getAttribute('tc-data-model');
+    element.value = getValue(model, data);
+  }
+  return profileDataModelElements;
+}
+
+function bindReminder(model) {
+  const reminderSection = document.getElementById('reminder');
+  const reminderDataModelElements = reminderSection.querySelectorAll('[tc-data-model]');
+  for (let i = 0; i < reminderDataModelElements.length; i += 1) {
+    const element = reminderDataModelElements[i];
+    const data = element.getAttribute('tc-data-model');
+    element.value = getValue(model, data);
+  }
+}
+
+function bindDataToView(model) {
+  // bindProfile(model);
+  const { reminder } = model;
+  const { time, from, to } = reminder;
+  const [hours, minutes] = time.split(':');
+  bindReminder({
+    hours, minutes, from, to,
+  });
+}
+
+function registerEvent() {
+  const changePasswordForm = document.getElementById('changePassword');
+  const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
+  changePasswordButton.onclick = (e) => {
+    e.preventDefault();
+    const data = getFieldsAsObject(changePasswordForm);
+    if (data.password === data.matchPassword) {
+      post(changePassword, data).then((result) => {
+        showToast(result.message, 'success');
+      }).catch((err) => {
+        showToast(err.message, 'error');
+      });
+    } else {
+      showToast('Password doesn\'t match', 'error');
+    }
+  };
+
+  const reminderForm = document.getElementById('reminderForm');
+  const reminderButton = reminderForm.querySelector('[tc-data-action]');
+  reminderButton.onclick = (e) => {
+    e.preventDefault();
+    const data = getFieldsAsObject(reminderForm);
+    data.time = `${data.hours}:${data.minutes}`;
+    put(reminder, data).then((result) => {
+      showToast(result.message, 'success');
+    }).catch((err) => {
+      showToast(err.message, 'error');
+    });
+  };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = new NavBarView();
   if (typeof (Storage) !== 'undefined') {
@@ -124,6 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.authenticationToken) {
       navbar.render();
       timeInputController();
+      get(userProfile)
+        .then((data) => {
+          user = data;
+          bindDataToView(data);
+          registerEvent();
+        })
+        .catch((err) => {
+          console.log(err);
+          showToast(err.message, 'error');
+        });
     } else {
       window.location.replace('signin.html');
     }
@@ -131,3 +207,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sorry! No Web Storage support..
   }
 });
+let toastTimer = null;
+
+function stopAlertTime() {
+  clearTimeout(toastTimer);
+}
+
+function showToast(msg, type) {
+  stopAlertTime();
+  const alert = document.getElementById('alert');
+  if (!alert) return;
+  alert.className = '';
+  alert.classList.add('toast');
+  const msgElement = alert.querySelector('.alert-msg');
+  const closeElement = alert.querySelector('.close-btn');
+  const closeHandler = () => {
+    alert.classList.remove('show');
+    alert.classList.add('dismiss');
+  };
+  msgElement.innerHTML = msg;
+  alert.classList.add('show');
+  alert.classList.remove('dismiss');
+  alert.classList.add(type);
+
+  closeElement.onclick = closeHandler;
+  toastTimer = setTimeout(closeHandler, 8000);
+}

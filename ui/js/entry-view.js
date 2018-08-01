@@ -37,7 +37,6 @@ CreateEntryView.prototype = {
       if (self.mode === 'edit') {
         self.model.content = content;
         put(getEntryUrlByID(self.model.id), self.model).then((res) => {
-          console.log('notify observers => ', res);
           self.buttonClicked.notify(res);
         }, (err) => {
           showAlert(`Unable to update entry <br>${err.message}`, 'error');

@@ -90,7 +90,7 @@ const createEntryTemplate = `
     </form>
 `;
 const loadingTemplate = `
-    <div class="loading-container">
+    <div class="loading-container loading-bg">
         <div class="loading-ring">
             <div></div>
             <div></div>
