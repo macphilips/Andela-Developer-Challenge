@@ -1,4 +1,6 @@
-function RowItemModel(obj) {
+import Event from './event';
+
+export default function RowItemModel(obj) {
   const self = this;
   this.valueChangeObserver = new Event(null);
   Object.keys(obj).forEach((key) => {

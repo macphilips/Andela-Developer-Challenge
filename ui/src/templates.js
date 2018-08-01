@@ -1,9 +1,9 @@
-const modalBoxTemplate = `
+export const modalBoxTemplate = `
 <div id="modal-box" class="modal">
     <div class="modal-content"></div>
 </div>`;
 
-const deleteDialogTemple = `
+export const deleteDialogTemple = `
         <div class="modal-header">
             <span class="modal-header-title" role="heading">
                 Confirm Delete
@@ -16,7 +16,7 @@ const deleteDialogTemple = `
             <button tc-data-action="ok" name="ok" class="btn-ok">OK</button>
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
-const entryTableHeadTemplate = `
+export const entryTableHeadTemplate = `
             <tr class="header-filter">
                 <td colspan="3">
                     <span class="title">Diary Entries</span>
@@ -44,7 +44,8 @@ const entryTableHeadTemplate = `
                 <td>Last Modified</td>
                 <td></td>
             </tr>`;
-const entryTableBodyRowTemplate = `
+
+export const entryTableBodyRowTemplate = `
             <tr>
                 <td><label class="custom-checkbox">
                         <input data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
@@ -67,7 +68,7 @@ const entryTableBodyRowTemplate = `
                 </td>
             </tr>`;
 
-const createEntryTemplate = `
+export const createEntryTemplate = `
     <form>    
         <div class="modal-header">
             <span tc-data-model="title" class="modal-header-title" role="heading">
@@ -89,7 +90,7 @@ const createEntryTemplate = `
         </div>
     </form>
 `;
-const loadingTemplate = `
+export const loadingTemplate = `
     <div class="loading-container loading-bg">
         <div class="loading-ring">
             <div></div>
@@ -99,9 +100,9 @@ const loadingTemplate = `
         </div>
     </div>`;
 
-const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><span>No Entry</span></div></td></tr>';
+export const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><span>No Entry</span></div></td></tr>';
 
-const navbarHeaderTemplate = `    
+export const navbarHeaderTemplate = `    
     <header class="nav-header">
         <a href="/" class="header-logo">
             <span class="logo-img"></span>            

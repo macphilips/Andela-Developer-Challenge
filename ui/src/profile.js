@@ -1,3 +1,8 @@
+import {getValue, getFieldsAsObject} from './util';
+import {changePassword, reminder, userProfile} from './endpointUrl';
+import NavBarView from './navbarView';
+import http from './fetchWrapper';
+
 let user;
 
 function padValue(value) {
@@ -11,7 +16,7 @@ function padValue(value) {
 function inputChangeHandler(e) {
   const element = e.target;
   const unit = element.getAttribute('data-unit');
-  let { value } = element;
+  let {value} = element;
   if (unit && unit === 'hours') {
     if (value < 0) {
       value = 0;
@@ -25,7 +30,7 @@ function inputChangeHandler(e) {
       value = 59;
     }
   }
-  element.value = parseInt(value);
+  element.value = parseInt(value, 10);
 }
 
 function focusHandler(e) {
@@ -40,7 +45,7 @@ function focusHandler(e) {
 function blurHandler(e) {
   const element = e.target;
   // element.classList.remove('hasFocus');
-  const { value } = element;
+  const {value} = element;
   element.value = padValue(value);
 }
 
@@ -61,11 +66,11 @@ function controlHandler(e) {
     let result = 0;
     if (direction && direction === 'up') {
       result = (value % minuteStep === 0)
-        ? value + minuteStep : minuteStep * (parseInt(value / minuteStep) + 1);
+        ? value + minuteStep : minuteStep * (parseInt(value / minuteStep, 10) + 1);
     } else if (direction && direction === 'down') {
       const round = (value === 0) ? 60 : value;
       result = (value % minuteStep === 0)
-        ? value - minuteStep : minuteStep * (parseInt(round / minuteStep));
+        ? value - minuteStep : minuteStep * (parseInt(round / minuteStep, 10));
     }
     let hourValue = Number(hoursInput.value);
     if (result <= 0) {
@@ -119,94 +124,6 @@ function timeInputController() {
   }
 }
 
-
-function bindProfile(model) {
-  const profileSection = document.getElementById('profile');
-  const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
-  let i;
-  for (i = 0; i < profileDataModelElements.length; i += 1) {
-    const element = profileDataModelElements[i];
-    const data = element.getAttribute('tc-data-model');
-    element.value = getValue(model, data);
-  }
-  return profileDataModelElements;
-}
-
-function bindReminder(model) {
-  const reminderSection = document.getElementById('reminder');
-  const reminderDataModelElements = reminderSection.querySelectorAll('[tc-data-model]');
-  for (let i = 0; i < reminderDataModelElements.length; i += 1) {
-    const element = reminderDataModelElements[i];
-    const data = element.getAttribute('tc-data-model');
-    element.value = getValue(model, data);
-  }
-}
-
-function bindDataToView(model) {
-  // bindProfile(model);
-  const { reminder } = model;
-  const { time, from, to } = reminder;
-  const [hours, minutes] = time.split(':');
-  bindReminder({
-    hours, minutes, from, to,
-  });
-}
-
-function registerEvent() {
-  const changePasswordForm = document.getElementById('changePassword');
-  const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
-  changePasswordButton.onclick = (e) => {
-    e.preventDefault();
-    const data = getFieldsAsObject(changePasswordForm);
-    if (data.password === data.matchPassword) {
-      post(changePassword, data).then((result) => {
-        showToast(result.message, 'success');
-      }).catch((err) => {
-        showToast(err.message, 'error');
-      });
-    } else {
-      showToast('Password doesn\'t match', 'error');
-    }
-  };
-
-  const reminderForm = document.getElementById('reminderForm');
-  const reminderButton = reminderForm.querySelector('[tc-data-action]');
-  reminderButton.onclick = (e) => {
-    e.preventDefault();
-    const data = getFieldsAsObject(reminderForm);
-    data.time = `${data.hours}:${data.minutes}`;
-    put(reminder, data).then((result) => {
-      showToast(result.message, 'success');
-    }).catch((err) => {
-      showToast(err.message, 'error');
-    });
-  };
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const navbar = new NavBarView();
-  if (typeof (Storage) !== 'undefined') {
-    // Code for localStorage/sessionStorage.
-    if (localStorage.authenticationToken) {
-      navbar.render();
-      timeInputController();
-      get(userProfile)
-        .then((data) => {
-          user = data;
-          bindDataToView(data);
-          registerEvent();
-        })
-        .catch((err) => {
-          console.log(err);
-          showToast(err.message, 'error');
-        });
-    } else {
-      window.location.replace('signin.html');
-    }
-  } else {
-    // Sorry! No Web Storage support..
-  }
-});
 let toastTimer = null;
 
 function stopAlertTime() {
@@ -233,3 +150,91 @@ function showToast(msg, type) {
   closeElement.onclick = closeHandler;
   toastTimer = setTimeout(closeHandler, 8000);
 }
+
+function bindProfile(model) {
+  const profileSection = document.getElementById('profile');
+  const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
+  let i;
+  for (i = 0; i < profileDataModelElements.length; i += 1) {
+    const element = profileDataModelElements[i];
+    const data = element.getAttribute('tc-data-model');
+    element.value = getValue(model, data);
+  }
+  return profileDataModelElements;
+}
+
+function bindReminder(model) {
+  const reminderSection = document.getElementById('reminder');
+  const reminderDataModelElements = reminderSection.querySelectorAll('[tc-data-model]');
+  for (let i = 0; i < reminderDataModelElements.length; i += 1) {
+    const element = reminderDataModelElements[i];
+    const data = element.getAttribute('tc-data-model');
+    element.value = getValue(model, data);
+  }
+}
+
+function bindDataToView(model) {
+  // bindProfile(model);
+  const reminderSetting = model.reminder;
+  const {time, from, to} = reminderSetting;
+  const [hours, minutes] = time.split(':');
+  bindReminder({
+    hours, minutes, from, to,
+  });
+}
+
+function registerEvent() {
+  const changePasswordForm = document.getElementById('changePassword');
+  const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
+  changePasswordButton.onclick = (e) => {
+    e.preventDefault();
+    const data = getFieldsAsObject(changePasswordForm);
+    if (data.password === data.matchPassword) {
+      http.post(changePassword, data).then((result) => {
+        showToast(result.message, 'success');
+      }).catch((err) => {
+        showToast(err.message, 'error');
+      });
+    } else {
+      showToast('Password doesn\'t match', 'error');
+    }
+  };
+
+  const reminderForm = document.getElementById('reminderForm');
+  const reminderButton = reminderForm.querySelector('[tc-data-action]');
+  reminderButton.onclick = (e) => {
+    e.preventDefault();
+    const data = getFieldsAsObject(reminderForm);
+    data.time = `${data.hours}:${data.minutes}`;
+    http.put(reminder, data).then((result) => {
+      showToast(result.message, 'success');
+    }).catch((err) => {
+      showToast(err.message, 'error');
+    });
+  };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const navbar = new NavBarView();
+  if (typeof (Storage) !== 'undefined') {
+    // Code for localStorage/sessionStorage.
+    if (localStorage.authenticationToken) {
+      navbar.render();
+      timeInputController();
+      http.get(userProfile)
+        .then((data) => {
+          user = data;
+          bindDataToView(data);
+          registerEvent();
+        })
+        .catch((err) => {
+          console.log(err);
+          showToast(err.message, 'error');
+        });
+    } else {
+      window.location.replace('signin.html');
+    }
+  } else {
+    // Sorry! No Web Storage support..
+  }
+});
