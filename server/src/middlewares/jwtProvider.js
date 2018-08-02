@@ -1,6 +1,6 @@
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import config from '../config/config';
-import HttpError from '../errors/HttpError';
+import HttpError from '../utils/httpError';
 
 export function createToken(payload) {
   return jwt.sign(payload, config.secret, {

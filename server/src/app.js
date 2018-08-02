@@ -1,24 +1,20 @@
 import express from 'express';
 import logger from 'morgan';
 import cors from 'cors';
-import AuthenticationMiddleware from './middlewares/jwt-filter';
+import path from 'path';
+import AuthenticationMiddleware from './middlewares/jwtFilter';
 import accountRouter from './routes/v1/account';
 import entriesRouter from './routes/v1/entries';
 import reminderRouter from './routes/v1/reminder';
-import authenticateRouter from './routes/v1/user-jwt-authentication';
+import authenticateRouter from './routes/v1/userJwtAuthentication';
 import config from './config/config';
 import db from './db';
-import path from "path";
 
-// process.on('unhandledRejection', (error) => {
-//   // Will print "unhandledRejection err is not defined"
-//   console.log('unhandledRejection', error);
-// });
 // eslint-disable-next-line import/prefer-default-export
 export const app = express();
 
 const pathToSwaggerUi = path.join(__dirname, '../../../api-doc/dist');
-console.log('API path => ', pathToSwaggerUi);
+
 app.use('/docs/api/v1', express.static(pathToSwaggerUi));
 
 if (config.nodeEnv !== 'test') {
@@ -37,9 +33,6 @@ app.use(`${apiVersion}/account`, reminderRouter);
 app.use(`${apiVersion}/auth`, authenticateRouter);
 app.use(`${apiVersion}/entries`, entriesRouter);
 
-// catch 404 and forward to error handler
-
-// catch 404
 app.use((req, res) => {
   res.status(404).send({ status: 404, error: 'Not found' });
 });

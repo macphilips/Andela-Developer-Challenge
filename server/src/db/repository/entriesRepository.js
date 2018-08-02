@@ -1,6 +1,6 @@
 import sql from '../sql';
-import Entry from '../../models/Entry';
-import HttpError from '../../errors/HttpError';
+import Entry from '../../models/entry';
+import HttpError from '../../utils/httpError';
 
 
 export default class EntryRepository {
@@ -13,13 +13,6 @@ export default class EntryRepository {
       .then(result => (Entry.mapDBEntriesEntityToEntries(result)))
       .catch(HttpError.wrapAndThrowError);
   }
-
-  // findByIdAndByOwner(id, userID) {
-  //   return this.db.oneOrNone('SELECT * FROM entries WHERE id = $1 AND user_id = $2',
-  //     [+id, +userID])
-  //     .then(result => (Entry.mapDBEntriesEntityToEntries(result)))
-  //     .catch(HttpError.wrapAndThrowError);
-  // }
 
   save(input) {
     const entry = { ...input };
@@ -43,6 +36,12 @@ export default class EntryRepository {
   findAllByCreator(userId) {
     return this.db.any('SELECT * FROM entries WHERE user_id = $1', +userId)
       .then(result => (Entry.mapDBArrayEntriesToEntries(result)))
+      .catch(HttpError.wrapAndThrowError);
+  }
+
+  remove(id) {
+    return this.db.result('DELETE FROM entries WHERE id = $1',
+      +id, r => r.rowCount)
       .catch(HttpError.wrapAndThrowError);
   }
 

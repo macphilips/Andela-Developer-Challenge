@@ -281,6 +281,19 @@ definitions:
       lastModified:
         type: string
         example: Jul 12, 2018
+      reminder:
+        type: object
+        properties:
+          id:
+            type: number
+            example: 13
+          time:
+            type: string
+            example: 18:39
+          userId:
+            type: number
+            example: 1
+
 
   EntryForm:
     required:

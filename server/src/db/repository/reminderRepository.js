@@ -1,5 +1,5 @@
 import sql from '../sql';
-import Reminder from '../../models/Reminder';
+import Reminder from '../../models/reminder';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -10,11 +10,6 @@ export default class ReminderRepository {
   constructor(db) {
     this.db = db;
   }
-
-  // findById(id) {
-  //   return this.db.oneOrNone('SELECT * FROM reminder WHERE id = $1', +id)
-  //     .then(Reminder.mapDBReminderEntityToReminder);
-  // }
 
   findByUserId(id) {
     return this.db.oneOrNone('SELECT * FROM reminder WHERE user_id = $1', +id)

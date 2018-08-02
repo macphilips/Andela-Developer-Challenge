@@ -3,10 +3,10 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import * as assert from 'assert';
 import bcrypt from 'bcryptjs';
-import { createToken } from '../../../middlewares/jwt-provider';
+import { createToken } from '../../../middlewares/jwtProvider';
 import db from '../../../db';
 import { app } from '../../../app';
-import AuthenticationMiddleware from '../../../middlewares/jwt-filter';
+import AuthenticationMiddleware from '../../../middlewares/jwtFilter';
 
 chai.use(chaiHttp);
 const should = chai.should();
@@ -30,6 +30,8 @@ describe('Account API test', () => {
             res.should.have.status(401);
             res.body.should.be.a('object');
             res.body.should.have.property('message');
+            res.body.should.have.property('status');
+            res.body.should.have.property('message');
           }));
       // .catch((err) => {
       //    throw err;
@@ -46,6 +48,7 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(401);
                 res.body.should.be.a('object');
+                res.body.should.have.property('status');
                 res.body.should.have.property('message');
               });
           }));
@@ -67,11 +70,14 @@ describe('Account API test', () => {
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('firstName').eql(user.firstName);
-              res.body.should.have.property('lastName').eql(user.lastName);
-              res.body.should.have.property('email').eql(user.email);
-              res.body.should.have.property('id').eql(user.id);
-              res.body.should.not.have.property('password');
+              res.body.should.have.property('status');
+              res.body.should.have.property('message');
+              res.body.should.have.property('user');
+              res.body.user.should.have.property('firstName').eql(user.firstName);
+              res.body.user.should.have.property('lastName').eql(user.lastName);
+              res.body.user.should.have.property('email').eql(user.email);
+              res.body.user.should.have.property('id').eql(user.id);
+              res.body.user.should.not.have.property('password');
             });
           // .catch((err) => {
           //   throw err;
@@ -91,6 +97,7 @@ describe('Account API test', () => {
           .then((res) => {
             res.should.have.status(403);
             res.body.should.be.a('object');
+            res.body.should.have.property('status');
             res.body.should.have.property('message');
             return userRepository.findOneByEmail(user.email);
           })
@@ -113,6 +120,7 @@ describe('Account API test', () => {
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
+              res.body.should.have.property('status');
               res.body.should.have.property('message');
               return userRepository.findOneByEmail(user.email);
             })
@@ -139,10 +147,11 @@ describe('Account API test', () => {
               return chai.request(app)
                 .put(url)
                 .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
-                .send({ time: '' })
+                .send({ time: '    ' })
                 .then((res) => {
                   res.should.have.status(400);
                   res.body.should.be.a('object');
+                  res.body.should.have.property('status');
                   res.body.should.have.property('message');
                 });
             })
@@ -153,6 +162,7 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
+                res.body.should.have.property('status');
                 res.body.should.have.property('message');
               }))
             .then(() => chai.request(app)
@@ -162,6 +172,7 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
+                res.body.should.have.property('status');
                 res.body.should.have.property('message');
               }))
             .then(() => chai.request(app)
@@ -171,11 +182,12 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(400);
                 res.body.should.be.a('object');
+                res.body.should.have.property('status');
                 res.body.should.have.property('message');
+              })
+              .catch((err) => {
+                throw err;
               }));
-          // .catch((err) => {
-          //   throw err;
-          // });
         });
 
       it('it should PUT a reminder settings', () => {
@@ -199,10 +211,13 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.property('time').eql(settings.time);
-                res.body.should.have.property('from').eql(settings.from);
-                res.body.should.have.property('to').eql(settings.to);
-                res.body.should.have.property('userId').eql(reminder.userId);
+                res.body.should.have.property('status');
+                res.body.should.have.property('message');
+                res.body.should.have.property('reminder');
+                res.body.reminder.should.have.property('time').eql(settings.time);
+                res.body.reminder.should.have.property('from').eql(settings.from);
+                res.body.reminder.should.have.property('to').eql(settings.to);
+                res.body.reminder.should.have.property('userId').eql(reminder.userId);
               });
             // .catch((err) => {
             //   throw err;
@@ -218,6 +233,7 @@ describe('Account API test', () => {
           .then((res) => {
             res.should.have.status(401);
             res.body.should.be.a('object');
+            res.body.should.have.property('status');
             res.body.should.have.property('message');
           }));
       // .catch((err) => {
@@ -245,8 +261,11 @@ describe('Account API test', () => {
               .then((res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.property('time').eql(result.time);
-                res.body.should.have.property('userId').eql(result.userId);
+                res.body.should.have.property('status');
+                res.body.should.have.property('message');
+                res.body.should.have.property('reminder');
+                res.body.reminder.should.have.property('time').eql(result.time);
+                res.body.reminder.should.have.property('userId').eql(result.userId);
               }));
           // .catch((err) => {
           //   throw err;

@@ -1,5 +1,5 @@
 import express from 'express';
-import ReminderController from '../../controllers/reminder-controller';
+import ReminderController from '../../controllers/reminderController';
 
 const router = express.Router();
 
