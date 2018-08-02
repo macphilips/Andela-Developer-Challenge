@@ -1,10 +1,9 @@
-/* eslint-disable */
-const modalBoxTemplate = `
+export const modalBoxTemplate = `
 <div id="modal-box" class="modal">
     <div class="modal-content"></div>
 </div>`;
 
-const deleteDialogTemple = `
+export const deleteDialogTemple = `
         <div class="modal-header">
             <span class="modal-header-title" role="heading">
                 Confirm Delete
@@ -17,10 +16,10 @@ const deleteDialogTemple = `
             <button tc-data-action="ok" name="ok" class="btn-ok">OK</button>
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
-const entryTableHeadTemplate = `
+export const entryTableHeadTemplate = `
             <tr class="header-filter">
                 <td colspan="3">
-                    Diary Entries
+                    <span class="title">Diary Entries</span>
                 </td>
                 <td></td>
                 <td>
@@ -45,14 +44,15 @@ const entryTableHeadTemplate = `
                 <td>Last Modified</td>
                 <td></td>
             </tr>`;
-const entryTableBodyRowTemplate = `
+
+export const entryTableBodyRowTemplate = `
             <tr>
                 <td><label class="custom-checkbox">
                         <input data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
                         <span class="check-mark"></span>
                     </label></td>
                 <td><p class="content" tc-data-model="content">This is a sample content</p></td>
-                <td tc-data-model="dateCreated">date created sample</td>
+                <td tc-data-model="createdDate">date created sample</td>
                 <td tc-data-model="lastModified">last modified</td>
                 <td>
                     <div>
@@ -68,26 +68,34 @@ const entryTableBodyRowTemplate = `
                 </td>
             </tr>`;
 
-const createEntryTemplate = `
+export const createEntryTemplate = `
     <form>    
         <div class="modal-header">
-            <span tc-data-model="title" class="modal-header-title" role="heading">
-               Create New Diary Entry
-            </span>
+            <div id="modal-header-title">
+                <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
+                <span tc-data-model="title" class="modal-header-title">
+                        Create New Diary Entry
+                </span>
+                <p tc-data-model="lastModified"></p>
+            </div>
             <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
-        </div>         
-        <hr>        
+        </div> 
+        <div id="alert" class="alert error">
+            <p class="alert-msg"></p>
+            <a href="javascript:void(0);" class="close-btn">&times;</a>
+        </div>        
+                
         <div class="modal-body"> 
-        <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="20" autofocus></textarea></div>                
+        <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="17" autofocus></textarea></div>                
         </div> 
         <div class="modal-footer">
-            <button tc-data-action="save" type="submit" class="btn-save">Save</button>
+            <button tc-data-action="save" type="button" class="btn-save">Save</button>
             <button tc-data-dismiss="cancel" type="button" class="btn-cancel">Cancel</button>
         </div>
     </form>
 `;
-const loadingTemplate = `
-    <div class="loading-container">
+export const loadingTemplate = `
+    <div class="loading-container loading-bg">
         <div class="loading-ring">
             <div></div>
             <div></div>
@@ -96,13 +104,15 @@ const loadingTemplate = `
         </div>
     </div>`;
 
-const navbarHeaderTemplate = `    
+export const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><span>No Entry</span></div></td></tr>';
+
+export const navbarHeaderTemplate = `    
     <header class="nav-header">
         <a href="/" class="header-logo">
             <span class="logo-img"></span>            
         </a>
         <div class="nav">
-            <ul>
+            <ul class="logged-in">
                 <li>
                     <a href="profile.html">Profile</a>
                 </li>
@@ -110,5 +120,14 @@ const navbarHeaderTemplate = `
                     <a id="logout">Logout</a>
                 </li>
             </ul>
+            <ul class="logged-out">
+                <li>
+                    <a href="signin.html">Sign In</a>
+                </li>
+                <li>
+                    <a class="btn signup" href="signup.html">Sign Up</a>
+                </li>
+            </ul>
+            
         </div>
     </header>`;
