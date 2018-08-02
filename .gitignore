@@ -80,3 +80,4 @@ coverage/
 docker
 .env
 .env.test
+swagger-ui
