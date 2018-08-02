@@ -20,7 +20,7 @@ export function isEmpty(data) {
 }
 
 export function validateName(user) {
-  const regExp = /^[a-zA-Z0-9]+$/;
+  const regExp = /^[a-zA-Z]+$/;
   if ((isEmpty(user.firstName))
     || (isEmpty(user.lastName))) {
     return 'First Name or Last Name cannot be empty';
