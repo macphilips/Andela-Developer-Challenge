@@ -22,6 +22,7 @@ export default class Reminder {
       reminder.from = entity.from_date;
       reminder.time = entity.md_time;
     }
+
     return reminder;
   }
 }

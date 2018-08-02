@@ -34,6 +34,7 @@ export default class User {
     user.createdDate = entity.created_date;
     user.lastModified = entity.last_modified_date;
     user.reminder = Reminder.map(entity);
+
     return user;
   }
 }
