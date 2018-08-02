@@ -31,7 +31,7 @@ addons:
 before_script:
       - psql -c 'create database mydiary_test;' -U postgres
       - npm install codeclimate-test-reporter -g
-      - npm webpack:build
+      - npm run webpack:build
       - mv .env.sample .env
 
 after_success:
