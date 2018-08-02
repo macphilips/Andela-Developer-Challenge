@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile | My Dairy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="stylesheet" href="css/app.css">
+    <script src="js/helper-functions.js"></script>
+    <script src="js/templates.js"></script>
+    <script src="js/modal-view.service.js"></script>
+    <script src="js/nav-view.js"></script>
+    <script src="js/event.js"></script>
+    <script src="js/item-model.js"></script>
+    <script src="js/loadng-view.js"></script>
+    <script src="js/confirm-dialog.js"></script>
+    <script src="js/entry-view.js"></script>
+    <script src="js/entry-list-item-view.js"></script>
+    <script src="js/entry-list-view.js"></script>
+    <style>
+        body {
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div id="navbar"></div>
+<div id="main">
+    <div class="container">
+        <div id="alert" class="alert error">
+            <p class="alert-msg">Alert Message</p>
+            <a href="javascript:void(0);" class="close-btn">&times;</a>
+        </div>
+        <div class="entry-summary">
+            <ul>
+                <li>Total Entries: <span>4</span></li>
+                <li>Last Update: Jul 25, 2018</li>
+            </ul>
+        </div>
+        <div class="section">
+            <section>
+                <div class="section-title">
+                    <span>Manage Profile</span>
+                </div>
+                <hr>
+                <div class="section-content">
+                    <form id="signupForm" name="signupForm">
+                        <div>
+                            <div class="row-col-2">
+                                <div>
+                                    <label for="first_name"><b>First name</b></label>
+                                    <input class="form-input" id="first_name" type="text" placeholder="First name"
+                                           name="first_name"
+                                           required>
+                                </div>
+                                <div>
+                                    <label for="last_name"><b>Last name</b></label>
+                                    <input class="form-input" id="last_name" type="text" placeholder="Last name"
+                                           name="last_name"
+                                           required>
+                                </div>
+                            </div>
+                            <label for="email"><b>Email</b></label>
+                            <input class="form-input" id="email" type="email" placeholder="Enter Email" name="email"
+                                   required>
+                            <div class="btn-container">
+                                <button type="submit" class="btn right">Update Profile</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <section>
+                <div class="section-title">
+                    <span>Change Password</span>
+                </div>
+                <hr>
+                <div class="section-content">
+                    <form>
+                        <label for="password"><b>Old Password</b></label>
+                        <input class="form-input" id="prev-password" type="password" placeholder="Old Password"
+                               name="prevPassword"
+                               required>
+                        <label for="password"><b>New Password</b></label>
+                        <input class="form-input" id="password" type="password" placeholder="New Password"
+                               name="password"
+                               required>
+                        <label for="match-password"><b>Confirm Password</b></label>
+                        <input class="form-input" id="match-password" type="password" placeholder="Confirm Password"
+                               name="match-password" required>
+
+                        <div class="btn-container">
+                            <button type="submit" class="btn right">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <section>
+                <div class="section-title">
+                    <span>Reminder Settings</span>
+                </div>
+                <hr>
+                <div class="section-content">
+                    <form id="reminder" name="reminderForm">
+                        <div>
+                            <div class="sub-title">
+                                <span>Set daily reminder</span>
+                            </div>
+                            <div class="row-col-2">
+                                <div>
+                                    <label>
+                                        <select class="form-input" id="from"
+                                                name="from" required>
+                                            <option disabled selected>From</option>
+                                            <option value="MON">Monday</option>
+                                            <option value="TUE">Tuesday</option>
+                                            <option value="WED">Wednesday</option>
+                                            <option value="THUR">Thursday</option>
+                                            <option value="FRI">Friday</option>
+                                            <option value="SAT">Saturday</option>
+                                            <option value="SUN">Sunday</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label>
+                                        <select class="form-input" id="to"
+                                                name="to" required>
+                                            <option disabled selected>To</option>
+                                            <option value="MON">Monday</option>
+                                            <option value="TUE">Tuesday</option>
+                                            <option value="WED">Wednesday</option>
+                                            <option value="THUR">Thursday</option>
+                                            <option value="FRI">Friday</option>
+                                            <option value="SAT">Saturday</option>
+                                            <option value="SUN">Sunday</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="time-spinner">
+                                    <input id="hours" type="number" class="time-input hours" data-unit="hours"
+                                           placeholder="HH" autocomplete="off">
+                                    <span class="time-delimiter">&colon;</span>
+                                    <input id="minutes" type="number" class="time-input minutes"
+                                           placeholder="MM" data-unit="minutes" autocomplete="off">
+                                    <div class="time-controller">
+                                            <span class="time-controller-btn up" data-direction="up">
+                                            </span>
+                                        <span class="time-controller-btn down" data-direction="down">
+                                            </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-container">
+                                <button type="submit" class="btn right">Set Reminder</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<script src="js/profile.js"></script>
+</body>
+</html>
