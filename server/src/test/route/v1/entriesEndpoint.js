@@ -2,10 +2,10 @@ import chai from 'chai';
 import bcrypt from 'bcryptjs';
 import chaiHttp from 'chai-http';
 import * as assert from 'assert';
-import { app } from '../../../app';
-import { createToken } from '../../../middlewares/jwt-provider';
+import {app} from '../../../app';
+import {createToken} from '../../../middlewares/jwtProvider';
 import db from '../../../db';
-import AuthenticationMiddleware from '../../../middlewares/jwt-filter';
+import AuthenticationMiddleware from '../../../middlewares/jwtFilter';
 
 const entrySampleWithoutID = {
   title: 'Test case 1',
@@ -42,7 +42,7 @@ describe('Entries API test', () => {
   describe('POST /api/v1/entries Create new entry', () => {
     it('it should create a new entry', () => userRepository.findAll()
       .then((users) => {
-        const token = createToken({ id: users[0].id });
+        const token = createToken({id: users[0].id});
         return chai.request(app)
           .post('/api/v1/entries')
           .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
@@ -50,11 +50,15 @@ describe('Entries API test', () => {
           .then((res) => {
             res.should.have.status(201);
             res.body.should.be.a('object');
-            res.body.should.have.property('id');
-            res.body.should.have.property('content');
-            res.body.should.have.property('title');
-            res.body.should.have.property('createdDate');
-            res.body.should.have.property('lastModified');
+            res.body.should.have.property('message');
+            res.body.should.have.property('status');
+            res.body.should.have.property('entry');
+
+            res.body.entry.should.have.property('id');
+            res.body.entry.should.have.property('content').eql(entrySampleWithoutID.content);
+            res.body.entry.should.have.property('title').eql(entrySampleWithoutID.title);
+            res.body.entry.should.have.property('createdDate');
+            res.body.entry.should.have.property('lastModified');
           });
       }));
     it('it should not allow modification of entry using POST request', () => {
@@ -62,10 +66,10 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then((entry) => {
-          const token = createToken({ id: users[0].id });
+          const token = createToken({id: users[0].id});
           return chai.request(app)
             .post('/api/v1/entries')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
@@ -74,6 +78,7 @@ describe('Entries API test', () => {
               res.should.have.status(403);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -87,12 +92,12 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[1].id});
         })
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id }))
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id }))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[1].id}))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[1].id}))
         .then(() => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get('/api/v1/entries')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
@@ -100,6 +105,7 @@ describe('Entries API test', () => {
               res.should.have.status(404);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -111,20 +117,22 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id }))
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id }))
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id }))
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id }))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[0].id}))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[0].id}))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[1].id}))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[1].id}))
         .then(() => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get('/api/v1/entries')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.should.have.property('status');
               res.body.should.have.property('entries');
               res.body.entries.length.should.be.eql(3);
             });
@@ -138,14 +146,16 @@ describe('Entries API test', () => {
     it('should return a 404 error when users try to modified entry that doesn\'t exists',
       () => userRepository.findAll()
         .then((user) => {
-          const token = createToken({ id: user.id });
+          const token = createToken({id: user.id});
           return chai.request(app)
             .put('/api/v1/entries/93764623')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
-            .send({ ...entrySampleWithoutID, id: 764623, userID: user.id })
+            .send({...entrySampleWithoutID, id: 764623, userID: user.id})
             .then((res) => {
               res.should.have.status(404);
               res.body.should.be.a('object');
+              res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         }));
     // .catch((err) => {
@@ -157,18 +167,19 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((users) => {
           [user] = users;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then(() => {
-          const user1Token = createToken({ id: user.id });
+          const user1Token = createToken({id: user.id});
           return chai.request(app)
             .put('/api/v1/entries/5yh90ik')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
-            .send({ ...entrySampleWithoutID, id: '5yh90ik', userID: user.id })
+            .send({...entrySampleWithoutID, id: '5yh90ik', userID: user.id})
             .then((res) => {
               res.should.have.status(400);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -180,11 +191,11 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then((result) => {
-          const token = createToken({ id: users[0].id });
-          const entry = { ...result };
+          const token = createToken({id: users[0].id});
+          const entry = {...result};
           entry.content = 'Modified content';
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
@@ -193,11 +204,15 @@ describe('Entries API test', () => {
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('id').eql(entry.id);
-              res.body.should.have.property('content').eql(entry.content);
-              res.body.should.have.property('userID').eql(users[0].id);
-              res.body.should.have.property('createdDate');
-              res.body.should.have.property('lastModified');
+              res.body.should.have.property('message');
+              res.body.should.have.property('status');
+              res.body.should.have.property('entry');
+
+              res.body.entry.should.have.property('id').eql(entry.id);
+              res.body.entry.should.have.property('content').eql(entry.content);
+              res.body.entry.should.have.property('userID').eql(users[0].id);
+              res.body.entry.should.have.property('createdDate');
+              res.body.entry.should.have.property('lastModified');
             });
         });
       // .catch((err) => {
@@ -209,12 +224,12 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[1].id});
         })
         .then((result) => {
-          const entry = { ...result };
+          const entry = {...result};
           entry.content = 'Modified content';
-          const token = createToken({ id: users[0].id });
+          const token = createToken({id: users[0].id});
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
@@ -223,6 +238,7 @@ describe('Entries API test', () => {
               res.should.have.status(403);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -246,8 +262,8 @@ describe('Entries API test', () => {
           });
         })
         .then((result) => {
-          const token = createToken({ id: users[0].id });
-          const entry = { ...result };
+          const token = createToken({id: users[0].id});
+          const entry = {...result};
           entry.content = 'Modified content';
           return chai.request(app)
             .put(`/api/v1/entries/${entry.id}`)
@@ -257,6 +273,7 @@ describe('Entries API test', () => {
               res.should.have.status(403);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
               return entriesRepository.findById(entry.id);
             });
         }).then((entry) => {
@@ -309,20 +326,24 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then((entry) => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get(`/api/v1/entries/${entry.id}`)
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
             .then((res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('content').eql(entry.content);
-              res.body.should.have.property('userID').eql(users[0].id);
-              res.body.should.have.property('createdDate');
-              res.body.should.have.property('lastModified');
+              res.body.should.have.property('message');
+              res.body.should.have.property('status');
+              res.body.should.have.property('entry');
+
+              res.body.entry.should.have.property('content').eql(entry.content);
+              res.body.entry.should.have.property('userID').eql(users[0].id);
+              res.body.entry.should.have.property('createdDate');
+              res.body.entry.should.have.property('lastModified');
             });
         });
       // .catch((err) => {
@@ -334,11 +355,11 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
-        .then(() => entriesRepository.save({ ...entrySampleWithoutID, userID: users[1].id }))
+        .then(() => entriesRepository.save({...entrySampleWithoutID, userID: users[1].id}))
         .then((entry2) => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get(`/api/v1/entries/${entry2.id}`)
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
@@ -346,6 +367,7 @@ describe('Entries API test', () => {
               res.should.have.status(403);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -357,10 +379,10 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then(() => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get('/api/v1/entries/567829')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
@@ -368,6 +390,7 @@ describe('Entries API test', () => {
               res.should.have.status(404);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {
@@ -379,10 +402,10 @@ describe('Entries API test', () => {
       return userRepository.findAll()
         .then((result) => {
           users = result;
-          return entriesRepository.save({ ...entrySampleWithoutID, userID: users[0].id });
+          return entriesRepository.save({...entrySampleWithoutID, userID: users[0].id});
         })
         .then(() => {
-          const user1Token = createToken({ id: users[0].id });
+          const user1Token = createToken({id: users[0].id});
           return chai.request(app)
             .get('/api/v1/entries/5yh90ik')
             .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
@@ -390,6 +413,7 @@ describe('Entries API test', () => {
               res.should.have.status(400);
               res.body.should.be.a('object');
               res.body.should.have.property('message');
+              res.body.should.have.property('status');
             });
         });
       // .catch((err) => {

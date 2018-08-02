@@ -1,7 +1,7 @@
 import sql from '../sql';
-import User from '../../models/User';
-import HttpError from '../../errors/HttpError';
-import Entry from '../../models/Entry';
+import User from '../../models/user';
+import HttpError from '../../utils/httpError';
+import Entry from '../../models/entry';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -15,6 +15,12 @@ export default class UserRepository {
 
   findById(id) {
     return this.db.oneOrNone('SELECT * FROM md_user WHERE id = $1', +id)
+      .then(result => User.mapDBUserEntityToUser(result))
+      .catch(HttpError.wrapAndThrowError);
+  }
+
+  getAllUserDetailsById(id) {
+    return this.db.oneOrNone(sql.users.findUser, { id })
       .then(result => User.mapDBUserEntityToUser(result))
       .catch(HttpError.wrapAndThrowError);
   }
@@ -50,12 +56,6 @@ export default class UserRepository {
       .then(result => (User.mapDBUserArrayToUsers(result)))
       .catch(HttpError.wrapAndThrowError);
   }
-
-  // remove(id) {
-  //   return this.db.result('DELETE FROM md_user WHERE id = $1',
-  //     +id, r => r.rowCount)
-  //     .catch(HttpError.wrapAndThrowError);
-  // }
 
   clear() {
     return this.db.none(sql.users.empty)

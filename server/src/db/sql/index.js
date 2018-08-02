@@ -35,6 +35,7 @@ export default {
     create: sql(`${root}scripts/users/create.sql`),
     empty: sql(`${root}scripts/users/empty.sql`),
     update: sql(`${root}scripts/users/update.sql`),
+    findUser: sql(`${root}scripts/users/findUser.sql`),
   },
   entries: {
     add: sql(`${root}scripts/entries/add.sql`),
