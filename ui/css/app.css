@@ -51,6 +51,7 @@ input:-webkit-autofill, textarea:-webkit-autofill {
 .container {
     margin: 1rem auto;
     width: 100%;
+    z-index: 100;
 }
 
 @media only screen and (min-width: 600px) {
@@ -102,7 +103,7 @@ section {
 }
 
 .btn {
-    background-color: #4CAF50;
+    background-color: #347ac3;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -212,6 +213,10 @@ section {
     text-align: center;
     padding: .75rem;
     margin-top: .5rem;
+}
+
+.signin-top {
+    padding-top: 50px
 }
 
 table {
@@ -484,7 +489,7 @@ table {
     font: 400 12px helvetica neue, Helvetica, Arial, sans-serif;
     text-decoration: none;
     text-align: left;
-    border: 1px #e5e5e5 solid;
+    border: 1px #b0b0b0 solid;
     text-transform: uppercase;
     margin: 0;
     white-space: nowrap;
@@ -496,7 +501,7 @@ table {
 }
 
 .dropdown-toggle:hover:after {
-    border-top-color: #c5c5c5;
+    border-top-color: #969696;
 
 }
 
@@ -509,7 +514,7 @@ table {
     height: 0;
     transform: translate(-50%, -50%);
     border: 6px solid transparent;
-    border-top-color: #eee;
+    border-top-color: #b0b0b0;
 }
 
 .dropdown-menu {
@@ -638,6 +643,36 @@ table {
     right: 0;
     top: 0;
     margin: 16px;
+}
+
+#modal-header-title {
+    width: 100%
+}
+
+#modal-header-title p {
+    color: #555;
+}
+
+.modal-header-input {
+    border: none;
+    margin: 0;
+    max-width: 400px;
+    padding: .75rem 0;
+    -webkit-font-smoothing: antialiased;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    color: #212121;
+    line-height: 24px;
+}
+
+.modal-header-input:placeholder-shown {
+    border-bottom: 2px solid #ccc;
+}
+
+input.modal-header-input:focus, input.modal-header-input:active {
+    border-bottom: 2px solid #66afe9;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 /* Modal body Section*/
@@ -907,17 +942,17 @@ table {
     padding: 20px;
     background-color: #f44336;
     color: white;
-
     visibility: hidden;
     min-width: 250px;
     text-align: center;
     border-radius: 2px;
-    z-index: 1;
+    /*z-index: 1;*/
     left: 50%;
     bottom: 30px;
     position: fixed;
     font-size: 1rem;
     transform: translate(-50%, 0);
+    z-index: 2000;
 }
 
 #alert.dismiss {
@@ -1062,6 +1097,10 @@ table {
     border-bottom: 1px solid #ddd
 }
 
+.navbar-top-padding {
+    padding-top: 100px;
+}
+
 .nav-header {
     width: 90%;
     margin: 0 auto;
@@ -1082,7 +1121,7 @@ table {
 }
 
 .nav-header a {
-    color: #555;
+    color: #347ac3;
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
@@ -1090,7 +1129,7 @@ table {
 }
 
 .nav-header a:hover {
-    color: #9ED3FF;
+    color: #555;
 }
 
 .header-logo {
@@ -1126,7 +1165,7 @@ table {
 .nav li, .entry-summary li {
     font-size: 14px;
     line-height: 120%;
-    padding: 0 10px;
+    padding: 0 1.5rem;
     cursor: default;
     position: relative
 }
@@ -1139,6 +1178,20 @@ table {
 .entry-summary > ul > li:first-child:after {
     content: '|';
     padding: 0 10px;
+}
+
+.nav .signup, .about .get-started {
+    background-color: #347ac3;
+    color: #fff;
+    opacity: 1;
+    border: 1px solid #347ac3;
+    border-radius: 5px;
+}
+
+.nav .signup:hover {
+    background-color: #fff;
+    color: #347ac3;
+    opacity: 1;
 }
 
 #main {
@@ -1248,4 +1301,96 @@ table {
 .up {
     background: url("../images/icarrow-up.svg") no-repeat center;
     background-size: 30px;
+}
+
+.bg {
+    min-height: 100vh;
+    width: 100%;
+    background-size: contain;
+}
+
+.bg > .overlay {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.bgimg {
+    background: url("../images/bg-img.jpg") center;
+}
+
+.bgimg-1 {
+    background: url("../images/bg-img-1.jpg") center;
+}
+
+/* Fading animation */
+.fade-in {
+    -webkit-animation-name: fade-in;
+    -webkit-animation-duration: 1.4s;
+    animation-name: fade-in;
+    animation-duration: 1.4s;
+}
+
+@-webkit-keyframes fade-in {
+    from {
+        opacity: .2
+    }
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: .2
+    }
+    to {
+        opacity: 1
+    }
+}
+
+.left {
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    margin: 1rem;
+    transform: translate(0%, -50%);
+    -ms-transform: translate(0%, -50%)
+}
+
+.about {
+    color: #f4f9fb;
+    line-height: 2rem;
+}
+
+.about > h1 {
+    font-size: 3.5rem;
+}
+
+.about > p {
+    font-size: 1.5rem;
+    max-width: 600px;
+}
+
+.about .get-started {
+    margin-top: 1rem;
+    font-size: 1rem;
+    padding: 1.2rem 3rem;
+}
+
+.about .get-started:hover {
+    background-color: rgba(52, 122, 195, 0.51);
+    border-color: rgba(52, 122, 195, 0.51);
+}
+
+@media only screen and (min-width: 600px) {
+    .left {
+        margin-left: 3rem;
+    }
 }

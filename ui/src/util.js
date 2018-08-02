@@ -1,3 +1,5 @@
+import {padValue} from "../../server/src/utils/util";
+
 export function htmlToElement(html) {
   const template = document.createElement('template');
   html = html.trim(); // Never return a text node of whitespace as the result
@@ -20,11 +22,17 @@ export function getValue(context, contextStr) {
 }
 
 export function bindPropertiesToElement(dataModelElements, model) {
+  if (!model) return;
   let i;
   for (i = 0; i < dataModelElements.length; i += 1) {
     const element = dataModelElements[i];
     const data = element.getAttribute('tc-data-model');
-    element.innerHTML = getValue(model, data);
+    const value = getValue(model, data);
+    if (element.nodeName === 'INPUT') {
+      element.value = value || '';
+    } else {
+      element.innerHTML = value;
+    }
   }
 }
 
@@ -82,4 +90,37 @@ export function getFieldsAsObject(form) {
     data[name] = inputElement.options[inputElement.selectedIndex].value;
   });
   return data;
+}
+
+export function getTimeString(date) {
+  if (!date) return null;
+  const months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${padValue(date.getHours())}:${padValue(date.getMinutes())}`;
+}
+
+let toastTimer = null;
+
+function stopToastTimer() {
+  clearTimeout(toastTimer);
+}
+
+export function showToast(msg, type) {
+  stopToastTimer();
+  const alert = document.getElementById('toast');
+  if (!alert) return;
+  alert.className = '';
+  alert.classList.add('toast');
+  const msgElement = alert.querySelector('.alert-msg');
+  const closeElement = alert.querySelector('.close-btn');
+  const closeHandler = () => {
+    alert.classList.remove('show');
+    alert.classList.add('dismiss');
+  };
+  msgElement.innerHTML = msg;
+  alert.classList.add('show');
+  alert.classList.remove('dismiss');
+  alert.classList.add(type);
+
+  closeElement.onclick = closeHandler;
+  toastTimer = setTimeout(closeHandler, 8000);
 }

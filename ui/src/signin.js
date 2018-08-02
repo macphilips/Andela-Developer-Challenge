@@ -76,7 +76,7 @@ function signIn(e) {
     const data = getFieldsAsObject(form);
     http.post(authenticationEndpoint, data).then((res) => {
       localStorage.authenticationToken = res.token;
-      window.location.replace('index.html');
+      window.location.replace('dashboard.html');
     }, () => {
       showAlert('Authentication Failed, check email or password', 'error');
     });

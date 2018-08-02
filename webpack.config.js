@@ -1,5 +1,5 @@
-var path = require('path');
-var webpack = require('webpack');
+const path = require('path');
+const webpack = require('webpack');
 
 
 const resolve = path.join(__dirname, '/ui/dist');
@@ -8,6 +8,7 @@ module.exports = {
     app: './ui/src/app.js',
     account: './ui/src/signin.js',
     profile: './ui/src/profile.js',
+    index: './ui/src/index.js',
   },
   output: {
     path: resolve,
@@ -30,11 +31,15 @@ module.exports = {
       },
     ],
   },
-  // module: {
-  //   loaders: [{
-  //     test: /\.js$/,
-  //     exclude: /node_modules/,
-  //     loader: 'babel-loader',
-  //   }],
-  // },
+  devServer: {// Required for docker
+    publicPath: '/assets/',
+    contentBase: path.join(__dirname, './ui'),
+    watchContentBase: true,
+    compress: true,
+    port: 9001,
+    proxy: {
+      '/api': 'http://127.0.0.1:3050',
+    },
+  },
+  devtool: 'inline-source-map',
 };

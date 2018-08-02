@@ -1,5 +1,5 @@
-import {getValue, getFieldsAsObject} from './util';
-import {changePassword, reminder, userProfile} from './endpointUrl';
+import { getValue, getFieldsAsObject,showToast } from './util';
+import { changePassword, reminder, userProfile } from './endpointUrl';
 import NavBarView from './navbarView';
 import http from './fetchWrapper';
 
@@ -16,7 +16,7 @@ function padValue(value) {
 function inputChangeHandler(e) {
   const element = e.target;
   const unit = element.getAttribute('data-unit');
-  let {value} = element;
+  let { value } = element;
   if (unit && unit === 'hours') {
     if (value < 0) {
       value = 0;
@@ -45,7 +45,7 @@ function focusHandler(e) {
 function blurHandler(e) {
   const element = e.target;
   // element.classList.remove('hasFocus');
-  const {value} = element;
+  const { value } = element;
   element.value = padValue(value);
 }
 
@@ -124,33 +124,6 @@ function timeInputController() {
   }
 }
 
-let toastTimer = null;
-
-function stopAlertTime() {
-  clearTimeout(toastTimer);
-}
-
-function showToast(msg, type) {
-  stopAlertTime();
-  const alert = document.getElementById('alert');
-  if (!alert) return;
-  alert.className = '';
-  alert.classList.add('toast');
-  const msgElement = alert.querySelector('.alert-msg');
-  const closeElement = alert.querySelector('.close-btn');
-  const closeHandler = () => {
-    alert.classList.remove('show');
-    alert.classList.add('dismiss');
-  };
-  msgElement.innerHTML = msg;
-  alert.classList.add('show');
-  alert.classList.remove('dismiss');
-  alert.classList.add(type);
-
-  closeElement.onclick = closeHandler;
-  toastTimer = setTimeout(closeHandler, 8000);
-}
-
 function bindProfile(model) {
   const profileSection = document.getElementById('profile');
   const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
@@ -176,7 +149,7 @@ function bindReminder(model) {
 function bindDataToView(model) {
   // bindProfile(model);
   const reminderSetting = model.reminder;
-  const {time, from, to} = reminderSetting;
+  const { time, from, to } = reminderSetting;
   const [hours, minutes] = time.split(':');
   bindReminder({
     hours, minutes, from, to,

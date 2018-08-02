@@ -71,18 +71,22 @@ export const entryTableBodyRowTemplate = `
 export const createEntryTemplate = `
     <form>    
         <div class="modal-header">
-            <span tc-data-model="title" class="modal-header-title" role="heading">
-               Create New Diary Entry
-            </span>
+            <div id="modal-header-title">
+                <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
+                <span tc-data-model="title" class="modal-header-title">
+                        Create New Diary Entry
+                </span>
+                <p tc-data-model="lastModified"></p>
+            </div>
             <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
         </div> 
         <div id="alert" class="alert error">
             <p class="alert-msg"></p>
             <a href="javascript:void(0);" class="close-btn">&times;</a>
         </div>        
-        <hr>        
+                
         <div class="modal-body"> 
-        <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="20" autofocus></textarea></div>                
+        <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="17" autofocus></textarea></div>                
         </div> 
         <div class="modal-footer">
             <button tc-data-action="save" type="button" class="btn-save">Save</button>
@@ -108,7 +112,7 @@ export const navbarHeaderTemplate = `
             <span class="logo-img"></span>            
         </a>
         <div class="nav">
-            <ul>
+            <ul class="logged-in">
                 <li>
                     <a href="profile.html">Profile</a>
                 </li>
@@ -116,5 +120,14 @@ export const navbarHeaderTemplate = `
                     <a id="logout">Logout</a>
                 </li>
             </ul>
+            <ul class="logged-out">
+                <li>
+                    <a href="signin.html">Sign In</a>
+                </li>
+                <li>
+                    <a class="btn signup" href="signup.html">Sign Up</a>
+                </li>
+            </ul>
+            
         </div>
     </header>`;

@@ -1,11 +1,11 @@
-import { htmlToElement } from './util';
-import { entryTableHeadTemplate, emptyListTemple } from './templates';
+import {htmlToElement} from './util';
+import {entryTableHeadTemplate, emptyListTemple} from './templates';
 import EntryRowView from './entryListItemView';
 import Event from './event';
 import CreateEntryView from './entryView';
 import ConfirmDeleteEntryView from './confirmDialog';
 import RowItemModel from './itemModel';
-import { entriesEndpoint } from './endpointUrl';
+import {entriesEndpoint} from './endpointUrl';
 import http from './fetchWrapper';
 
 export class EntryTableView {
@@ -51,10 +51,10 @@ export class EntryTableView {
       self.addButtonClicked.notify({});
     };
     deleteButton.onclick = () => {
-      self.deleteButtonClicked.notify({ items: self.itemToRemove });
+      self.deleteButtonClicked.notify({items: self.itemToRemove});
     };
     selectAllInput.onchange = () => {
-      const { checked } = selectAllInput;
+      const {checked} = selectAllInput;
       self.itemToRemove = [];
       if (checked) {
         for (let i = 0; i < adapter.getSize(); i += 1) {
@@ -62,7 +62,7 @@ export class EntryTableView {
         }
       }
       self.showDeleteButton();
-      self.selectAll.notify({ checkedState: checked });
+      self.selectAll.notify({checkedState: checked});
     };
     return tableHead;
   }
@@ -147,9 +147,9 @@ export class EntryTableViewAdapter {
   }
 
   addItem(itemModel) {
-    const view = new EntryRowView(itemModel);
+    const entryRowView = new EntryRowView(itemModel);
     const self = this;
-    view.clickAction.attach((source, arg) => {
+    entryRowView.clickAction.attach((source, arg) => {
       if (arg && arg.action === 'delete') {
         const confirmDeleteView = new ConfirmDeleteEntryView();
         confirmDeleteView.actionButtonClicked.attach((context, args) => {
@@ -171,7 +171,7 @@ export class EntryTableViewAdapter {
       }
     });
     this.data.push(itemModel);
-    this.viewItems.push(view);
+    this.viewItems.push(entryRowView);
     this.notifyChangeObservers();
   }
 
@@ -243,7 +243,7 @@ export class EntryTableController {
     const adapter = this.entryTableView.getAdapter();
     const self = this;
     http.get(entriesEndpoint).then((result) => {
-      const { entries } = result;
+      const {entries} = result;
       const models = [];
       for (let i = 0; i < entries.length; i += 1) {
         models.push(new RowItemModel(entries[i]));

@@ -12,16 +12,20 @@ class FetchWrapper {
     }
     return fetch(url, fetchData)
       .then((res) => {
-        const { status } = res;
+        const {status} = res;
+
+        if (status === 401) {
+          localStorage.clear();
+          location.replace('sign.html');
+        }
         if (status < 400 || status >= 600) {
+          const token = res.headers.get('X-Access-Token');
+          if (token) localStorage.authenticationToken = token;
           return Promise.resolve(res);
         }
-        return Promise.reject(new Error(res.body.message));
+        return Promise.resolve(res.json()).then(data => Promise.reject(new Error(data.message)));
       })
-      .then(res => res.json())
-      .catch((err) => {
-        console.log('error => ', err);
-      });
+      .then(res => res.json());
   }
 
   get(url) {
@@ -36,5 +40,6 @@ class FetchWrapper {
     return this.request('PUT', url, data);
   }
 }
+
 const http = new FetchWrapper();
 export default http;
