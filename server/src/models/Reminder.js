@@ -9,6 +9,10 @@ export default class Reminder {
   }
 
   static mapDBReminderEntityToReminder(entity) {
+    return Promise.resolve(Reminder.map(entity));
+  }
+
+  static map(entity) {
     let reminder = null;
     if (entity) {
       reminder = new Reminder();
@@ -18,6 +22,6 @@ export default class Reminder {
       reminder.from = entity.from_date;
       reminder.time = entity.md_time;
     }
-    return Promise.resolve(reminder);
+    return reminder;
   }
 }
