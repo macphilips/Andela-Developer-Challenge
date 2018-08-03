@@ -7,7 +7,7 @@ export default class EntryRowView {
     const self = this;
     let html = `${entryTableBodyRowTemplate.trim()}`;
     html = formatter(html, model);
-    this.vieww = htmlToElement(html);
+    this.view = htmlToElement(html);
     this.model = model;
     this.clickAction = new Event(this);
     this.checkBoxChange = new Event(this);
@@ -18,16 +18,26 @@ export default class EntryRowView {
     });
     this.registerDropDownItemClick();
     this.registerOnCheckHandler();
+    this.view.onclick = (e) => {
+      console.log(e);
+      if (e.target.classList.contains('dropdown-toggle')
+      || e.target.classList.contains('check-box')
+        || e.target.classList.contains('check-mark')) {
+        return null;
+      }
+      return self.clickAction.notify({ action: 'view', model: self.model });
+    };
   }
 
   registerDropDownItemClick() {
     const self = this;
     // Dispatch onclick event when dropdown item is selected
-    const dataActionElements = this.vieww.querySelectorAll('[tc-data-action]');
+    const dataActionElements = this.view.querySelectorAll('[tc-data-action]');
     for (let i = 0; i < dataActionElements.length; i += 1) {
       (function () {
         const dataActionElement = dataActionElements[i];
         const dataValue = dataActionElement.getAttribute('tc-data-action');
+        console.log('dataValue => ', dataValue)
         if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
           dataActionElement.onclick = () => {
             self.clickAction.notify({ action: dataValue, model: self.model });
@@ -37,7 +47,7 @@ export default class EntryRowView {
       }());
     }
     // Show dropdown
-    const toggleAction = this.vieww.querySelector('[tc-data-action="dropdown-toggle"]');
+    const toggleAction = this.view.querySelector('[tc-data-action="dropdown-toggle"]');
     toggleAction.onclick = (e) => {
       self.showDropDownMenu(e);
     };
@@ -46,7 +56,7 @@ export default class EntryRowView {
   registerOnCheckHandler() {
     const self = this;
     // Dispatch onchange event when the checkbox changes
-    const checkbox = this.vieww.querySelector('[tc-data-action="check"]');
+    const checkbox = this.view.querySelector('[tc-data-action="check"]');
     checkbox.onchange = (e) => {
       const index = checkbox.getAttribute('data-index');
       const id = checkbox.getAttribute('tc-data-id');
@@ -60,7 +70,7 @@ export default class EntryRowView {
   }
 
   setPosition(position) {
-    const indexes = this.vieww.querySelectorAll('[data-index]');
+    const indexes = this.view.querySelectorAll('[data-index]');
     for (let i = 0; i < indexes.length; i += 1) {
       const index = indexes[i];
       index.setAttribute('data-index', position);
@@ -68,11 +78,11 @@ export default class EntryRowView {
   }
 
   getViewElement() {
-    return this.vieww;
+    return this.view;
   }
 
   updateView() {
-    const dataModelElements = this.vieww.querySelectorAll('[tc-data-model]');
+    const dataModelElements = this.view.querySelectorAll('[tc-data-model]');
     let i;
     for (i = 0; i < dataModelElements.length; i += 1) {
       const element = dataModelElements[i];
@@ -103,7 +113,7 @@ export default class EntryRowView {
   }
 
   selectCheckBoxState(state) {
-    const checkbox = this.vieww.querySelector('[tc-data-action="check"]');
+    const checkbox = this.view.querySelector('[tc-data-action="check"]');
     checkbox.checked = state;
   }
 }

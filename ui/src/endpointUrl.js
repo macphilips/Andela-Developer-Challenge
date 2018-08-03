@@ -1,4 +1,4 @@
-export const baseUrl = 'http://localhost:3030';
+export const baseUrl = 'http://localhost:3000';
 export const apiVersion = '/api/v1';
 export const apiUrl = baseUrl + apiVersion;
 export const userProfile = `${apiUrl}/account/me`;

@@ -16,14 +16,10 @@
 <div id="navbar"></div>
 <div id="main">
     <div class="container">
-        <div id="alert" class="toast error">
-            <span href="javascript:void(0);" class="close-btn">&times;</span>
-            <p class="alert-msg">Alert Message</p>
-        </div>
         <div class="entry-summary">
             <ul>
-                <li>Total Entries: <span>4</span></li>
-                <li>Last Update: Jul 25, 2018</li>
+                <li>Total Entries: <span tc-data-model="numEntries">4</span></li>
+                <li>Last Update: <span tc-data-model="lastModified">Jul 25, 2018</span></li>
             </ul>
         </div>
         <div class="section">
@@ -74,11 +70,13 @@
                             </div>
                             <div>
                                 <div class="time-spinner">
-                                    <input name="hours" tc-data-model="hours" id="hours" type="number" class="time-input hours"
+                                    <input name="hours" tc-data-model="hours" id="hours" type="number"
+                                           class="time-input hours"
                                            data-unit="hours"
                                            placeholder="HH" autocomplete="off">
                                     <span class="time-delimiter">&colon;</span>
-                                    <input name="minutes" tc-data-model="minutes" id="minutes" type="number" class="time-input minutes"
+                                    <input name="minutes" tc-data-model="minutes" id="minutes" type="number"
+                                           class="time-input minutes"
                                            placeholder="MM" data-unit="minutes" autocomplete="off">
                                     <div class="time-controller">
                                             <span class="time-controller-btn up" data-direction="up">
@@ -87,10 +85,44 @@
                                             </span>
                                     </div>
                                 </div>
-                                <span>24hrs</span>
                             </div>
                             <div class="btn-container">
                                 <button tc-data-action="reminder" type="button" class="btn right">Set Reminder</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <section id="profile">
+                <div class="section-title">
+                    <span>Manage Profile</span>
+                </div>
+                <hr>
+                <div class="section-content">
+                    <form id="signupForm" name="signupForm">
+                        <div>
+                            <div class="row-col-2">
+                                <div>
+                                    <label for="first_name"><b>First name</b></label>
+                                    <input tc-data-model="firstName" class="form-input" id="first_name" type="text"
+                                           placeholder="First name"
+                                           name="firstName"
+                                           required>
+                                </div>
+                                <div>
+                                    <label for="last_name"><b>Last name</b></label>
+                                    <input tc-data-model="lastName" class="form-input" id="last_name" type="text"
+                                           placeholder="Last name"
+                                           name="lastName"
+                                           required>
+                                </div>
+                            </div>
+                            <label for="email"><b>Email</b></label>
+                            <input tc-data-model="email" class="form-input" id="email" type="email"
+                                   placeholder="Enter Email" name="email"
+                                   required>
+                            <div class="btn-container">
+                                <button type="submit" class="btn right">Update Profile</button>
                             </div>
                         </div>
                     </form>
@@ -125,6 +157,10 @@
             </section>
         </div>
     </div>
+</div>
+<div id="alert" class="toast error">
+    <span href="javascript:void(0);" class="close-btn">&times;</span>
+    <p class="alert-msg">Alert Message</p>
 </div>
 <script src="dist/profile.bundle.js"></script>
 </body>

@@ -1,11 +1,11 @@
-import {htmlToElement} from './util';
-import {entryTableHeadTemplate, emptyListTemple} from './templates';
+import { htmlToElement } from './util';
+import { entryTableHeadTemplate, emptyListTemple } from './templates';
 import EntryRowView from './entryListItemView';
 import Event from './event';
 import CreateEntryView from './entryView';
 import ConfirmDeleteEntryView from './confirmDialog';
 import RowItemModel from './itemModel';
-import {entriesEndpoint} from './endpointUrl';
+import { entriesEndpoint } from './endpointUrl';
 import http from './fetchWrapper';
 
 export class EntryTableView {
@@ -51,10 +51,10 @@ export class EntryTableView {
       self.addButtonClicked.notify({});
     };
     deleteButton.onclick = () => {
-      self.deleteButtonClicked.notify({items: self.itemToRemove});
+      self.deleteButtonClicked.notify({ items: self.itemToRemove });
     };
     selectAllInput.onchange = () => {
-      const {checked} = selectAllInput;
+      const { checked } = selectAllInput;
       self.itemToRemove = [];
       if (checked) {
         for (let i = 0; i < adapter.getSize(); i += 1) {
@@ -62,7 +62,7 @@ export class EntryTableView {
         }
       }
       self.showDeleteButton();
-      self.selectAll.notify({checkedState: checked});
+      self.selectAll.notify({ checkedState: checked });
     };
     return tableHead;
   }
@@ -160,11 +160,14 @@ export class EntryTableViewAdapter {
         });
         self.modalService.open(confirmDeleteView);
       } else {
-        const entryView = new CreateEntryView(arg.model, arg.action);
+        console.log('updating entry ', arg.model, arg.action);
+        const entryView = new CreateEntryView(arg.model, 'edit');
         entryView.buttonClicked.attach((context, result) => {
-          arg.model.content = result.content;
-          arg.model.lastModified = result.lastModified;
-          arg.model.createdDate = result.createdDate;
+          const entry = result.entry;
+          arg.model.title = entry.title;
+          arg.model.content = entry.content;
+          arg.model.lastModified = entry.lastModified;
+          arg.model.createdDate = entry.createdDate;
           self.modalService.getModalView().dismiss();
         });
         self.modalService.open(entryView);
@@ -219,8 +222,9 @@ export class EntryTableController {
       const component = new CreateEntryView();
       // component.modalView = modalService.getModalView();
       component.buttonClicked.attach((context, args) => {
+        console.log('created => ', args);
         modalService.getModalView().dismiss();
-        this.entryTableView.getAdapter().addItem(new RowItemModel(args));
+        this.entryTableView.getAdapter().addItem(new RowItemModel(args.entry));
       });
       modalService.open(component);
     });
@@ -243,7 +247,7 @@ export class EntryTableController {
     const adapter = this.entryTableView.getAdapter();
     const self = this;
     http.get(entriesEndpoint).then((result) => {
-      const {entries} = result;
+      const { entries } = result;
       const models = [];
       for (let i = 0; i < entries.length; i += 1) {
         models.push(new RowItemModel(entries[i]));
