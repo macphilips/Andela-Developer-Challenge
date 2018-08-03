@@ -160,7 +160,6 @@ export class EntryTableViewAdapter {
         });
         self.modalService.open(confirmDeleteView);
       } else {
-        console.log('updating entry ', arg.model, arg.action);
         const entryView = new CreateEntryView(arg.model, 'edit');
         entryView.buttonClicked.attach((context, result) => {
           const entry = result.entry;
@@ -222,7 +221,6 @@ export class EntryTableController {
       const component = new CreateEntryView();
       // component.modalView = modalService.getModalView();
       component.buttonClicked.attach((context, args) => {
-        console.log('created => ', args);
         modalService.getModalView().dismiss();
         this.entryTableView.getAdapter().addItem(new RowItemModel(args.entry));
       });

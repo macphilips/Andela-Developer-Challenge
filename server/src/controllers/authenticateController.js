@@ -7,7 +7,7 @@ export default class AuthenticateController {
   static authenticate(req, res) {
     const message = validateLoginInfo(req.body);
     if (message !== null) {
-      res.status(400).send({ message, status: 'Validation Failed' });
+      res.status(400).send({ message, status: 'Failed' });
     } else {
       const err = {
         status: 'Authorization failed',
@@ -26,7 +26,7 @@ export default class AuthenticateController {
         }
         return Promise.reject(Error());
       }).then((token) => {
-        res.status(200).send({ token, message: 'Successfully authenticated user', status: 'Authentication Successful' });
+        res.status(200).send({ token, message: 'Successfully authenticated user', status: 'Successful' });
       }).catch(() => res.status(401).send(err));
     }
   }
