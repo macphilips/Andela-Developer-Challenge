@@ -125,7 +125,6 @@ function timeInputController() {
 }
 
 function bindProfile(model) {
-  console.log(model)
   const profileSection = document.getElementById('profile');
   const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
   let i;
@@ -164,7 +163,6 @@ function registerEvent() {
   const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
   changePasswordButton.onclick = (e) => {
     e.preventDefault();
-    console.log('onclick => ', e)
     const data = getFieldsAsObject(changePasswordForm);
     if (data.password === data.matchPassword) {
       http.post(changePassword, data).then((result) => {
@@ -213,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
           registerEvent();
         })
         .catch((err) => {
-          console.log(err);
           showToast(err.message, 'error');
         });
     } else {
