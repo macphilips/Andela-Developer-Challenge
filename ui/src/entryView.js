@@ -16,7 +16,7 @@ export default class CreateEntryView {
     const header = this.viewElement.querySelector('#modal-header-title');
     const titleInput = header.querySelector('input');
     const titleSpan = header.querySelector('span');
-
+console.log()
     this.mode = action || 'create';
     if (model && this.mode === 'view') {
       titleInput.style.display = 'none';
@@ -28,7 +28,7 @@ export default class CreateEntryView {
       titleSpan.style.display = 'none';
     }
     const data = {...this.model};
-    console.log(data, ' => ', this.model);
+    console.log(data, ' => ', this.model, 'mode => ', action);
     let lastModified;
     if (data && data.lastModified) {
       lastModified = data.lastModified;
@@ -49,17 +49,25 @@ export default class CreateEntryView {
     footer.style.visibility = 'hidden';
   }
 
+  showActionButton() {
+    const footer = this.viewElement.querySelector('.modal-footer');
+    footer.style.opacity = 1;
+    footer.style.visibility = 'block';
+  }
+
   buttonClickHandler() {
     const okButton = this.viewElement.querySelector('[tc-data-action="save"]');
     const cancelButton = this.viewElement.querySelector('[tc-data-action="cancel"]');
     const self = this;
     okButton.onclick = () => {
       const content = self.viewElement.querySelector('textarea').value;
+      const title = self.viewElement.querySelector('[tc-data-model="title"]').value;
       if (self.mode === 'edit') {
         const data = {...this.model};
         data.content = content;
+        data.title = title;
         http.put(getEntryUrlByID(self.model.id), data).then((res) => {
-          console.log('Update => ', res)
+          console.log('Update => ', res);
           self.buttonClicked.notify(res);
           showToast('Updated Successful', 'success');
         }, (err) => {
@@ -67,7 +75,7 @@ export default class CreateEntryView {
           showToast(`Unable to update entry <br>${err.message}`, 'error');
         });
       } else if (self.mode === 'create') {
-        http.post(entriesEndpoint, {content}).then((res) => {
+        http.post(entriesEndpoint, {content,title}).then((res) => {
           self.buttonClicked.notify(res);
         }, (err) => {
           showToast(`Unable to save entry <br>${err.message}`, 'error');

@@ -160,11 +160,14 @@ export class EntryTableViewAdapter {
         });
         self.modalService.open(confirmDeleteView);
       } else {
-        const entryView = new CreateEntryView(arg.model, arg.action);
+        console.log('updating entry ',arg.model, arg.action)
+        const entryView = new CreateEntryView(arg.model, 'edit');
         entryView.buttonClicked.attach((context, result) => {
-          arg.model.content = result.content;
-          arg.model.lastModified = result.lastModified;
-          arg.model.createdDate = result.createdDate;
+          const entry = result.entry;
+          arg.model.title = entry.title;
+          arg.model.content = entry.content;
+          arg.model.lastModified = entry.lastModified;
+          arg.model.createdDate = entry.createdDate;
           self.modalService.getModalView().dismiss();
         });
         self.modalService.open(entryView);
@@ -219,8 +222,9 @@ export class EntryTableController {
       const component = new CreateEntryView();
       // component.modalView = modalService.getModalView();
       component.buttonClicked.attach((context, args) => {
+        console.log('created => ',args)
         modalService.getModalView().dismiss();
-        this.entryTableView.getAdapter().addItem(new RowItemModel(args));
+        this.entryTableView.getAdapter().addItem(new RowItemModel(args.entry));
       });
       modalService.open(component);
     });
