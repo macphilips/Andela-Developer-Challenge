@@ -1161,6 +1161,11 @@ input.modal-header-input:focus, input.modal-header-input:active {
     top: 0;
 }
 
+
+.show-on-mobile{
+    display:flex;
+}
+
 @media only screen and (min-width: 600px) {
     .navicon {
         display: none
@@ -1184,8 +1189,8 @@ input.modal-header-input:focus, input.modal-header-input:active {
         left: auto
     }
 
-    .hide-on-mobile{
-        display:flex;
+    .show-on-mobile{
+        display:none;
     }
 }
 
@@ -1248,6 +1253,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     border: 1px solid #347ac3;
     border-radius: 5px;
 }
+
 
 .nav .signup:hover {
     background-color: #fff;
@@ -1455,6 +1461,24 @@ input.modal-header-input:focus, input.modal-header-input:active {
     background-color: rgba(52, 122, 195, 0.51);
     border-color: rgba(52, 122, 195, 0.51);
 }
+.about .signin {
+    margin-top: 1rem;
+    font-size: 1rem;
+    padding: 0 4rem;
+}
+
+.about .signin:hover {
+    background-color: rgba(52, 122, 195, 0.51);
+    border-color: rgba(52, 122, 195, 0.51);
+}
+.about .signin {
+    background-color: #2abf06;
+    color: #fff;
+    opacity: 1;
+    border: 1px solid #2abf06;
+    border-radius: 5px;
+}
+
 
 @media only screen and (min-width: 600px) {
     .left {
@@ -1467,6 +1491,3 @@ input.modal-header-input:focus, input.modal-header-input:active {
     font-weight: 600;
 }
 
-.hide-on-mobile{
-    display:none;
-}
