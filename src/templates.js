@@ -122,7 +122,7 @@ export const navbarHeaderTemplate = `
                     </g>
                 </svg>
             </a>
-        <a href="/" class="header-logo">
+        <a href="index.html" class="header-logo">
             <span class="logo-img"></span>            
         </a>
         <div class="nav">

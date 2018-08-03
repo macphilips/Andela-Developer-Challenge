@@ -10,7 +10,7 @@ export default class NavBarView {
     const logout = this.vieewElement.querySelector('#logout');
     logout.onclick = () => {
       localStorage.clear('authenticationToken');
-      window.location.replace('/');
+      window.location.replace('index.html');
     };
   }
 
