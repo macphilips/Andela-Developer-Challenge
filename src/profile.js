@@ -1,5 +1,5 @@
-import { getValue, getFieldsAsObject,showToast } from './util';
-import { changePassword, reminder, userProfile } from './endpointUrl';
+import {getValue, getFieldsAsObject, showToast} from './util';
+import {changePassword, reminder, userProfile} from './endpointUrl';
 import NavBarView from './navbarView';
 import http from './fetchWrapper';
 
@@ -16,7 +16,7 @@ function padValue(value) {
 function inputChangeHandler(e) {
   const element = e.target;
   const unit = element.getAttribute('data-unit');
-  let { value } = element;
+  let {value} = element;
   if (unit && unit === 'hours') {
     if (value < 0) {
       value = 0;
@@ -45,7 +45,7 @@ function focusHandler(e) {
 function blurHandler(e) {
   const element = e.target;
   // element.classList.remove('hasFocus');
-  const { value } = element;
+  const {value} = element;
   element.value = padValue(value);
 }
 
@@ -125,6 +125,7 @@ function timeInputController() {
 }
 
 function bindProfile(model) {
+  console.log(model)
   const profileSection = document.getElementById('profile');
   const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
   let i;
@@ -147,13 +148,15 @@ function bindReminder(model) {
 }
 
 function bindDataToView(model) {
-  // bindProfile(model);
-  const reminderSetting = model.reminder;
-  const { time, from, to } = reminderSetting;
-  const [hours, minutes] = time.split(':');
-  bindReminder({
-    hours, minutes, from, to,
-  });
+  bindProfile(model);
+  if (model.reminder.time) {
+    const reminderSetting = model.reminder;
+    const {time, from, to} = reminderSetting;
+    const [hours, minutes] = time.split(':');
+    bindReminder({
+      hours, minutes, from, to,
+    });
+  }
 }
 
 function registerEvent() {
@@ -161,6 +164,7 @@ function registerEvent() {
   const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
   changePasswordButton.onclick = (e) => {
     e.preventDefault();
+    console.log('onclick => ', e)
     const data = getFieldsAsObject(changePasswordForm);
     if (data.password === data.matchPassword) {
       http.post(changePassword, data).then((result) => {
@@ -196,7 +200,15 @@ document.addEventListener('DOMContentLoaded', () => {
       timeInputController();
       http.get(userProfile)
         .then((data) => {
-          user = data;
+          user = data.user;
+          bindDataToView(user);
+          // registerEvent();
+        })
+        .catch((err) => {
+          showToast(err.message, 'error');
+        });
+      http.get(reminder)
+        .then((data) => {
           bindDataToView(data);
           registerEvent();
         })

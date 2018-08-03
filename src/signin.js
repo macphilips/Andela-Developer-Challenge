@@ -60,7 +60,7 @@ function createAccount(e) {
     const data = getFieldsAsObject(form);
     http.post(registrationEndpoint, data).then(() => {
       showAlert('Successful', 'success');
-      location.replace('index.html');
+      location.replace('dashboard.html');
     }, (err) => {
       const { message } = err;
       showAlert(`Registration Failed:<br>${message}`, 'error');
@@ -82,7 +82,6 @@ function signIn(e) {
     });
   }
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const signinForm = document.getElementById('signinForm');

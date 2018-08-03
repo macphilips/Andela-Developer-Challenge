@@ -47,13 +47,16 @@ export const entryTableHeadTemplate = `
 
 export const entryTableBodyRowTemplate = `
             <tr>
-                <td><label class="custom-checkbox">
-                        <input data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
+                <td class=""><label class="custom-checkbox">
+                        <input class="check-box" data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
                         <span class="check-mark"></span>
                     </label></td>
-                <td><p class="content" tc-data-model="content">This is a sample content</p></td>
-                <td tc-data-model="createdDate">date created sample</td>
-                <td tc-data-model="lastModified">last modified</td>
+                <td>
+                    <p class="title" tc-data-model="title">Sample</p>
+                    <p class="content" tc-data-model="content">This is a sample content</p>
+                </td>
+                <td class="" tc-data-model="createdDate">date created sample</td>
+                <td class=""  tc-data-model="lastModified">last modified</td>
                 <td>
                     <div>
                         <div class="dropdown">
@@ -108,6 +111,17 @@ export const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><sp
 
 export const navbarHeaderTemplate = `    
     <header class="nav-header">
+        <a class="navicon  ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="19" viewBox="0 0 23 19">
+                    <g fill="none">
+                        <g fill="#555">
+                            <rect y="16" width="23" height="3" rx="1.5"></rect>
+                            <rect width="23" height="3" rx="1.5"></rect>
+                            <rect y="8" width="23" height="3" rx="1.5"></rect>
+                        </g>
+                    </g>
+                </svg>
+            </a>
         <a href="/" class="header-logo">
             <span class="logo-img"></span>            
         </a>
@@ -127,7 +141,25 @@ export const navbarHeaderTemplate = `
                 <li>
                     <a class="btn signup" href="signup.html">Sign Up</a>
                 </li>
-            </ul>
-            
+            </ul>            
         </div>
-    </header>`;
+    </header>
+    <div class="nav-mobile">
+        <ul class="logged-in">
+            <li>
+                <a href="profile.html">Profile</a>
+            </li>
+            <li>
+                <a id="logout">Logout</a>
+            </li>
+        </ul>
+        <ul class="logged-out">
+             <li>
+                <a href="signin.html">Sign In</a>
+             </li>
+             <li>
+                <a class="btn signup" href="signup.html">Sign Up</a>
+             </li>
+        </ul>            
+    </div>
+`;

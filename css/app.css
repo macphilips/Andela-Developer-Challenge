@@ -966,6 +966,17 @@ input.modal-header-input:focus, input.modal-header-input:active {
     animation: fadein 0.5s;
 }
 
+#toast.dismiss {
+    -webkit-animation: fadeout 0.5s;
+    animation: fadeout 0.5s;
+}
+
+#toast.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+}
+
 .toast > .close-btn {
     margin-left: 15px;
     color: white;
@@ -1132,9 +1143,55 @@ input.modal-header-input:focus, input.modal-header-input:active {
     color: #555;
 }
 
+.navicon {
+    position: relative;
+    padding-right: 15px
+}
+
 .header-logo {
+    box-sizing: border-box;
     display: inline-block;
-    padding: 15px 15px 15px 0;
+    -ms-flex: 1;
+    flex: 1;
+    height: 50px
+}
+
+.header-logo span {
+    position: absolute;
+    top: 0;
+}
+
+
+.show-on-mobile{
+    display:flex;
+}
+
+@media only screen and (min-width: 600px) {
+    .navicon {
+        display: none
+    }
+
+    .header-logo {
+        width: auto;
+        height: auto;
+        min-width: 110px;
+        -webkit-box-flex: 0;
+        -ms-flex: 0;
+        flex: 0;
+        margin: 0;
+        padding: 15px 15px 15px 0;
+    }
+
+    .header-logo span {
+        position: relative;
+        margin: -3px 0 0;
+        top: auto;
+        left: auto
+    }
+
+    .show-on-mobile{
+        display:none;
+    }
 }
 
 .logo-img {
@@ -1160,6 +1217,15 @@ input.modal-header-input:focus, input.modal-header-input:active {
     list-style: none;
     display: flex;
     align-items: center
+}
+
+.nav {
+    display: none;
+}
+
+.nav > ul > li:last-child {
+    padding-right: 0;
+    margin-right: 0;
 }
 
 .nav li, .entry-summary li {
@@ -1188,10 +1254,17 @@ input.modal-header-input:focus, input.modal-header-input:active {
     border-radius: 5px;
 }
 
+
 .nav .signup:hover {
     background-color: #fff;
     color: #347ac3;
     opacity: 1;
+}
+
+@media only screen and (min-width: 600px) {
+    .nav {
+        display: flex;
+    }
 }
 
 #main {
@@ -1388,9 +1461,33 @@ input.modal-header-input:focus, input.modal-header-input:active {
     background-color: rgba(52, 122, 195, 0.51);
     border-color: rgba(52, 122, 195, 0.51);
 }
+.about .signin {
+    margin-top: 1rem;
+    font-size: 1rem;
+    padding: 0 4rem;
+}
+
+.about .signin:hover {
+    background-color: rgba(52, 122, 195, 0.51);
+    border-color: rgba(52, 122, 195, 0.51);
+}
+.about .signin {
+    background-color: #2abf06;
+    color: #fff;
+    opacity: 1;
+    border: 1px solid #2abf06;
+    border-radius: 5px;
+}
+
 
 @media only screen and (min-width: 600px) {
     .left {
         margin-left: 3rem;
     }
 }
+
+.title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
