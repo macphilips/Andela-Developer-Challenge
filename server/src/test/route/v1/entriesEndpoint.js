@@ -143,7 +143,7 @@ describe('Entries API test', () => {
     });
   });
   describe('PUT /api/v1/entries/:id Modify entry', () => {
-    it('should return a 404 error when users try to modified entry that doesn\'t exists',
+    it('should return a 404 error when users try to modify entry that doesn\'t exists',
       () => userRepository.findAll()
         .then((user) => {
           const token = createToken({id: user.id});

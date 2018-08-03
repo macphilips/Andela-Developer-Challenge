@@ -19,7 +19,6 @@ export default class EntryRowView {
     this.registerDropDownItemClick();
     this.registerOnCheckHandler();
     this.view.onclick = (e) => {
-      console.log(e);
       if (e.target.classList.contains('dropdown-toggle')
       || e.target.classList.contains('check-box')
         || e.target.classList.contains('check-mark')) {
@@ -37,7 +36,7 @@ export default class EntryRowView {
       (function () {
         const dataActionElement = dataActionElements[i];
         const dataValue = dataActionElement.getAttribute('tc-data-action');
-        console.log('dataValue => ', dataValue)
+
         if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
           dataActionElement.onclick = () => {
             self.clickAction.notify({ action: dataValue, model: self.model });

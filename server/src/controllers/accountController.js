@@ -9,7 +9,7 @@ import AuthenticationMiddleware from '../middlewares/jwtFilter';
 
 function removePasswordField(data) {
   if (!data) return null;
-  const { password, ...result } = data;
+  const { password, reminder, ...result } = data;
   result.createdDate = getTimeString(result.createdDate);
   result.lastModified = getTimeString(result.lastModified);
   return result;
@@ -22,7 +22,7 @@ export default class AccountController {
       res.status(200).send({
         user: removePasswordField(result),
         message: 'Successfully retrieved all user information',
-        status: 'Operation Successful',
+        status: 'Successful',
       });
     }).catch((err) => {
       HttpError.sendError(err, res);
@@ -33,7 +33,7 @@ export default class AccountController {
     const { email, password } = req.body;
     const message = validateEmailAndPassword(req.body);
     if (message !== null) {
-      HttpError.sendError(new HttpError(message, 400, 'Invalid Parameter(s)'), res);
+      HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
     } else {
       const promise = db.connection.users.findOneByEmail(email);
       promise
@@ -48,7 +48,7 @@ export default class AccountController {
             newUser.password = hashedPassword;
             return db.connection.users.save(newUser);
           }
-          return Promise.reject(new HttpError(`Email [${email}] already in user`, 409, 'Registration Failed'));
+          return Promise.reject(new HttpError('Email already exist', 409, 'Failed'));
         })
         .then((user) => {
           const reminder = new Reminder();
@@ -78,15 +78,15 @@ export default class AccountController {
     const { oldPassword, newPassword } = req.body;
     db.connection.users.findById(req.userId).then((user) => {
       const passwordIsValid = bcrypt.compareSync(oldPassword, user.password);
-      if (!passwordIsValid) return Promise.reject(new HttpError('Old password does not match our record', 403, 'Password Mismatch'));
+      if (!passwordIsValid) return Promise.reject(new HttpError('Incorrect password', 403, 'Failed'));
       const hashedPassword = bcrypt.hashSync(newPassword, 8);
       const result = { ...user };
       result.password = hashedPassword;
       return db.connection.users.save(result);
     })
-      .then(user => res.status(200).send({
-        status: 'Operation Successful',
-        message: `Password updated for ${user.email}`,
+      .then(() => res.status(200).send({
+        status: 'Successful',
+        message: 'Password updated',
       }))
       .catch((err) => {
         HttpError.sendError(err, res);

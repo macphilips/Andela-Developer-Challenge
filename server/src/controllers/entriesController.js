@@ -9,13 +9,13 @@ export default class EntriesController {
         if (entries.length > 0) {
           return Promise.resolve(EntriesController.convertEntries(entries));
         }
-        return Promise.reject(new HttpError('No Entries found', 404, 'Operation Failed'));
+        return Promise.reject(new HttpError('No Entries found', 404, 'Failed'));
       })
       .then((entries) => {
         res.status(200).send({
           entries,
           message: 'Successfully retrieved Users entry list',
-          status: 'Operation Successful',
+          status: 'Successful',
         });
       })
       .catch((err) => {
@@ -44,7 +44,7 @@ export default class EntriesController {
       }).then(result => res.status(201).send({
         entry: EntriesController.convertEntry(result),
         message: 'Successfully created user entry',
-        status: 'Created Entry',
+        status: 'Successful',
       }))
         .catch((err) => {
           HttpError.sendError(err, res);
@@ -60,33 +60,33 @@ export default class EntriesController {
     Promise.resolve(id)
       .then((entryID) => {
         if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError(`Invalid ID ${entryID}`, 400, 'Operation Failed'));
+          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
         }
         return db.connection.entries.findById(entryID);
       })
       .then((data) => {
         if (!data) {
-          return Promise.reject(new HttpError(`No entries found with id:${id}`, 404, 'Operation Failed'));
+          return Promise.reject(new HttpError('No entry found', 404, 'Failed'));
         }
         if (data && data.userID === userID) {
           const created = data.createdDate;
           const now = new Date();
           const within24h = parseInt((now.getTime() - created.getTime()) / 864e5, 10);
           if (now.getDate() > created.getDate() && within24h > 0) {
-            return Promise.reject(new HttpError('Cannot modified this entry anymore. '
-              + 'Entries can only be modified within the same it was created', 403, 'Operation Failed'));
+            return Promise.reject(new HttpError('Cannot modify this entry anymore. '
+              + 'Entries can only be modified within the same it was created', 403, 'Failed'));
           }
           return db.connection.entries.save({
             title, content, id, userID,
           });
         }
-        return Promise.reject(new HttpError('You do not have permission to modified this entry', 403, 'Operation Failed'));
+        return Promise.reject(new HttpError('Cannot modify this entry', 403, 'Failed'));
       })
       .then((result) => {
         res.status(200).send({
           entry: EntriesController.convertEntry(result),
           message: 'Successfully update user entry',
-          status: 'Update Entry',
+          status: 'Successful',
         });
       })
       .catch((err) => {
@@ -101,24 +101,24 @@ export default class EntriesController {
     Promise.resolve(id)
       .then((entryID) => {
         if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError(`Invalid ID ${entryID}`, 400, 'Operation Failed'));
+          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
         }
         return db.connection.entries.findById(entryID);
       })
       .then((data) => {
         if (!data) {
-          return Promise.reject(new HttpError(`No entries found with id:${id}`, 404, 'Operation Failed'));
+          return Promise.reject(new HttpError('No entries found', 404, 'Failed'));
         }
         if (data && data.userID === userID) {
           return Promise.resolve(data);
         }
-        return Promise.reject(new HttpError('This entry does not belong to you', 403, 'Operation Failed'));
+        return Promise.reject(new HttpError('Cannot retrieve entry', 403, 'Failed'));
       })
       .then((result) => {
         res.status(200).send({
           entry: EntriesController.convertEntry(result),
           message: 'Successfully retrieved entry',
-          status: 'Operation Successful',
+          status: 'Successful',
         });
       })
       .catch((err) => {
@@ -133,21 +133,21 @@ export default class EntriesController {
     Promise.resolve(id)
       .then((entryID) => {
         if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError(`Invalid ID ${entryID}`, 400, 'Operation Failed'));
+          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
         }
         return db.connection.entries.findById(entryID);
       })
       .then((data) => {
         if (!data) {
-          return Promise.reject(new HttpError(`No entries found with id:${id}`, 404, 'Operation Failed'));
+          return Promise.reject(new HttpError('No entry found', 404, 'Failed'));
         }
         if (data && data.userID === userID) {
           return db.connection.entries.remove(data.id);
         }
-        return Promise.reject(new HttpError('This entry does not belong to you', 403, 'Operation Failed'));
+        return Promise.reject(new HttpError('Cannot delete this entry', 403, 'Failed'));
       })
-      .then((data) => {
-        res.status(200).send({ data, status: 'Deleted', message: 'Successfully Deleted Entry' });
+      .then(() => {
+        res.status(200).send({ status: 'Successful', message: 'Successfully Deleted Entry' });
       })
       .catch((err) => {
         HttpError.sendError(err, res);

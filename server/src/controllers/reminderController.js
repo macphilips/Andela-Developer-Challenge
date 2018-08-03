@@ -13,13 +13,13 @@ export default class ReminderController {
             from, to, userId, time: padValue(time),
           });
         }
-        return Promise.reject(new HttpError(message, 400, 'Validation Failed'));
+        return Promise.reject(new HttpError(message, 400, 'Failed'));
       })
       .then((result) => {
         res.status(200).send({
           reminder: result,
           message: 'Successfully updated reminder settings',
-          status: 'Operation Successful',
+          status: 'Successful',
         });
       })
       .catch((error) => {
@@ -34,12 +34,12 @@ export default class ReminderController {
       if (data) {
         return Promise.resolve(data);
       }
-      return Promise.reject(new HttpError('Can\'t find settings for this user', 404, 'Operation Failed'));
+      return Promise.reject(new HttpError('Can\'t find settings for this user', 404, 'Failed'));
     }).then((result) => {
       res.status(200).send({
         reminder: result,
         message: 'Successfully retrieved reminder settings',
-        status: 'Operation Successful',
+        status: 'Successful',
       });
     }).catch(err => HttpError.sendError(err, res));
   }

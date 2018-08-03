@@ -13,7 +13,6 @@ class FetchWrapper {
     return fetch(url, fetchData)
       .then((res) => {
         const {status} = res;
-        console.log(res);
         if (status === 401) {
           localStorage.clear();
           location.replace('sign.html');
