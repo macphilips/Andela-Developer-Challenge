@@ -1,6 +1,6 @@
 import db from '../db';
 import HttpError from '../utils/httpError';
-import { padValue, validateTime } from '../utils/util';
+import { padValue, validateTime } from '../utils';
 
 export default class ReminderController {
   static updateReminder(req, res) {

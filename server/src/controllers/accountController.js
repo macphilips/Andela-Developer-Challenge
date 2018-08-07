@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
-import { getTimeString, validateEmailAndPassword } from '../utils/util';
-import db from '../db/index';
+import { getTimeString, validateEmailAndPassword } from '../utils';
+import db from '../db';
 import HttpError from '../utils/httpError';
 import Reminder from '../models/reminder';
 import { createToken } from '../middlewares/jwtProvider';

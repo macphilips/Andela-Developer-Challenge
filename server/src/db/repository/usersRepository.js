@@ -1,44 +1,29 @@
 import sql from '../sql';
 import User from '../../models/user';
-import HttpError from '../../utils/httpError';
-import { mapAndWrapDbPromise } from '../../utils/util';
+import { mapAndWrapDbPromise } from '../../utils';
+import BaseRepository from './baseRepository';
 
 /**
  * This implementation is based on examples from pg-promise repo:
  * https://github.com/vitaly-t/pg-promise-demo/tree/master/JavaScript
  *
  */
-export default class UserRepository {
+export default class UserRepository extends BaseRepository {
   constructor(db) {
-    this.db = db;
+    super(db, sql.users);
   }
 
   findById(id) {
-    return mapAndWrapDbPromise(this.db.oneOrNone('SELECT * FROM md_user WHERE id = $1', +id),
-      User.mapDBUserEntityToUser);
+    return super.findById({ id }, User.mapDBUserEntityToUser);
   }
 
   getAllUserDetailsById(id) {
-    return mapAndWrapDbPromise(this.db.oneOrNone(sql.users.findUser, { id }),
+    return mapAndWrapDbPromise(this.db.oneOrNone(this.sql.findUser, { id }),
       User.mapDBUserEntityToUser);
   }
 
   save(input) {
-    const user = { ...input };
-    const now = new Date();
-    if (!input.id) {
-      user.createdDate = now;
-      user.lastModified = now;
-      return mapAndWrapDbPromise(this.db.one(sql.users.add, { ...user }),
-        User.mapDBUserEntityToUser);
-    }
-
-    user.lastModified = now;
-    return this.findById(user.id).then((data) => {
-      const updated = { ...data, ...user };
-      return mapAndWrapDbPromise(this.db.one(sql.users.update, { ...updated }),
-        User.mapDBUserEntityToUser);
-    });
+    return super.save(input, User.mapDBUserEntityToUser);
   }
 
   findOneByEmail(email) {
@@ -49,10 +34,5 @@ export default class UserRepository {
   findAll() {
     return mapAndWrapDbPromise(this.db.any('SELECT * FROM md_user'),
       User.mapDBUserArrayToUsers);
-  }
-
-  clear() {
-    return this.db.none(sql.users.empty)
-      .catch(HttpError.wrapAndThrowError);
   }
 }

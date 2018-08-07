@@ -1,3 +1,5 @@
+import { mapArray } from '../utils';
+
 export default class Entry {
   constructor(id, title, content, created, LastModified) {
     this.userID = '';
@@ -14,11 +16,12 @@ export default class Entry {
   }
 
   static mapDBArrayEntriesToEntries(array) {
-    const entries = [];
-    array.forEach((item) => {
-      entries.push(Entry.map(item));
-    });
-    return Promise.resolve(entries);
+    // const entries = [];
+    // array.forEach((item) => {
+    //   entries.push(Entry.map(item));
+    // });
+    // return Promise.resolve(entries);
+    return mapArray(array, Entry.map);
   }
 
   static map(entity) {

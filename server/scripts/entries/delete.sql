@@ -1,0 +1,1 @@
+DELETE FROM  ${schema~}.entries WHERE id =  ${id}

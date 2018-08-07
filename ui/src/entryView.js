@@ -3,7 +3,7 @@ import { createEntryTemplate } from './templates';
 import Event from './event';
 import { entriesEndpoint, getEntryUrlByID } from './endpointUrl';
 import http from './fetchWrapper';
-import { getTimeString } from '../../server/src/utils/util';
+import { getTimeString } from '../../server/src/utils';
 
 export default class CreateEntryView {
   constructor(model, action) {
@@ -11,7 +11,6 @@ export default class CreateEntryView {
     this.viewElement.innerHTML = createEntryTemplate.trim();
     const textArea = this.viewElement.querySelector('textarea');
     this.buttonClicked = new Event(this);
-    console.log('model => ', model, 'action => ', action);
     this.model = model;
 
     const header = this.viewElement.querySelector('#modal-header-title');
@@ -86,7 +85,6 @@ export default class CreateEntryView {
       }
       this.buttonClicked.notify(res);
     }).catch((err) => {
-      console.log(err);
       const message = (update) ? 'Unable to update entry' : 'Unable to save entry';
       showToast(`${message}<br>${err.message}`, 'error');
     });
