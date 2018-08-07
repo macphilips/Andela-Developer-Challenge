@@ -13,23 +13,12 @@ function padValue(value) {
   return result;
 }
 
-function roundHours(value) {
+function roundTime(value, min, max) {
   let result = value;
-  if (result < 0) {
-    result = 0;
-  } else if (result > 23) {
-    result = 23;
-  }
-  return result;
-}
-
-
-function roundMinutes(value) {
-  let result = value;
-  if (result < 0) {
-    result = 0;
-  } else if (result > 59) {
-    result = 59;
+  if (result < min) {
+    result = min;
+  } else if (result > max) {
+    result = max;
   }
   return result;
 }
@@ -39,9 +28,9 @@ function inputChangeHandler(e) {
   const unit = element.getAttribute('data-unit');
   let { value } = element;
   if (unit && unit === 'hours') {
-    value = roundHours(value);
+    value = roundTime(value, 0, 23);
   } else if (unit && unit === 'minutes') {
-    value = roundMinutes(value);
+    value = roundTime(value, 0, 59);
   }
   element.value = parseInt(value, 10);
 }
@@ -76,10 +65,12 @@ function getFocusedElement() {
 function stepMinutesValue(direction, value) {
   let result = 0;
   const minuteStep = 15;
-  if (direction && direction === 'up') {
+  if (!direction) return result;
+
+  if (direction === 'up') {
     result = (value % minuteStep === 0)
       ? value + minuteStep : minuteStep * (parseInt(value / minuteStep, 10) + 1);
-  } else if (direction && direction === 'down') {
+  } else if (direction === 'down') {
     const round = (value === 0) ? 60 : value;
     result = (value % minuteStep === 0)
       ? value - minuteStep : minuteStep * (parseInt(round / minuteStep, 10));
