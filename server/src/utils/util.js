@@ -1,4 +1,6 @@
 import validator from 'validator';
+import HttpError from './httpError';
+import User from '../models/user';
 
 const daysOfTheWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
@@ -57,24 +59,18 @@ function isValidDayOfWeek(field) {
 }
 
 export function validateTime(reminder) {
-  if (isEmpty(reminder.time)) {
-    return '\'time\' field cannot be empty';
+  if (isEmpty(reminder.time)
+    || isEmpty(reminder.from)
+    || isEmpty(reminder.to)) {
+    return '\'time\', \'from\', or \'to\' field cannot be empty';
   }
-  if (isEmpty(reminder.from)) {
-    return '\'from\' field cannot be empty';
-  }
-  if (isEmpty(reminder.to)) {
-    return '\'to\' field cannot be empty';
-  }
+
   // regex was gotten https://stackoverflow.com/a/20123018
   if (!validator.matches(reminder.time, /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/i)) {
     return 'Invalid Time input: format HH:MM\n\r';
   }
-  if (!isValidDayOfWeek(reminder.from)) {
-    return '\'from\' field is not a valid a day of the week';
-  }
-  if (!isValidDayOfWeek(reminder.to)) {
-    return '\'to\' field is not a valid a day of the week';
+  if (!isValidDayOfWeek(reminder.from) || !isValidDayOfWeek(reminder.to)) {
+    return '\'from\' or \'to\' field is not a valid a day of the week';
   }
   return null;
 }
@@ -101,4 +97,15 @@ export function validateLoginInfo(user) {
     return 'Require Password\n\r';
   }
   return null;
+}
+
+export function mapAndWrapDbPromise(promise, mapper) {
+  return promise.then(result => mapper(result))
+    .catch(HttpError.wrapAndThrowError);
+}
+
+export function sameDayDateComparison(created) {
+  const now = new Date();
+  const within24h = parseInt((now.getTime() - created.getTime()) / 864e5, 10);
+  return now.getDate() > created.getDate() && within24h > 0;
 }

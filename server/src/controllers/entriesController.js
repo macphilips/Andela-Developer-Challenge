@@ -1,4 +1,4 @@
-import { getTimeString, validateEntry } from '../utils/util';
+import { getTimeString, sameDayDateComparison, validateEntry } from '../utils/util';
 import db from '../db';
 import HttpError from '../utils/httpError';
 
@@ -27,7 +27,7 @@ export default class EntriesController {
     const { title, content, id } = req.body;
     const message = validateEntry(req.body);
     if (message) {
-      HttpError.sendError(new HttpError(message, 400, 'Unable to Create Entry'), res);
+      HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
     } else {
       Promise.resolve(id).then((result) => {
         if (result) return Promise.reject(new HttpError('Use PUT Request to update entry', 403, 'Unknown Operation'));
@@ -55,32 +55,15 @@ export default class EntriesController {
   static updateEntry(req, res) {
     const { title, content } = req.body;
     const { id } = req.params;
-    const userID = req.userId;
+    const { userId } = req;
 
-    Promise.resolve(id)
-      .then((entryID) => {
-        if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
-        }
-        return db.connection.entries.findById(entryID);
-      })
+    EntriesController.validateIDAndGetEntry(id)
       .then((data) => {
-        if (!data) {
-          return Promise.reject(new HttpError('No entry found', 404, 'Failed'));
-        }
-        if (data && data.userID === userID) {
-          const created = data.createdDate;
-          const now = new Date();
-          const within24h = parseInt((now.getTime() - created.getTime()) / 864e5, 10);
-          if (now.getDate() > created.getDate() && within24h > 0) {
-            return Promise.reject(new HttpError('Cannot modify this entry anymore. '
-              + 'Entries can only be modified within the same it was created', 403, 'Failed'));
-          }
-          return db.connection.entries.save({
-            title, content, id, userID,
-          });
-        }
-        return Promise.reject(new HttpError('Cannot modify this entry', 403, 'Failed'));
+        const error = EntriesController.checkPermission(data, userId)
+          || EntriesController.canModify(data);
+        return (error !== null) ? error : db.connection.entries.save({
+          title, content, id, userID: userId,
+        });
       })
       .then((result) => {
         res.status(200).send({
@@ -96,23 +79,12 @@ export default class EntriesController {
 
   static getEntry(req, res) {
     const { id } = req.params;
-    const userID = req.userId;
+    const { userId } = req;
 
-    Promise.resolve(id)
-      .then((entryID) => {
-        if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
-        }
-        return db.connection.entries.findById(entryID);
-      })
+    EntriesController.validateIDAndGetEntry(id)
       .then((data) => {
-        if (!data) {
-          return Promise.reject(new HttpError('No entries found', 404, 'Failed'));
-        }
-        if (data && data.userID === userID) {
-          return Promise.resolve(data);
-        }
-        return Promise.reject(new HttpError('Cannot retrieve entry', 403, 'Failed'));
+        const error = EntriesController.checkPermission(data, userId);
+        return (error !== null) ? error : Promise.resolve(data);
       })
       .then((result) => {
         res.status(200).send({
@@ -128,23 +100,12 @@ export default class EntriesController {
 
   static deleteEntry(req, res) {
     const { id } = req.params;
-    const userID = req.userId;
+    const { userId } = req;
 
-    Promise.resolve(id)
-      .then((entryID) => {
-        if (Number.isNaN(Number(entryID))) {
-          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
-        }
-        return db.connection.entries.findById(entryID);
-      })
+    EntriesController.validateIDAndGetEntry(id)
       .then((data) => {
-        if (!data) {
-          return Promise.reject(new HttpError('No entry found', 404, 'Failed'));
-        }
-        if (data && data.userID === userID) {
-          return db.connection.entries.remove(data.id);
-        }
-        return Promise.reject(new HttpError('Cannot delete this entry', 403, 'Failed'));
+        const error = EntriesController.checkPermission(data, userId);
+        return (error !== null) ? error : db.connection.entries.remove(data.id);
       })
       .then(() => {
         res.status(200).send({ status: 'Successful', message: 'Successfully Deleted Entry' });
@@ -152,6 +113,34 @@ export default class EntriesController {
       .catch((err) => {
         HttpError.sendError(err, res);
       });
+  }
+
+  static canModify(data) {
+    if (sameDayDateComparison(data.createdDate)) {
+      return Promise.reject(new HttpError('Cannot modify this entry anymore. '
+        + 'Entries can only be modified within the same day it was created', 403, 'Failed'));
+    }
+    return null;
+  }
+
+  static validateIDAndGetEntry(id) {
+    return Promise.resolve(id)
+      .then((entryID) => {
+        if (Number.isNaN(Number(entryID))) {
+          return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
+        }
+        return db.connection.entries.findById(entryID);
+      });
+  }
+
+  static checkPermission(data, userID) {
+    if (!data) {
+      return Promise.reject(new HttpError('No entries found', 404, 'Failed'));
+    }
+    if (data && data.userID !== userID) {
+      return Promise.reject(new HttpError('Cannot access entry', 403, 'Failed'));
+    }
+    return null;
   }
 
   static convertEntry(entry) {

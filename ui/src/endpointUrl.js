@@ -1,4 +1,4 @@
-export const baseUrl = 'https://shielded-waters-94006.herokuapp.com';
+export const baseUrl = 'http://localhost:3000'; // 'https://shielded-waters-94006.herokuapp.com';
 export const apiVersion = '/api/v1';
 export const apiUrl = baseUrl + apiVersion;
 export const userProfile = `${apiUrl}/account/me`;

@@ -1,9 +1,6 @@
-import {padValue} from "../../server/src/utils/util";
-
 export function htmlToElement(html) {
   const template = document.createElement('template');
-  html = html.trim(); // Never return a text node of whitespace as the result
-  template.innerHTML = html;
+  template.innerHTML = html.trim();
   return template.content.firstChild;
 }
 
@@ -15,7 +12,7 @@ export function getValue(context, contextStr) {
     if (typeof (currentContext) === 'object' && item in currentContext) {
       currentContext = currentContext[item];
     } else {
-      return;
+      return null;
     }
   }
   return currentContext;
@@ -23,9 +20,8 @@ export function getValue(context, contextStr) {
 
 export function bindPropertiesToElement(dataModelElements, model) {
   if (!model) return;
-  let i;
-  for (i = 0; i < dataModelElements.length; i += 1) {
-    const element = dataModelElements[i];
+  const handler = (target) => {
+    const element = target;
     const data = element.getAttribute('tc-data-model');
     const value = getValue(model, data);
     if (element.nodeName === 'INPUT') {
@@ -33,6 +29,10 @@ export function bindPropertiesToElement(dataModelElements, model) {
     } else {
       element.innerHTML = value;
     }
+  };
+
+  for (let i = 0; i < dataModelElements.length; i += 1) {
+    handler(dataModelElements[i]);
   }
 }
 
@@ -41,17 +41,16 @@ export function requiresSubstitution(regEx, str) {
 }
 
 export function getSubstituteValue(context) {
-  return function (regexMatch, placeholder) {
-    return getValue(context, placeholder);
-  };
+  return (regexMatch, placeholder) => getValue(context, placeholder);
 }
 
 export function formatter(input, context) {
   const regEx = /{{([^{]*?)}}/g;
+  let result = input;
   if (requiresSubstitution(regEx, input)) {
-    input = input.replace(regEx, getSubstituteValue(context));
+    result = input.replace(regEx, getSubstituteValue(context));
   }
-  return input;
+  return result;
 }
 
 let timer = null;
@@ -90,12 +89,6 @@ export function getFieldsAsObject(form) {
     data[name] = inputElement.options[inputElement.selectedIndex].value;
   });
   return data;
-}
-
-export function getTimeString(date) {
-  if (!date) return null;
-  const months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${padValue(date.getHours())}:${padValue(date.getMinutes())}`;
 }
 
 let toastTimer = null;

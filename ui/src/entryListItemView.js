@@ -18,13 +18,23 @@ export default class EntryRowView {
     });
     this.registerDropDownItemClick();
     this.registerOnCheckHandler();
+    this.handleViewClick();
+  }
+
+  handleViewClick() {
     this.view.onclick = (e) => {
-      if (e.target.classList.contains('dropdown-toggle')
-      || e.target.classList.contains('check-box')
-        || e.target.classList.contains('check-mark')) {
+      const targetElement = e.target;
+      if (targetElement.classList.contains('dropdown-toggle')
+        || targetElement.classList.contains('check-box')
+        || targetElement.classList.contains('check-mark')) {
         return null;
       }
-      return self.clickAction.notify({ action: 'view', model: self.model });
+      const attrData = targetElement.getAttribute('tc-data-action');
+      if (attrData) {
+        return null;
+      }
+      console.log('onclick item click => ', e);
+      return this.clickAction.notify({ action: 'view', model: this.model });
     };
   }
 
