@@ -1,5 +1,6 @@
 import sql from '../sql';
 import Reminder from '../../models/reminder';
+import { mapAndWrapDbPromise } from '../../utils/util';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -12,23 +13,22 @@ export default class ReminderRepository {
   }
 
   findByUserId(id) {
-    return this.db.oneOrNone('SELECT * FROM reminder WHERE user_id = $1', +id)
-      .then(Reminder.mapDBReminderEntityToReminder);
+    return mapAndWrapDbPromise(this.db.oneOrNone('SELECT * FROM reminder WHERE user_id = $1', +id),
+      Reminder.mapDBReminderEntityToReminder);
   }
 
   save(input) {
     const reminder = { ...input };
-    // reminder.from = input.from || '';
-    // reminder.to = input.to || '';
+
     return this.findByUserId(reminder.userId)
       .then((data) => {
         if (data) {
           const update = { ...data, ...reminder };
-          return this.db.one(sql.reminder.update, { ...update })
-            .then(Reminder.mapDBReminderEntityToReminder);
+          return mapAndWrapDbPromise(this.db.one(sql.reminder.update, { ...update }),
+            Reminder.mapDBReminderEntityToReminder);
         }
-        return this.db.one(sql.reminder.add, { ...reminder })
-          .then(Reminder.mapDBReminderEntityToReminder);
+        return mapAndWrapDbPromise(this.db.one(sql.reminder.add, { ...reminder }),
+          Reminder.mapDBReminderEntityToReminder);
       });
   }
 }

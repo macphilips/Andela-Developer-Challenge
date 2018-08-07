@@ -9,6 +9,11 @@ import { entriesEndpoint } from './endpointUrl';
 import http from './fetchWrapper';
 
 export class EntryTableView {
+  static contains(arr, element) {
+    const items = arr.filter(item => item.id === element.id);
+    return items.length > 0;
+  }
+
   constructor(adapter) {
     this.adapter = adapter;
     this.vieww = document.createElement('div');
@@ -17,9 +22,8 @@ export class EntryTableView {
     this.selectAll = new Event(this);
     this.addButtonClicked = new Event(this);
     this.deleteButtonClicked = new Event(this);
-    const self = this;
     this.adapter.registerChangeObserver(() => {
-      self.render();
+      this.render();
     });
   }
 
@@ -34,73 +38,62 @@ export class EntryTableView {
     }
   }
 
-  contains(arr, element) {
-    const items = arr.filter(item => item.id === element.id);
-    return items.length > 0;
-  }
-
   getTableHeader() {
-    let self = this,
-      adapter = this.adapter;
+    const { adapter } = this;
     const tableHead = document.createElement('thead');
     tableHead.innerHTML = entryTableHeadTemplate;
     const addButton = tableHead.querySelector('#addEntry');
     const deleteButton = tableHead.querySelector('#deleteEntry');
     const selectAllInput = tableHead.querySelector('[tc-data-action="check"]');
     addButton.onclick = () => {
-      self.addButtonClicked.notify({});
+      this.addButtonClicked.notify({});
     };
     deleteButton.onclick = () => {
-      self.deleteButtonClicked.notify({ items: self.itemToRemove });
+      this.deleteButtonClicked.notify({ items: this.itemToRemove });
     };
     selectAllInput.onchange = () => {
       const { checked } = selectAllInput;
-      self.itemToRemove = [];
+      this.itemToRemove = [];
       if (checked) {
         for (let i = 0; i < adapter.getSize(); i += 1) {
-          self.itemToRemove.push(adapter.getViewItem(i).getModel());
+          this.itemToRemove.push(adapter.getViewItem(i).getModel());
         }
       }
-      self.showDeleteButton();
-      self.selectAll.notify({ checkedState: checked });
+      this.showDeleteButton();
+      this.selectAll.notify({ checkedState: checked });
     };
     return tableHead;
   }
 
   getTableBody() {
-    const self = this;
-    const adapter = this.adapter;
+    const { adapter } = this;
     const tableBody = document.createElement('tbody');
     if (adapter.getSize() > 0) {
       for (let i = 0; i < adapter.getSize(); i += 1) {
-        (function () {
-          const viewItem = adapter.getViewItem(i);
-          self.attachCheckStateChangeListener(viewItem);
-          tableBody.appendChild(viewItem.getViewElement());
-        }());
+        const viewItem = adapter.getViewItem(i);
+        this.attachCheckStateChangeListener(viewItem);
+        tableBody.appendChild(viewItem.getViewElement());
       }
     } else {
-      // todo
       tableBody.appendChild(htmlToElement(emptyListTemple.trim()));
     }
     return tableBody;
   }
 
   attachCheckStateChangeListener(viewItem) {
-    const self = this;
-    const adapter = this.adapter;
+    const { adapter } = this;
     viewItem.checkBoxChange.attach((conext, args) => {
       if (args.checked) {
-        if (!self.contains(self.itemToRemove, args)) {
-          self.itemToRemove.push(viewItem.getModel());
+        if (!EntryTableView.contains(this.itemToRemove, args)) {
+          this.itemToRemove.push(viewItem.getModel());
         }
       } else {
-        self.itemToRemove = self.itemToRemove.filter(item => item.id !== args.id);
+        this.itemToRemove = this.itemToRemove.filter(item => item.id !== args.id);
       }
 
-      const selectAllInput = self.vieww.querySelector('thead [tc-data-action="check"]');
-      selectAllInput.checked = self.itemToRemove.length === adapter.getSize();
-      self.showDeleteButton();
+      const selectAllInput = this.vieww.querySelector('thead [tc-data-action="check"]');
+      selectAllInput.checked = this.itemToRemove.length === adapter.getSize();
+      this.showDeleteButton();
     });
   }
 
@@ -148,28 +141,20 @@ export class EntryTableViewAdapter {
 
   addItem(itemModel) {
     const entryRowView = new EntryRowView(itemModel);
-    const self = this;
     entryRowView.clickAction.attach((source, arg) => {
       if (arg && arg.action === 'delete') {
         const confirmDeleteView = new ConfirmDeleteEntryView();
         confirmDeleteView.actionButtonClicked.attach((context, args) => {
           if (args.action === 'ok') {
             // todo delete itemModel from server and render list
-            self.removeItem(itemModel);
+            this.removeItem(itemModel);
           }
         });
-        self.modalService.open(confirmDeleteView);
+        this.modalService.open(confirmDeleteView);
       } else {
-        const entryView = new CreateEntryView(arg.model, 'edit');
-        entryView.buttonClicked.attach((context, result) => {
-          const entry = result.entry;
-          arg.model.title = entry.title;
-          arg.model.content = entry.content;
-          arg.model.lastModified = entry.lastModified;
-          arg.model.createdDate = entry.createdDate;
-          self.modalService.getModalView().dismiss();
-        });
-        self.modalService.open(entryView);
+        const entryView = new CreateEntryView(arg.model, arg.action);
+        entryView.buttonClicked.attach(this.registerButtonLister(arg));
+        this.modalService.open(entryView);
       }
     });
     this.data.push(itemModel);
@@ -178,10 +163,7 @@ export class EntryTableViewAdapter {
   }
 
   addItems(items) {
-    for (let i = 0; i < items.length; i += 1) {
-      this.addItem(items[i]);
-    }
-    this.notifyChangeObservers();
+    this.updateList(items, item => this.addItem(item));
   }
 
   removeItem(model) {
@@ -191,8 +173,13 @@ export class EntryTableViewAdapter {
   }
 
   removeItems(items) {
+    this.updateList(items, item => this.removeItem(item));
+  }
+
+  updateList(items, action) {
+    if (action === null) return;
     for (let i = 0; i < items.length; i += 1) {
-      this.removeItem(items[i]);
+      action(items[i]);
     }
     this.notifyChangeObservers();
   }
@@ -211,12 +198,23 @@ export class EntryTableViewAdapter {
       viewItem.selectCheckBoxState(state);
     }
   }
+
+  registerButtonLister(arg) {
+    return (context, result) => {
+      const { entry } = result;
+      const { model } = arg;
+      model.title = entry.title;
+      model.content = entry.content;
+      model.lastModified = entry.lastModified;
+      model.createdDate = entry.createdDate;
+      this.modalService.getModalView().dismiss();
+    };
+  }
 }
 
 export class EntryTableController {
   constructor(entryTableView, modalService) {
     this.entryTableView = entryTableView;
-    // const self = this;
     entryTableView.addButtonClicked.attach(() => {
       const component = new CreateEntryView();
       // component.modalView = modalService.getModalView();
@@ -243,7 +241,6 @@ export class EntryTableController {
 
   initialize() {
     const adapter = this.entryTableView.getAdapter();
-    const self = this;
     http.get(entriesEndpoint).then((result) => {
       const { entries } = result;
       const models = [];
@@ -251,9 +248,9 @@ export class EntryTableController {
         models.push(new RowItemModel(entries[i]));
       }
       adapter.addItems(models);
-      self.onReady.notify();
+      this.onReady.notify();
     }).catch(() => {
-      self.onReady.notify();
+      this.onReady.notify();
     });
     this.entryTableView.render();
   }

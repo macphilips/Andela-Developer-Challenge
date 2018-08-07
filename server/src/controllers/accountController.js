@@ -30,42 +30,21 @@ export default class AccountController {
   }
 
   static registerUser(req, res) {
-    const { email, password } = req.body;
+    const { email } = req.body;
     const message = validateEmailAndPassword(req.body);
+
     if (message !== null) {
       HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
     } else {
-      const promise = db.connection.users.findOneByEmail(email);
-      promise
-        .then((data) => {
-          if (!data) {
-            const hashedPassword = bcrypt.hashSync(password, 8);
-            const newUser = new User();
-            newUser.firstName = req.body.firstName;
-            newUser.lastName = req.body.lastName;
-            newUser.email = email;
-            newUser.login = email;
-            newUser.password = hashedPassword;
-            return db.connection.users.save(newUser);
-          }
-          return Promise.reject(new HttpError('Email already exist', 409, 'Failed'));
-        })
-        .then((user) => {
-          const reminder = new Reminder();
-          reminder.userId = user.id;
-          reminder.daily = true;
-          reminder.from = 'SUNDAY';
-          reminder.to = 'SATURDAY';
-          reminder.time = '09:00';
-          return db.connection.reminder.save(reminder);
-        })
+      db.connection.users.findOneByEmail(email)
+        .then(data => ((!data) ? AccountController.saveUser(req.body) : Promise.reject(new HttpError('Email already exist', 409, 'Failed'))))
+        .then(user => db.connection.reminder
+          .save(AccountController.getDefaultReminderSettings(user)))
         .then(reminder => db.connection.users.findById(reminder.userId))
         .then((result) => {
-          const payload = {
-            id: result.id,
-          };
+          const { id } = result;
           const user = removePasswordField(result);
-          res.set(AuthenticationMiddleware.AUTHORIZATION_HEADER, createToken(payload))
+          res.set(AuthenticationMiddleware.AUTHORIZATION_HEADER, createToken({ id }))
             .status(201).send({ user, status: 'successful', message: 'Created User Account successfully' });
         })
         .catch((err) => {
@@ -91,5 +70,25 @@ export default class AccountController {
       .catch((err) => {
         HttpError.sendError(err, res);
       });
+  }
+
+
+  static saveUser(body) {
+    const newUser = new User();
+    newUser.firstName = body.firstName;
+    newUser.lastName = body.lastName;
+    newUser.email = body.email;
+    newUser.password = bcrypt.hashSync(body.password, 8);
+    return db.connection.users.save(newUser);
+  }
+
+  static getDefaultReminderSettings(user) {
+    const reminder = new Reminder();
+    reminder.userId = user.id;
+    reminder.daily = true;
+    reminder.from = 'SUNDAY';
+    reminder.to = 'SATURDAY';
+    reminder.time = '09:00';
+    return reminder;
   }
 }

@@ -399,6 +399,7 @@ describe('Entries API test', () => {
     });
     it('it should return 400 error when entry with invalid id is provided', () => {
       let users;
+      const url = '/api/v1/entries/5yh90ik';
       return userRepository.findAll()
         .then((result) => {
           users = result;
@@ -406,19 +407,34 @@ describe('Entries API test', () => {
         })
         .then(() => {
           const user1Token = createToken({id: users[0].id});
-          return chai.request(app)
-            .get('/api/v1/entries/5yh90ik')
-            .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, user1Token)
-            .then((res) => {
-              res.should.have.status(400);
-              res.body.should.be.a('object');
-              res.body.should.have.property('message');
-              res.body.should.have.property('status');
-            });
+          return validateIDTest(chai.request(app)
+            .get(url), user1Token);
+        })
+        .then(() => {
+          const user1Token = createToken({id: users[0].id});
+          return validateIDTest(chai.request(app)
+            .put(url), user1Token);
+        })
+        .then(() => {
+          const user1Token = createToken({id: users[0].id});
+          return validateIDTest(chai.request(app)
+            .delete(url), user1Token);
         });
       // .catch((err) => {
       //   throw err;
       // });
     });
   });
+
 });
+
+function validateIDTest(promise, token) {
+  return promise
+    .set(AuthenticationMiddleware.AUTHORIZATION_HEADER, token)
+    .then((res) => {
+      res.should.have.status(400);
+      res.body.should.be.a('object');
+      res.body.should.have.property('message');
+      res.body.should.have.property('status');
+    });
+}

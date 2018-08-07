@@ -1,7 +1,7 @@
 import sql from '../sql';
 import Entry from '../../models/entry';
 import HttpError from '../../utils/httpError';
-
+import { mapAndWrapDbPromise } from '../../utils/util';
 
 export default class EntryRepository {
   constructor(db) {
@@ -9,9 +9,8 @@ export default class EntryRepository {
   }
 
   findById(id) {
-    return this.db.oneOrNone('SELECT * FROM entries WHERE id = $1', +id)
-      .then(result => (Entry.mapDBEntriesEntityToEntries(result)))
-      .catch(HttpError.wrapAndThrowError);
+    return mapAndWrapDbPromise(this.db.oneOrNone('SELECT * FROM entries WHERE id = $1', +id),
+      Entry.mapDBEntriesEntityToEntries);
   }
 
   save(input) {
@@ -27,16 +26,14 @@ export default class EntryRepository {
     entry.lastModified = now;
     return this.findById(entry.id).then((data) => {
       const newEntry = { ...data, ...entry };
-      return this.db.one(sql.entries.update, { ...newEntry })
-        .then(result => (Entry.mapDBEntriesEntityToEntries(result)))
-        .catch(HttpError.wrapAndThrowError);
+      return mapAndWrapDbPromise(this.db.one(sql.entries.update, { ...newEntry }),
+        Entry.mapDBEntriesEntityToEntries);
     });
   }
 
   findAllByCreator(userId) {
-    return this.db.any('SELECT * FROM entries WHERE user_id = $1', +userId)
-      .then(result => (Entry.mapDBArrayEntriesToEntries(result)))
-      .catch(HttpError.wrapAndThrowError);
+    return mapAndWrapDbPromise(this.db.any('SELECT * FROM entries WHERE user_id = $1', +userId),
+      Entry.mapDBArrayEntriesToEntries);
   }
 
   remove(id) {
