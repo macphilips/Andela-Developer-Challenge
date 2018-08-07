@@ -33,7 +33,6 @@ export default class EntryRowView {
       if (attrData) {
         return null;
       }
-      console.log('onclick item click => ', e);
       return this.clickAction.notify({ action: 'view', model: this.model });
     };
   }

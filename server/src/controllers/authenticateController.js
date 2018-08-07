@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { createToken } from '../middlewares/jwtProvider';
-import db from '../db/index';
-import { validateLoginInfo } from '../utils/util';
+import db from '../db';
+import { validateLoginInfo } from '../utils';
 
 export default class AuthenticateController {
   static authenticate(req, res) {

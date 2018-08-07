@@ -1,6 +1,5 @@
 import validator from 'validator';
 import HttpError from './httpError';
-import User from '../models/user';
 
 const daysOfTheWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
@@ -108,4 +107,12 @@ export function sameDayDateComparison(created) {
   const now = new Date();
   const within24h = parseInt((now.getTime() - created.getTime()) / 864e5, 10);
   return now.getDate() > created.getDate() && within24h > 0;
+}
+
+export function mapArray(array, mapper) {
+  const entity = [];
+  array.forEach((item) => {
+    entity.push(mapper(item));
+  });
+  return Promise.resolve(entity);
 }

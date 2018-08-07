@@ -33,7 +33,9 @@ export default {
   users: {
     add: sql(`${root}scripts/users/add.sql`),
     create: sql(`${root}scripts/users/create.sql`),
+    delete: sql(`${root}scripts/users/delete.sql`),
     empty: sql(`${root}scripts/users/empty.sql`),
+    find: sql(`${root}scripts/users/find.sql`),
     update: sql(`${root}scripts/users/update.sql`),
     findUser: sql(`${root}scripts/users/findUser.sql`),
   },
@@ -41,6 +43,7 @@ export default {
     add: sql(`${root}scripts/entries/add.sql`),
     create: sql(`${root}scripts/entries/create.sql`),
     constraints: sql(`${root}scripts/entries/constraints.sql`),
+    delete: sql(`${root}scripts/entries/delete.sql`),
     find: sql(`${root}scripts/entries/find.sql`),
     empty: sql(`${root}scripts/entries/empty.sql`),
     update: sql(`${root}scripts/entries/update.sql`),
@@ -49,6 +52,7 @@ export default {
     add: sql(`${root}scripts/reminder/add.sql`),
     create: sql(`${root}scripts/reminder/create.sql`),
     empty: sql(`${root}scripts/reminder/empty.sql`),
+    find: sql(`${root}scripts/reminder/find.sql`),
     update: sql(`${root}scripts/reminder/update.sql`),
   },
 };

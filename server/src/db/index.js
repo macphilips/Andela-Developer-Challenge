@@ -20,7 +20,8 @@ class Database {
   constructor() {
     const initOptions = {
       promiseLib: promise,
-      extend(obj) {
+      extend(db) {
+        const obj = db;
         obj.users = new UserRepository(obj);
         obj.entries = new EntriesRepository(obj);
         obj.reminder = new ReminderRepository(obj);
@@ -37,5 +38,4 @@ class Database {
 }
 
 const db = new Database();
-// db.init();
 export default db;

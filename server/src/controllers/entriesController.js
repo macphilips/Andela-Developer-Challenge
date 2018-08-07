@@ -1,4 +1,4 @@
-import { getTimeString, sameDayDateComparison, validateEntry } from '../utils/util';
+import { getTimeString, sameDayDateComparison, validateEntry } from '../utils';
 import db from '../db';
 import HttpError from '../utils/httpError';
 
@@ -57,14 +57,10 @@ export default class EntriesController {
     const { id } = req.params;
     const { userId } = req;
 
-    EntriesController.validateIDAndGetEntry(id)
-      .then((data) => {
-        const error = EntriesController.checkPermission(data, userId)
-          || EntriesController.canModify(data);
-        return (error !== null) ? error : db.connection.entries.save({
-          title, content, id, userID: userId,
-        });
-      })
+    EntriesController.validateIDAndGetEntry(id, userId, true)
+      .then(() => db.connection.entries.save({
+        title, content, id, userID: userId,
+      }))
       .then((result) => {
         res.status(200).send({
           entry: EntriesController.convertEntry(result),
@@ -81,11 +77,11 @@ export default class EntriesController {
     const { id } = req.params;
     const { userId } = req;
 
-    EntriesController.validateIDAndGetEntry(id)
-      .then((data) => {
-        const error = EntriesController.checkPermission(data, userId);
-        return (error !== null) ? error : Promise.resolve(data);
-      })
+    EntriesController.validateIDAndGetEntry(id, userId)
+    // .then((data) => {
+    //   const error = EntriesController.checkPermission(data, userId);
+    //   return (error !== null) ? error : Promise.resolve(data);
+    // })
       .then((result) => {
         res.status(200).send({
           entry: EntriesController.convertEntry(result),
@@ -102,11 +98,8 @@ export default class EntriesController {
     const { id } = req.params;
     const { userId } = req;
 
-    EntriesController.validateIDAndGetEntry(id)
-      .then((data) => {
-        const error = EntriesController.checkPermission(data, userId);
-        return (error !== null) ? error : db.connection.entries.remove(data.id);
-      })
+    EntriesController.validateIDAndGetEntry(id, userId)
+      .then(data => db.connection.entries.remove(data.id))
       .then(() => {
         res.status(200).send({ status: 'Successful', message: 'Successfully Deleted Entry' });
       })
@@ -123,13 +116,18 @@ export default class EntriesController {
     return null;
   }
 
-  static validateIDAndGetEntry(id) {
+  static validateIDAndGetEntry(id, userId, update) {
     return Promise.resolve(id)
       .then((entryID) => {
         if (Number.isNaN(Number(entryID))) {
           return Promise.reject(new HttpError('Invalid ID', 400, 'Failed'));
         }
         return db.connection.entries.findById(entryID);
+      })
+      .then((data) => {
+        let error = EntriesController.checkPermission(data, userId);
+        if (update) error = error || EntriesController.canModify(data);
+        return (error !== null) ? error : Promise.resolve(data);
       });
   }
 

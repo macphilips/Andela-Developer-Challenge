@@ -1,3 +1,4 @@
+import { mapArray } from '../utils';
 import Reminder from './reminder';
 
 export default class User {
@@ -16,11 +17,7 @@ export default class User {
   }
 
   static mapDBUserArrayToUsers(array) {
-    const users = [];
-    array.forEach((item) => {
-      users.push(User.map(item));
-    });
-    return Promise.resolve(users);
+    return mapArray(array, User.map);
   }
 
   static map(entity) {
