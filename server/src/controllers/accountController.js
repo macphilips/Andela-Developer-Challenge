@@ -37,7 +37,7 @@ export default class AccountController {
       HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
     } else {
       db.connection.users.findOneByEmail(email)
-        .then(data => ((!data) ? AccountController.saveUser() : Promise.reject(new HttpError('Email already exist', 409, 'Failed'))))
+        .then(data => ((!data) ? AccountController.saveUser(req.body) : Promise.reject(new HttpError('Email already exist', 409, 'Failed'))))
         .then(user => db.connection.reminder
           .save(AccountController.getDefaultReminderSettings(user)))
         .then(reminder => db.connection.users.findById(reminder.userId))
