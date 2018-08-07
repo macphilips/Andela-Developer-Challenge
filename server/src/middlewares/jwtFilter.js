@@ -1,4 +1,4 @@
-import Builder from '../utils/antMatcher';
+import Builder from 'ant-pattern-matcher';
 import HttpError from '../utils/httpError';
 import { validateToken } from './jwtProvider';
 

@@ -16,6 +16,6 @@ export function validateToken(token) {
     if (err instanceof TokenExpiredError) {
       message = 'Access Token has Expired.';
     }
-    return Promise.reject(new HttpError(message, 401));
+    return Promise.reject(new HttpError(message, 401, 'Failed'));
   }
 }
