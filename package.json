@@ -11,8 +11,11 @@
     "build": "npm run clean && npm run build-babel && npm run webpack:build",
     "start": "npm run build && node --require dotenv/config ./server/bin/server",
     "test": "cross-env NODE_ENV=test nyc mocha \"server/src/test/**/*.js\"",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "webpack:build": "webpack"
+    "webpack:build": "webpack",
+    "coverage": "npm run coveralls:coverage && npm run sonar:coverage",
+    "coveralls:coverage": "nyc report --reporter=text-lcov | coveralls",
+    "sonar:coverage": "cross-var sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_CLOUD_TOKEN",
+    "echo:test": "cross-var echo $SONAR_CLOUD_TOKEN"
   },
   "dependencies": {
     "ant-pattern-matcher": "0.0.4",
@@ -44,6 +47,7 @@
     "babel-register": "^6.26.0",
     "coveralls": "^3.0.2",
     "cross-env": "^5.2.0",
+    "cross-var": "^1.1.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.13.0",
