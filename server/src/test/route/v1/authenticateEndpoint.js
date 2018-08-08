@@ -43,7 +43,7 @@ describe('Authentication API test', () => {
           res.body.should.not.have.property('token');
         })));
 
-    it('it should authenticate user a return a valid token', () => chai.request(app)
+    it('it should authenticate user and return a valid token', () => chai.request(app)
       .post('/api/v1/auth/login')
       .send({ password: 'topsecret', email: 'example@local.host' })
       .then((res) => {
@@ -54,6 +54,22 @@ describe('Authentication API test', () => {
         res.body.should.have.property('message');
       }));
 
+    const url = '/api/v1/auth/login';
+    it('it should not authenticate a user when provided with invalid email or password ',
+      () => chai.request(app)
+        .post(url)
+        .send({ password: '            ', email: 'example@local.host' })
+        .then((res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('object');
+        })
+        .then(() => chai.request(app)
+          .post(url)
+          .send({ password: 'topsecret', email: '              ' })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          })));
   });
 
   describe('POST /api/v1/auth/signup create new user', () => {
@@ -87,6 +103,63 @@ describe('Authentication API test', () => {
             res.should.have.status(400);
             res.body.should.be.a('object');
           }))
+
+
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: '     ', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: 'John', lastName: '      ', email: 'topsecret@local.host', password: 'tyukbt678',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: 'Jo@$%#2hn', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: 'John', lastName: 'D(.)oe', email: 'topsecret@local.host', password: 'tyukbt678',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: 'John', lastName: 'Doe', email: '           ', password: 'tyukbt678',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+        .then(() => chai.request(app)
+          .post(url)
+          .send({
+            firstName: 'John', lastName: 'Doe', email: 'topsecret@local.host', password: '                  ',
+          })
+          .then((res) => {
+            res.should.have.status(400);
+            res.body.should.be.a('object');
+          }))
+
         .then(() => chai.request(app)
           .post(url)
           .send({
@@ -95,7 +168,7 @@ describe('Authentication API test', () => {
           .then((res) => {
             res.should.have.status(400);
             res.body.should.be.a('object');
-          })));
+          }))).timeout(5000);
 
     it('it should POST a user ', () => {
       const user = {

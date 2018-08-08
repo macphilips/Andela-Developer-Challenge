@@ -17,8 +17,13 @@ export default class UserRepository extends BaseRepository {
     return super.findById({ id }, User.mapDBUserEntityToUser);
   }
 
-  getAllUserDetailsById(id) {
-    return mapAndWrapDbPromise(this.db.oneOrNone(this.sql.findUser, { id }),
+  // getAllUserDetailsById(id) {
+  //   return mapAndWrapDbPromise(this.db.oneOrNone(this.sql.findUser, { id }),
+  //     User.mapDBUserEntityToUser);
+  // }
+
+  getUserDetailsWithEntryCountById(id) {
+    return mapAndWrapDbPromise(this.db.oneOrNone(this.sql.findUserWithEntriesCount, { id }),
       User.mapDBUserEntityToUser);
   }
 

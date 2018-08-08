@@ -30,7 +30,8 @@ export default class User {
     user.email = entity.email;
     user.createdDate = entity.created_date;
     user.lastModified = entity.last_modified_date;
-    user.reminder = Reminder.map(entity);
+    if (entity.md_time) user.reminder = Reminder.map(entity);
+    if (entity.num_entries) user.entry = { count: parseInt(entity.num_entries, 10) };
 
     return user;
   }

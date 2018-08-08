@@ -41,14 +41,3 @@ app.use(`${apiVersion}/entries`, entriesRouter);
 app.use((req, res) => {
   res.status(404).send({ status: 404, error: 'Not found' });
 });
-
-// catch errors
-app.use((err, req, res) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  const code = err.status || 500;
-  res.status(code);
-  res.send({ code, message: err.message });
-});
