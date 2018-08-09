@@ -82,3 +82,6 @@ docker
 .env.test
 swagger-ui
 ui/dist
+sonar-project.properties
+.scannerwork
+analyse.js

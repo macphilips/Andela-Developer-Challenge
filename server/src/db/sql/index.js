@@ -28,31 +28,32 @@ function sql(file) {
 
 const root = (process.env.NODE_ENV === 'test') ? '../../../' : '../../../../';
 
+function getBasicQuery(dir) {
+  const folder = `${root}scripts/${dir}/`;
+  return {
+    add: sql(`${folder}add.sql`),
+    create: sql(`${folder}create.sql`),
+    delete: sql(`${folder}delete.sql`),
+    empty: sql(`${folder}empty.sql`),
+    find: sql(`${folder}find.sql`),
+    update: sql(`${folder}update.sql`),
+  };
+}
+
+const users = getBasicQuery('users');
+const entries = getBasicQuery('entries');
+const reminder = getBasicQuery('reminder');
+
 export default {
+  reminder,
   myDiary: sql(`${root}scripts/my_diary.sql`),
   users: {
-    add: sql(`${root}scripts/users/add.sql`),
-    create: sql(`${root}scripts/users/create.sql`),
-    delete: sql(`${root}scripts/users/delete.sql`),
-    empty: sql(`${root}scripts/users/empty.sql`),
-    find: sql(`${root}scripts/users/find.sql`),
-    update: sql(`${root}scripts/users/update.sql`),
+    ...users,
     findUser: sql(`${root}scripts/users/findUser.sql`),
+    findUserWithEntriesCount: sql(`${root}scripts/users/findUserWithEntriesCount.sql`),
   },
   entries: {
-    add: sql(`${root}scripts/entries/add.sql`),
-    create: sql(`${root}scripts/entries/create.sql`),
+    ...entries,
     constraints: sql(`${root}scripts/entries/constraints.sql`),
-    delete: sql(`${root}scripts/entries/delete.sql`),
-    find: sql(`${root}scripts/entries/find.sql`),
-    empty: sql(`${root}scripts/entries/empty.sql`),
-    update: sql(`${root}scripts/entries/update.sql`),
-  },
-  reminder: {
-    add: sql(`${root}scripts/reminder/add.sql`),
-    create: sql(`${root}scripts/reminder/create.sql`),
-    empty: sql(`${root}scripts/reminder/empty.sql`),
-    find: sql(`${root}scripts/reminder/find.sql`),
-    update: sql(`${root}scripts/reminder/update.sql`),
   },
 };

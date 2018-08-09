@@ -30,8 +30,17 @@ export default class User {
     user.email = entity.email;
     user.createdDate = entity.created_date;
     user.lastModified = entity.last_modified_date;
-    user.reminder = Reminder.map(entity);
-
     return user;
+  }
+
+
+  static mapDBUserEntityToUserDetail(entity) {
+    if (!entity) return null;
+    const data = {};
+    data.user = User.map(entity);
+    if (entity.md_time) data.reminder = Reminder.map(entity);
+    if (entity.num_entries) data.entry = { count: parseInt(entity.num_entries, 10) };
+
+    return data;
   }
 }

@@ -1,0 +1,1 @@
+DELETE FROM  ${schema~}.reminder WHERE id =  ${id}

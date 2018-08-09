@@ -16,11 +16,6 @@ export default class Entry {
   }
 
   static mapDBArrayEntriesToEntries(array) {
-    // const entries = [];
-    // array.forEach((item) => {
-    //   entries.push(Entry.map(item));
-    // });
-    // return Promise.resolve(entries);
     return mapArray(array, Entry.map);
   }
 

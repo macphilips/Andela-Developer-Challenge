@@ -57,20 +57,25 @@ export default class EntriesController {
     const { id } = req.params;
     const { userId } = req;
 
-    EntriesController.validateIDAndGetEntry(id, userId, true)
-      .then(() => db.connection.entries.save({
-        title, content, id, userID: userId,
-      }))
-      .then((result) => {
-        res.status(200).send({
-          entry: EntriesController.convertEntry(result),
-          message: 'Successfully update user entry',
-          status: 'Successful',
+    const message = validateEntry(req.body);
+    if (message) {
+      HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
+    } else {
+      EntriesController.validateIDAndGetEntry(id, userId, true)
+        .then(() => db.connection.entries.save({
+          title, content, id, userID: userId,
+        }))
+        .then((result) => {
+          res.status(200).send({
+            entry: EntriesController.convertEntry(result),
+            message: 'Successfully update user entry',
+            status: 'Successful',
+          });
+        })
+        .catch((err) => {
+          HttpError.sendError(err, res);
         });
-      })
-      .catch((err) => {
-        HttpError.sendError(err, res);
-      });
+    }
   }
 
   static getEntry(req, res) {
@@ -78,10 +83,6 @@ export default class EntriesController {
     const { userId } = req;
 
     EntriesController.validateIDAndGetEntry(id, userId)
-    // .then((data) => {
-    //   const error = EntriesController.checkPermission(data, userId);
-    //   return (error !== null) ? error : Promise.resolve(data);
-    // })
       .then((result) => {
         res.status(200).send({
           entry: EntriesController.convertEntry(result),
@@ -135,7 +136,7 @@ export default class EntriesController {
     if (!data) {
       return Promise.reject(new HttpError('No entries found', 404, 'Failed'));
     }
-    if (data && data.userID !== userID) {
+    if (data.userID !== userID) {
       return Promise.reject(new HttpError('Cannot access entry', 403, 'Failed'));
     }
     return null;

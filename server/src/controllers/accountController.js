@@ -9,7 +9,7 @@ import AuthenticationMiddleware from '../middlewares/jwtFilter';
 
 function removePasswordField(data) {
   if (!data) return null;
-  const { password, reminder, ...result } = data;
+  const { password, ...result } = data;
   result.createdDate = getTimeString(result.createdDate);
   result.lastModified = getTimeString(result.lastModified);
   return result;
@@ -29,15 +29,30 @@ export default class AccountController {
     });
   }
 
+  static getCurrentLoggedInUserFullDetails(req, res) {
+    const user = db.connection.users.getUserDetailsWithEntryCountById(req.userId);
+    user.then((result) => {
+      const data = result;
+      data.user = removePasswordField(data.user);
+      res.status(200).send({
+        data,
+        message: 'Successfully retrieved all user information',
+        status: 'Successful',
+      });
+    }).catch((err) => {
+      HttpError.sendError(err, res);
+    });
+  }
+
   static registerUser(req, res) {
     const { email } = req.body;
     const message = validateEmailAndPassword(req.body);
-
     if (message !== null) {
       HttpError.sendError(new HttpError(message, 400, 'Failed'), res);
     } else {
       db.connection.users.findOneByEmail(email)
-        .then(data => ((!data) ? AccountController.saveUser(req.body) : Promise.reject(new HttpError('Email already exist', 409, 'Failed'))))
+        .then(data => ((!data) ? AccountController.saveUser(req.body)
+          : Promise.reject(new HttpError('Email already exist', 409, 'Failed'))))
         .then(user => db.connection.reminder
           .save(AccountController.getDefaultReminderSettings(user)))
         .then(reminder => db.connection.users.findById(reminder.userId))
