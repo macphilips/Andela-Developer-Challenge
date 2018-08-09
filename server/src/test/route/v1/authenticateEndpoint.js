@@ -6,11 +6,33 @@ import { app } from '../../../app';
 import db from '../../../db';
 
 import AuthenticationMiddleware from '../../../middlewares/jwtFilter';
+import { assertDefaultResponseBody, assertUserBody } from './accountRoute';
 
 chai.use(chaiHttp);
 const should = chai.should();
 
 const userRepository = db.connection.users;
+
+function validateSignUp(body) {
+  const url = '/api/v1/auth/signup';
+  return chai.request(app)
+    .post(url)
+    .send(body)
+    .then((res) => {
+      assertDefaultResponseBody(res, 400);
+    });
+}
+
+function loginValidation(body, status) {
+  const loginUrl = '/api/v1/auth/login';
+  return chai.request(app)
+    .post(loginUrl)
+    .send(body)
+    .then((res) => {
+      assertDefaultResponseBody(res, status);
+      res.body.should.not.have.property('token');
+    });
+}
 
 describe('Authentication API test', () => {
   before(() => db.init());
@@ -22,153 +44,58 @@ describe('Authentication API test', () => {
         firstName: 'John',
         lastName: 'Doe',
       })));
-    it('should fail authentication when invalid email or password is provided', () => chai.request(app)
-      .post('/api/v1/auth/login')
-      .send({ password: 'fakepass', email: 'example@local.host' })
-      .then((res) => {
-        res.should.have.status(401);
-        res.body.should.be.a('object');
-        res.body.should.not.have.property('token');
-        res.body.should.have.property('status');
-        res.body.should.have.property('message');
-      })
-      .then(() => chai.request(app)
-        .post('/api/v1/auth/login')
-        .send({ password: 'topsecret', email: 'fakemail@local' })
-        .then((res) => {
-          res.should.have.status(401);
-          res.body.should.be.a('object');
-          res.body.should.have.property('status');
-          res.body.should.have.property('message');
-          res.body.should.not.have.property('token');
-        })));
+
+    const loginUrl = '/api/v1/auth/login';
+    it('should fail authentication when invalid email or password is provided',
+      () => loginValidation({ password: 'fakepass', email: 'example@local.host' }, 401)
+        .then(() => loginValidation({ password: 'topsecret', email: 'fakemail@local' }, 401)));
+    it('it should not authenticate a user when provided with invalid email or password ',
+      () => loginValidation({ password: '            ', email: 'example@local.host' }, 400)
+        .then(() => loginValidation({ password: 'topsecret', email: '              ' }, 400)));
 
     it('it should authenticate user and return a valid token', () => chai.request(app)
-      .post('/api/v1/auth/login')
+      .post(loginUrl)
       .send({ password: 'topsecret', email: 'example@local.host' })
       .then((res) => {
-        res.should.have.status(200);
-        res.body.should.be.a('object');
+        assertDefaultResponseBody(res);
         res.body.should.have.property('token');
-        res.body.should.have.property('status');
-        res.body.should.have.property('message');
       }));
-
-    const url = '/api/v1/auth/login';
-    it('it should not authenticate a user when provided with invalid email or password ',
-      () => chai.request(app)
-        .post(url)
-        .send({ password: '            ', email: 'example@local.host' })
-        .then((res) => {
-          res.should.have.status(400);
-          res.body.should.be.a('object');
-        })
-        .then(() => chai.request(app)
-          .post(url)
-          .send({ password: 'topsecret', email: '              ' })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          })));
   });
 
   describe('POST /api/v1/auth/signup create new user', () => {
     beforeEach(() => userRepository.clear());
     const url = '/api/v1/auth/signup';
     it('it should not POST a user when provided with invalid email or password ',
-      () => chai.request(app)
-        .post(url)
-        .send({
-          firstName: 'John', lastName: 'Doe', password: '1234', email: '',
-        })
-        .then((res) => {
-          res.should.have.status(400);
-          res.body.should.be.a('object');
-        })
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'Doe', password: 'topsecret',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'Doe', email: 'topsecret@local.host',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-
-
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: '     ', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: '      ', email: 'topsecret@local.host', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'Jo@$%#2hn', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'D(.)oe', email: 'topsecret@local.host', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'Doe', email: '           ', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'Doe', email: 'topsecret@local.host', password: '                  ',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))
-
-        .then(() => chai.request(app)
-          .post(url)
-          .send({
-            firstName: 'John', lastName: 'Doe', email: 'invalid-mail', password: 'tyukbt678',
-          })
-          .then((res) => {
-            res.should.have.status(400);
-            res.body.should.be.a('object');
-          }))).timeout(5000);
+      () => validateSignUp({
+        firstName: 'John', lastName: 'Doe', password: '1234', email: '',
+      })
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'Doe', password: 'topsecret',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'Doe', email: 'topsecret@local.host',
+        }))
+        .then(() => validateSignUp({
+          firstName: '     ', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: '      ', email: 'topsecret@local.host', password: 'tyukbt678',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'Jo@$%#2hn', lastName: 'Doe', email: 'topsecret@local.host', password: 'tyukbt678',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'D(.)oe', email: 'topsecret@local.host', password: 'tyukbt678',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'Doe', email: '           ', password: 'tyukbt678',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'Doe', email: 'topsecret@local.host', password: '                  ',
+        }))
+        .then(() => validateSignUp({
+          firstName: 'John', lastName: 'Doe', email: 'invalid-mail', password: 'tyukbt678',
+        }))).timeout(5000);
 
     it('it should POST a user ', () => {
       const user = {
@@ -178,22 +105,10 @@ describe('Authentication API test', () => {
         .post('/api/v1/auth/signup')
         .send(user)
         .then((res) => {
-          res.should.have.status(201);
+          assertDefaultResponseBody(res, 201);
           res.headers.should.have.property(AuthenticationMiddleware.AUTHORIZATION_HEADER);
-          res.body.should.be.a('object');
-          res.body.should.have.property('message');
-          res.body.should.have.property('status');
-          res.body.should.have.property('user');
-
-          res.body.user.should.have.property('id');
-          res.body.user.should.have.property('firstName').eql(user.firstName);
-          res.body.user.should.have.property('lastName').eql(user.lastName);
-          res.body.user.should.have.property('email').eql(user.email);
-          res.body.user.should.not.have.property('password');
+          assertUserBody(res.body, user);
         });
-      // .catch((err) => {
-      //   throw err;
-      // });
     });
     it('it should not POST a user when a user with given email already exists',
       () => userRepository.save({
@@ -203,10 +118,7 @@ describe('Authentication API test', () => {
           .post(url)
           .send(user)
           .then((res) => {
-            res.should.have.status(409);
-            res.body.should.be.a('object');
-            res.body.should.have.property('status');
-            res.body.should.have.property('message');
+            assertDefaultResponseBody(res, 409);
           })));
   });
 });

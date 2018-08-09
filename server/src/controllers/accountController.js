@@ -32,8 +32,10 @@ export default class AccountController {
   static getCurrentLoggedInUserFullDetails(req, res) {
     const user = db.connection.users.getUserDetailsWithEntryCountById(req.userId);
     user.then((result) => {
+      const data = result;
+      data.user = removePasswordField(data.user);
       res.status(200).send({
-        user: removePasswordField(result),
+        data,
         message: 'Successfully retrieved all user information',
         status: 'Successful',
       });

@@ -14,8 +14,7 @@
     "webpack:build": "webpack",
     "coverage": "npm run coveralls:coverage && npm run sonar:coverage",
     "coveralls:coverage": "nyc report --reporter=text-lcov | coveralls",
-    "sonar:coverage": "cross-var sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_CLOUD_TOKEN",
-    "echo:test": "cross-var echo $SONAR_CLOUD_TOKEN"
+    "sonar:coverage": "cross-var sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_CLOUD_TOKEN"
   },
   "dependencies": {
     "ant-pattern-matcher": "0.0.4",
