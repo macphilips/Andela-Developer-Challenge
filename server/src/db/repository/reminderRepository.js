@@ -1,6 +1,7 @@
 import sql from '../sql';
 import Reminder from '../../models/reminder';
 import BaseRepository from './baseRepository';
+import { mapAndWrapDbPromise } from '../../utils';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -12,8 +13,13 @@ export default class ReminderRepository extends BaseRepository {
     super(db, sql.reminder);
   }
 
+  findById(id) {
+    return super.findById({ id }, Reminder.mapDBReminderEntityToReminder);
+  }
+
   findByUserId(userId) {
-    return super.findById({ userId }, Reminder.mapDBReminderEntityToReminder);
+    return mapAndWrapDbPromise(this.db.oneOrNone('SELECT * FROM reminder WHERE user_id = $1', userId),
+      Reminder.mapDBReminderEntityToReminder);
   }
 
   save(input) {
