@@ -15,7 +15,7 @@ class FetchWrapper {
         const { status } = res;
         if (status === 401) {
           localStorage.clear();
-          location.replace('sign.html');
+          location.replace('signin.html');
         }
         if (status < 400 || status >= 600) {
           const token = res.headers.get('X-Access-Token');
@@ -37,6 +37,10 @@ class FetchWrapper {
 
   put(url, data) {
     return this.request('PUT', url, data);
+  }
+
+  delete(url, data) {
+    return this.request('DELETE', url, data);
   }
 }
 

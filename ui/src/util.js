@@ -18,21 +18,23 @@ export function getValue(context, contextStr) {
   return currentContext;
 }
 
+function setElementValue(target, model) {
+  const element = target;
+  const data = element.getAttribute('tc-data-model');
+  const value = getValue(model, data);
+  if (element.nodeName === 'INPUT'
+    || element.nodeName === 'SELECT'
+    || element.nodeName === 'TEXTAREA') {
+    element.value = value || '';
+  } else {
+    element.innerHTML = value;
+  }
+}
+
 export function bindPropertiesToElement(dataModelElements, model) {
   if (!model) return;
-  const handler = (target) => {
-    const element = target;
-    const data = element.getAttribute('tc-data-model');
-    const value = getValue(model, data);
-    if (element.nodeName === 'INPUT') {
-      element.value = value || '';
-    } else {
-      element.innerHTML = value;
-    }
-  };
-
   for (let i = 0; i < dataModelElements.length; i += 1) {
-    handler(dataModelElements[i]);
+    setElementValue(dataModelElements[i], model);
   }
 }
 
@@ -116,4 +118,9 @@ export function showToast(msg, type) {
 
   closeElement.onclick = closeHandler;
   toastTimer = setTimeout(closeHandler, 8000);
+}
+
+
+export function trimDate(date) {
+  return date.substring(0, date.length - 5).trim();
 }

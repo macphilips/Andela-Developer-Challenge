@@ -45,6 +45,14 @@ export const entryTableHeadTemplate = `
                 <td></td>
             </tr>`;
 
+export const entryListHeader = `
+        <div class="header">
+            <span class="title">Your Diary Entries</span>
+            <div class="action-btn-container">
+                <a id="addEntry" title="Add Entry" class="action-btn add m-0" role="button"></a>
+            </div>
+        </div>`;
+
 export const entryTableBodyRowTemplate = `
             <tr>
                 <td class=""><label class="custom-checkbox">
@@ -71,31 +79,64 @@ export const entryTableBodyRowTemplate = `
                 </td>
             </tr>`;
 
+export const entryListItemTemplate = `
+            <div class="entry">
+                <p class="title" tc-data-model="title"></p>
+                <div class="content line-clamp">
+                    <p tc-data-model="content"></p>
+                </div>
+                <div class="footer">
+                    <div>
+                        <span>Last Modified:</span>&nbsp;
+                        <span tc-data-model="lastModified"></span>
+                    </div>
+                    <div class="dropdown">
+                        <a data-index="" tc-data-action="dropdown-toggle" href="javascript:void(0);"
+                           class="dropdown-toggle-icon"></a>
+                        <ul class="dropdown-menu">
+                            <li><a tc-data-action="view" href="javascript:void(0);">View</a></li>
+                            <li><a tc-data-action="edit" href="javascript:void(0);">Edit</a></li>
+                            <li><a tc-data-action="delete" href="javascript:void(0);">Delete</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>`;
+
 export const createEntryTemplate = `
     <form>    
         <div class="modal-header">
             <div id="modal-header-title">
-                <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
-                <span tc-data-model="title" class="modal-header-title">
-                        Create New Diary Entry
-                </span>
                 <p tc-data-model="lastModified"></p>
+                <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
+                <!--<span tc-data-model="title" class="modal-header-title"></span>-->
             </div>
             <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
         </div> 
         <div id="alert" class="alert error">
             <p class="alert-msg"></p>
             <a href="javascript:void(0);" class="close-btn">&times;</a>
-        </div>        
-                
+        </div>                
         <div class="modal-body"> 
-        <div class="create-entry"><textarea placeholder="Dear Diary, " id="entry" rows="17" autofocus></textarea></div>                
+        <div class="create-entry"><textarea tc-datamodel="content" placeholder="Dear Diary, " id="entry" rows="17" autofocus></textarea></div>                
         </div> 
         <div class="modal-footer">
             <button tc-data-action="save" type="button" class="btn-save">Save</button>
             <button tc-data-dismiss="cancel" type="button" class="btn-cancel">Cancel</button>
         </div>
     </form>
+`;
+export const viewEntryTemplate = `
+           
+        <div class="modal-header">
+            <div id="modal-header-title">
+                <p tc-data-model="lastModified"></p>
+                <span tc-data-model="title" class="modal-header-title"></span>
+            </div>
+            <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
+        </div>               
+        <div class="modal-body"> 
+            <div class="content-container"></div>                
+        </div>  
 `;
 export const loadingTemplate = `
     <div class="loading-container loading-bg">
@@ -107,59 +148,72 @@ export const loadingTemplate = `
         </div>
     </div>`;
 
-export const emptyListTemple = '<tr><td  colspan="5"><div class="empty-list"><span>No Entry</span></div></td></tr>';
+export const emptyListTemple = '<div class="empty-list"><span>No Entry</span></div>';
 
-export const navbarHeaderTemplate = `    
-    <header class="nav-header">
-        <a class="navicon  ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="19" viewBox="0 0 23 19">
-                    <g fill="none">
-                        <g fill="#555">
-                            <rect y="16" width="23" height="3" rx="1.5"></rect>
-                            <rect width="23" height="3" rx="1.5"></rect>
-                            <rect y="8" width="23" height="3" rx="1.5"></rect>
-                        </g>
-                    </g>
-                </svg>
-            </a>
-        <a href="index.html" class="header-logo">
-            <span class="logo-img"></span>            
-        </a>
+export const navbarHeaderTemplate = ` 
+    <div>
+      <div class="nav-container">
+          <header class="nav-header">
+          <a class="navicon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="19" viewBox="0 0 23 19">
+                      <g fill="none">
+                          <g fill="#555">
+                              <rect y="16" width="23" height="3" rx="1.5"></rect>
+                              <rect width="23" height="3" rx="1.5"></rect>
+                              <rect y="8" width="23" height="3" rx="1.5"></rect>
+                          </g>
+                      </g>
+                  </svg>
+          </a>
+          <a href="index.html" class="header-logo">
+              <span class="logo-img"></span>            
+          </a>
+          <div class="nav">
+              <ul class="logged-in">
+                  <li>
+                      <a href="dashboard.html">Dashboard</a>
+                  </li>
+                  <li>
+                      <a href="profile.html">Profile</a>
+                  </li>
+                  <li>
+                      <a class="logout-js">Logout</a>
+                  </li>
+              </ul>
+              <ul class="logged-out">
+                  <li>
+                      <a href="signin.html">Sign In</a>
+                  </li>
+                  <li>
+                      <a class="btn signup" href="signup.html">Sign Up</a>
+                  </li>
+              </ul>            
+          </div>
+      </header>     
+      </div>
+      <div class="side-nav">
         <div class="nav">
+            <span tc-data-dismiss="side-nav"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
             <ul class="logged-in">
+                <li>
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
                 <li>
                     <a href="profile.html">Profile</a>
                 </li>
                 <li>
-                    <a id="logout">Logout</a>
+                    <a class="logout-js">Logout</a>
                 </li>
             </ul>
-            <ul class="logged-out">
+            <ul class="logged-out" style="display: none;">
                 <li>
                     <a href="signin.html">Sign In</a>
                 </li>
                 <li>
-                    <a class="btn signup" href="signup.html">Sign Up</a>
+                    <a href="signup.html">Sign Up</a>
                 </li>
-            </ul>            
+            </ul>
         </div>
-    </header>
-    <div class="nav-mobile">
-        <ul class="logged-in">
-            <li>
-                <a href="profile.html">Profile</a>
-            </li>
-            <li>
-                <a id="logout">Logout</a>
-            </li>
-        </ul>
-        <ul class="logged-out">
-             <li>
-                <a href="signin.html">Sign In</a>
-             </li>
-             <li>
-                <a class="btn signup" href="signup.html">Sign Up</a>
-             </li>
-        </ul>            
+    </div>
     </div>
 `;

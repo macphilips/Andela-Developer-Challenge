@@ -1,5 +1,7 @@
-import { getValue, getFieldsAsObject, showToast } from './util';
-import { changePassword, reminder, userProfile } from './endpointUrl';
+import {
+  bindPropertiesToElement, getFieldsAsObject, showToast, trimDate,
+} from './util';
+import { changePassword, reminderUrl, userProfile } from './endpointUrl';
 import NavBarView from './navbarView';
 import http from './fetchWrapper';
 
@@ -159,30 +161,33 @@ function timeInputController() {
   }
 }
 
-function bind(elements, model) {
-  for (let i = 0; i < elements.length; i += 1) {
-    const element = elements[i];
-    const data = element.getAttribute('tc-data-model');
-    element.value = getValue(model, data);
-  }
-}
-
 function bindProfile(model) {
+  if (!model) return null;
   const profileSection = document.getElementById('profile');
   const profileDataModelElements = profileSection.querySelectorAll('[tc-data-model]');
-  bind(profileDataModelElements, model);
+  bindPropertiesToElement(profileDataModelElements, model);
   return profileDataModelElements;
 }
 
+function bindEntriesSummary(model) {
+  if (!model) return null;
+  const data = model;
+  data.lastModified = trimDate(data.lastModified);
+  const entrySummary = document.getElementById('entrySummary');
+  const entrySummaryDataModelElements = entrySummary.querySelectorAll('[tc-data-model]');
+  bindPropertiesToElement(entrySummaryDataModelElements, model);
+  return entrySummaryDataModelElements;
+}
+
 function bindReminder(model) {
-  if (model.reminder.time) {
-    const reminderSetting = model.reminder;
-    const { time, from, to } = reminderSetting;
+  if (model.time) {
+    // const reminderSetting = model;
+    const { time, from, to } = model;
     const [hours, minutes] = time.split(':');
 
     const reminderSection = document.getElementById('reminder');
     const reminderDataModelElements = reminderSection.querySelectorAll('[tc-data-model]');
-    bind(reminderDataModelElements, {
+    bindPropertiesToElement(reminderDataModelElements, {
       hours, minutes, from, to,
     });
   }
@@ -200,7 +205,7 @@ function updatePasswordHandler(e) {
   e.preventDefault();
   const changePasswordForm = document.getElementById('changePassword');
   const data = getFieldsAsObject(changePasswordForm);
-  if (data.password === data.matchPassword) {
+  if (data.newPassword === data.matchPassword) {
     consumeAPIResult(http.post(changePassword, data));
   } else {
     showToast('Password doesn\'t match', 'error');
@@ -212,7 +217,7 @@ function updateReminderHandler(e) {
   const reminderForm = document.getElementById('reminderForm');
   const data = getFieldsAsObject(reminderForm);
   data.time = `${data.hours}:${data.minutes}`;
-  consumeAPIResult(http.put(reminder, data));
+  consumeAPIResult(http.put(reminderUrl, data));
 }
 
 function registerEvent() {
@@ -228,22 +233,15 @@ function registerEvent() {
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = new NavBarView();
   if (typeof (Storage) !== 'undefined') {
-    // Code for localStorage/sessionStorage.
     if (localStorage.authenticationToken) {
       navbar.render();
       timeInputController();
       http.get(userProfile)
-        .then((data) => {
-          const { user } = data;
+        .then((result) => {
+          const { user, reminder, entry } = result.data;
           bindProfile(user);
-          // registerEvent();
-        })
-        .catch((err) => {
-          showToast(err.message, 'error');
-        });
-      http.get(reminder)
-        .then((data) => {
-          bindReminder(data);
+          bindReminder(reminder);
+          bindEntriesSummary(entry);
           registerEvent();
         })
         .catch((err) => {
