@@ -1,4 +1,6 @@
-import { bindPropertiesToElement, showToast, trimDate } from './util';
+import {
+  bindPropertiesToElement, htmlToElement, showToast, trimDate,
+} from './util';
 import { createEntryTemplate, viewEntryTemplate } from './templates';
 import Event from './event';
 import { entriesEndpoint, getEntryUrlByID } from './endpointUrl';
@@ -9,13 +11,9 @@ import { getTimeString } from '../../server/src/utils';
 export default class CreateEntryView {
   constructor(model, action) {
     this.mode = action || 'create';
-    this.viewElement = document.createElement('div');
-    this.viewElement.innerHTML = (this.mode === 'view') ? viewEntryTemplate.trim() : createEntryTemplate.trim();
+    this.viewElement = (this.mode === 'view') ? htmlToElement(viewEntryTemplate.trim()) : htmlToElement(createEntryTemplate.trim());
     this.buttonClicked = new Event(this);
     this.model = model;
-    // const header = this.viewElement.querySelector('#modal-header-title');
-    // const titleInput = header.querySelector('input');
-    // const titleSpan = header.querySelector('span');
     this.prepareView();
     this.buttonClickHandler();
   }
@@ -71,7 +69,6 @@ export default class CreateEntryView {
 
   buttonClickHandler() {
     const okButton = this.viewElement.querySelector('[tc-data-action="save"]');
-    // const self = this;
     if (okButton) {
       okButton.onclick = () => {
         const content = this.viewElement.querySelector('textarea').value;

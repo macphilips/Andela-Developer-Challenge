@@ -16,74 +16,75 @@ export const deleteDialogTemple = `
             <button tc-data-action="ok" name="ok" class="btn-ok">OK</button>
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
-export const entryTableHeadTemplate = `
-            <tr class="header-filter">
-                <td colspan="3">
-                    <span class="title">Diary Entries</span>
-                </td>
-                <td></td>
-                <td>
-                    <div class="action-btn-container">                
-                        <a id="deleteEntry" title="Delete Entries" class="action-btn delete m-0 hide" role="button"
-                          aria-label="Add"></a>
-                        <a id="addEntry" title="Add Entry" class="action-btn add m-0" role="button"
-                          aria-label="Add"></a>
-                    </div>
-                </td>
 
-            </tr>
-            <tr>
-                <td>
-                    <label class="custom-checkbox">
-                        <input tc-data-action="check" type="checkbox">
-                        <span class="check-mark"></span>
-                    </label>
-                </td>
-                <td class="content-width">Content</td>
-                <td>Date</td>
-                <td>Last Modified</td>
-                <td></td>
-            </tr>`;
+// export const entryTableHeadTemplate = `
+//             <tr class="header-filter">
+//                 <td colspan="3">
+//                     <span class="title">Diary Entries</span>
+//                 </td>
+//                 <td></td>
+//                 <td>
+//                     <div class="action-btn-container">
+//                         <a id="deleteEntry" title="Delete Entries" class="action-btn delete m-0 hide" role="button"
+//                           aria-label="Add"></a>
+//                         <a id="addEntry" title="Add Entry" class="action-btn add m-0" role="button"
+//                           aria-label="Add"></a>
+//                     </div>
+//                 </td>
+//
+//             </tr>
+//             <tr>
+//                 <td>
+//                     <label class="custom-checkbox">
+//                         <input tc-data-action="check" type="checkbox">
+//                         <span class="check-mark"></span>
+//                     </label>
+//                 </td>
+//                 <td class="content-width">Content</td>
+//                 <td>Date</td>
+//                 <td>Last Modified</td>
+//                 <td></td>
+//             </tr>`;
 
 export const entryListHeader = `
         <div class="header">
             <span class="title">Your Diary Entries</span>
-            <div class="action-btn-container">
-                <a id="addEntry" title="Add Entry" class="action-btn add m-0" role="button"></a>
+            <div class="add-entry">
+                <a id="addEntry" title="Add Entry" class="btn create" role="button">Add Diary Entry</a>
             </div>
         </div>`;
 
-export const entryTableBodyRowTemplate = `
-            <tr>
-                <td class=""><label class="custom-checkbox">
-                        <input class="check-box" data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
-                        <span class="check-mark"></span>
-                    </label></td>
-                <td>
-                    <p class="title" tc-data-model="title">Sample</p>
-                    <p class="content" tc-data-model="content">This is a sample content</p>
-                </td>
-                <td class="" tc-data-model="createdDate">date created sample</td>
-                <td class=""  tc-data-model="lastModified">last modified</td>
-                <td>
-                    <div>
-                        <div class="dropdown">
-                            <a data-index=""  tc-data-action="dropdown-toggle" class="dropdown-toggle"></a>
-                            <ul class="dropdown-menu">
-                                <li><a tc-data-action="view" href="javascript:void(0);">View</a></li>
-                                <li><a tc-data-action="edit" href="javascript:void(0);">Edit</a></li>
-                                <li><a tc-data-action="delete" href="javascript:void(0);">Delete</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </td>
-            </tr>`;
+// export const entryTableBodyRowTemplate = `
+//             <tr>
+//                 <td class=""><label class="custom-checkbox">
+//                         <input class="check-box" data-index="" tc-data-id="{{id}}" tc-data-action="check" type="checkbox">
+//                         <span class="check-mark"></span>
+//                     </label></td>
+//                 <td>
+//                     <p class="title" tc-data-model="title">Sample</p>
+//                     <p class="content" tc-data-model="content">This is a sample content</p>
+//                 </td>
+//                 <td class="" tc-data-model="createdDate">date created sample</td>
+//                 <td class=""  tc-data-model="lastModified">last modified</td>
+//                 <td>
+//                     <div>
+//                         <div class="dropdown">
+//                             <a data-index=""  tc-data-action="dropdown-toggle" class="dropdown-toggle"></a>
+//                             <ul class="dropdown-menu">
+//                                 <li><a tc-data-action="view" href="javascript:void(0);">View</a></li>
+//                                 <li><a tc-data-action="edit" href="javascript:void(0);">Edit</a></li>
+//                                 <li><a tc-data-action="delete" href="javascript:void(0);">Delete</a></li>
+//                             </ul>
+//                         </div>
+//                     </div>
+//                 </td>
+//             </tr>`;
 
 export const entryListItemTemplate = `
             <div class="entry">
                 <p class="title" tc-data-model="title"></p>
                 <div class="content line-clamp">
-                    <p tc-data-model="content"></p>
+                    <p class="block-with-text" tc-data-model="content"></p>
                 </div>
                 <div class="footer">
                     <div>
@@ -91,42 +92,44 @@ export const entryListItemTemplate = `
                         <span tc-data-model="lastModified"></span>
                     </div>
                     <div class="dropdown">
-                        <a data-index="" tc-data-action="dropdown-toggle" href="javascript:void(0);"
+                        <a data-index="" tc-data-action="dropdown-toggle"
                            class="dropdown-toggle-icon"></a>
                         <ul class="dropdown-menu">
-                            <li><a tc-data-action="view" href="javascript:void(0);">View</a></li>
-                            <li><a tc-data-action="edit" href="javascript:void(0);">Edit</a></li>
-                            <li><a tc-data-action="delete" href="javascript:void(0);">Delete</a></li>
+                            <li><a tc-data-action="view">View</a></li>
+                            <li><a tc-data-action="edit">Edit</a></li>
+                            <li><a tc-data-action="delete">Delete</a></li>
                         </ul>
                     </div>
                 </div>
             </div>`;
 
-export const createEntryTemplate = `
-    <form>    
-        <div class="modal-header">
-            <div id="modal-header-title">
-                <p tc-data-model="lastModified"></p>
-                <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
-                <!--<span tc-data-model="title" class="modal-header-title"></span>-->
-            </div>
-            <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
-        </div> 
-        <div id="alert" class="alert error">
-            <p class="alert-msg"></p>
-            <a href="javascript:void(0);" class="close-btn">&times;</a>
-        </div>                
-        <div class="modal-body"> 
-        <div class="create-entry"><textarea tc-datamodel="content" placeholder="Dear Diary, " id="entry" rows="17" autofocus></textarea></div>                
-        </div> 
-        <div class="modal-footer">
-            <button tc-data-action="save" type="button" class="btn-save">Save</button>
-            <button tc-data-dismiss="cancel" type="button" class="btn-cancel">Cancel</button>
-        </div>
-    </form>
+export const createEntryTemplate = `       
+    <div class="flexbox-parent scrollable">
+      <div id="alert" class="alert error">
+          <p class="alert-msg"></p>
+          <a href="javascript:void(0);" class="close-btn">&times;</a>
+      </div>
+      <div class="modal-header">
+          <div id="modal-header-title">
+              <p tc-data-model="lastModified"></p>
+              <input tc-data-model="title" placeholder="Title" class="form-input modal-header-input">
+              <!--<span tc-data-model="title" class="modal-header-title"></span>-->
+          </div>
+          <span tc-data-dismiss="modal" class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
+      </div>
+      <div class="grow-body modal-body">
+          <div class="create-entry">
+              <textarea placeholder="Dear Diary, " id="entry" autofocus></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button tc-data-action="save" type="button" class="btn-save">Save</button>
+        <button tc-data-dismiss="cancel" type="button" class="btn-cancel">Cancel</button>
+    </div>
+    </div>
 `;
 export const viewEntryTemplate = `
-           
+     <div  class="scrollable">                
         <div class="modal-header">
             <div id="modal-header-title">
                 <p tc-data-model="lastModified"></p>
@@ -134,9 +137,10 @@ export const viewEntryTemplate = `
             </div>
             <span tc-data-dismiss="modal"  class="action-btn close" role="button" tabindex="0" aria-label="Close"></span>
         </div>               
-        <div class="modal-body"> 
+        <div class="grow-body modal-body"> 
             <div class="content-container"></div>                
         </div>  
+     </div>
 `;
 export const loadingTemplate = `
     <div class="loading-container loading-bg">
@@ -217,3 +221,9 @@ export const navbarHeaderTemplate = `
     </div>
     </div>
 `;
+export const floatingButton = `
+    <a title="Add Entry" role="button">
+      <div class="floating-button show-on-mobile">
+          <span title="Add Entry" role="button" class="plus">&plus;</span>
+      </div>
+    </a>`;

@@ -5,8 +5,6 @@ import { changePassword, reminderUrl, userProfile } from './endpointUrl';
 import NavBarView from './navbarView';
 import http from './fetchWrapper';
 
-// let user;
-
 function padValue(value) {
   let result = Number(value);
   if (result >= 0 && result < 10) {
@@ -48,7 +46,6 @@ function focusHandler(e) {
 
 function blurHandler(e) {
   const element = e.target;
-  // element.classList.remove('hasFocus');
   const { value } = element;
   element.value = padValue(value);
 }
@@ -126,10 +123,8 @@ function hoursControlHandler(targetElement) {
 }
 
 function controlHandler(e) {
-  // const hoursInput = document.getElementById('hours');
   const element = e.target;
   const focused = getFocusedElement();
-  // const value = Number(focused.value);
   if (focused.id === 'minutes') {
     minutesControlHandler(element);
   } else if (focused.id === 'hours') {
@@ -181,7 +176,6 @@ function bindEntriesSummary(model) {
 
 function bindReminder(model) {
   if (model.time) {
-    // const reminderSetting = model;
     const { time, from, to } = model;
     const [hours, minutes] = time.split(':');
 

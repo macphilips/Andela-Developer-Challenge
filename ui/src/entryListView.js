@@ -1,5 +1,5 @@
 import { htmlToElement, showToast } from './util';
-import { entryListHeader, emptyListTemple } from './templates';
+import { entryListHeader, emptyListTemple, floatingButton } from './templates';
 import EntryRowView from './entryListItemView';
 import Event from './event';
 import CreateEntryView from './entryView';
@@ -26,16 +26,6 @@ export class EntryTableView {
     });
   }
 
-  getTableHeader() {
-    const tableHead = htmlToElement(entryListHeader);
-    const addButton = tableHead.querySelector('#addEntry');
-    addButton.onclick = () => {
-      this.addButtonClicked.notify({});
-    };
-
-    return tableHead;
-  }
-
   getTableBody() {
     const { adapter } = this;
     const entryList = document.createElement('div');
@@ -52,11 +42,21 @@ export class EntryTableView {
   }
 
   render() {
-    this.vieww.innerHTML = '';
-    const entryListHead = this.getTableHeader();
+    const handler = () => {
+      this.addButtonClicked.notify({});
+    };
+    const entryListHead = htmlToElement(entryListHeader);
+    const floatBtnElement = htmlToElement(floatingButton);
     const entryListBody = this.getTableBody();
+
+    this.vieww.innerHTML = '';
     this.vieww.appendChild(entryListHead);
     this.vieww.appendChild(entryListBody);
+    this.vieww.appendChild(floatBtnElement);
+
+    const addButton = this.vieww.querySelector('#addEntry');
+    addButton.onclick = handler;
+    floatBtnElement.onclick = handler;
   }
 
   getAdapter() {
@@ -82,7 +82,6 @@ export class EntryTableViewAdapter {
 
   getViewItem(position) {
     const viewItem = this.viewItems[position];
-    // const item = viewItem.getModel();
     viewItem.setPosition(position);
     return viewItem;
   }
@@ -143,13 +142,6 @@ export class EntryTableViewAdapter {
     this.notifyChangeObserver.attach(observer);
   }
 
-  selectAllItem(state) {
-    for (let i = 0; i < this.viewItems.length; i += 1) {
-      const viewItem = this.viewItems[i];
-      viewItem.selectCheckBoxState(state);
-    }
-  }
-
   registerButtonLister(arg) {
     return (context, result) => {
       const { entry } = result;
@@ -168,7 +160,6 @@ export class EntryTableController {
     this.entryTableView = entryTableView;
     entryTableView.addButtonClicked.attach(() => {
       const component = new CreateEntryView();
-      // component.modalView = modalService.getModalView();
       component.buttonClicked.attach((context, args) => {
         modalService.getModalView().dismiss();
         this.entryTableView.getAdapter().addItem(new RowItemModel(args.entry));

@@ -19,7 +19,6 @@ export default class ConfirmDeleteEntryView {
     const cancelButton = this.vieewElement.querySelector('[tc-data-dismiss="cancel"]');
     const self = this;
     okButton.onclick = () => {
-      // todo delete model from server
       http.delete(getEntryUrlByID(this.model.id))
         .then(() => {
           this.notifyObserver('success');
