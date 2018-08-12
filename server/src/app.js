@@ -10,11 +10,6 @@ import authenticateRouter from './routes/v1/userJwtAuthentication';
 import config from './config/config';
 import db from './db';
 
-// process.on('unhandledRejection', (error) => {
-//   // Will print "unhandledRejection err is not defined"
-//   console.log('unhandledRejection', error);
-// });
-
 // eslint-disable-next-line import/prefer-default-export
 export const app = express();
 
@@ -28,7 +23,7 @@ if (config.nodeEnv !== 'test') {
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors(config.cors));
 
 
 app.use(AuthenticationMiddleware.doFilter);
