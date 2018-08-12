@@ -9,7 +9,6 @@ export class MainView {
   }
 
   addChild(content) {
-    // this.vieww.innerHTML = '';
     this.vieww.appendChild(content);
   }
 
@@ -33,7 +32,6 @@ export class MainViewController {
     if (typeof (Storage) !== 'undefined') {
       // Code for localStorage/sessionStorage.
       if (localStorage.authenticationToken) {
-        // const self = this;
         const loadingView = new LoadingView();
         this.navbar.render();
         this.mainView.addChild(this.entryTableView.getViewElement());

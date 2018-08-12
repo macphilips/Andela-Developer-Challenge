@@ -1,4 +1,4 @@
-import { mapArray } from '../utils';
+import { getTimeString, mapArray } from '../utils';
 import Reminder from './reminder';
 
 export default class User {
@@ -39,7 +39,12 @@ export default class User {
     const data = {};
     data.user = User.map(entity);
     if (entity.md_time) data.reminder = Reminder.map(entity);
-    if (entity.num_entries) data.entry = { count: parseInt(entity.num_entries, 10) };
+    if (entity.num_entries) {
+      data.entry = {
+        count: parseInt(entity.num_entries, 10),
+        lastModified: getTimeString(entity.lastest_entry_date),
+      };
+    }
 
     return data;
   }

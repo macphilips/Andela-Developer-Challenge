@@ -46,14 +46,11 @@ const reminder = getBasicQuery('reminder');
 
 export default {
   reminder,
+  entries,
   myDiary: sql(`${root}scripts/my_diary.sql`),
   users: {
     ...users,
     findUser: sql(`${root}scripts/users/findUser.sql`),
     findUserWithEntriesCount: sql(`${root}scripts/users/findUserWithEntriesCount.sql`),
-  },
-  entries: {
-    ...entries,
-    constraints: sql(`${root}scripts/entries/constraints.sql`),
   },
 };

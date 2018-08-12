@@ -1,1 +1,3 @@
-SELECT * FROM reminder WHERE user_id = ${userId}
+SELECT *
+FROM ${schema~}.reminder
+WHERE id = ${id}

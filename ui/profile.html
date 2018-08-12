@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Profile | My Dairy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
     <link rel="stylesheet" href="css/app.css">
     <style>
         body {
@@ -16,10 +16,10 @@
 <div id="navbar"></div>
 <div id="main">
     <div class="container">
-        <div class="entry-summary">
+        <div id="entrySummary" class="entry-summary">
             <ul>
-                <li>Total Entries: <span tc-data-model="numEntries">4</span></li>
-                <li>Last Update: <span tc-data-model="lastModified">Jul 25, 2018</span></li>
+                <li>Total Entries: <span tc-data-model="count"></span></li>
+                <li>Last Update: <span tc-data-model="lastModified"></span></li>
             </ul>
         </div>
         <div class="section">
@@ -69,6 +69,7 @@
                                 </div>
                             </div>
                             <div>
+                                <label class="show-on-mobile">TIME</label>
                                 <div class="time-spinner">
                                     <input name="hours" tc-data-model="hours" id="hours" type="number"
                                            class="time-input hours"
@@ -147,7 +148,6 @@
                         <label for="match-password"><b>Confirm Password</b></label>
                         <input class="form-input" id="match-password" type="password" placeholder="Confirm Password"
                                name="matchPassword" required>
-
                         <div class="btn-container">
                             <button tc-data-action="change-password" type="submit" class="btn right">Change Password
                             </button>
@@ -158,7 +158,7 @@
         </div>
     </div>
 </div>
-<div id="alert" class="toast error">
+<div id="toast" class="toast error">
     <span href="javascript:void(0);" class="close-btn">&times;</span>
     <p class="alert-msg">Alert Message</p>
 </div>

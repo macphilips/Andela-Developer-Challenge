@@ -1,2 +1,3 @@
-SELECT * FROM ${schema~}.entries
+SELECT *
+FROM ${schema~}.entries
 WHERE id = ${id}

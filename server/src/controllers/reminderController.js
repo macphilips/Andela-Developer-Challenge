@@ -4,17 +4,15 @@ import { padValue, validateTime } from '../utils';
 
 export default class ReminderController {
   static updateReminder(req, res) {
-    const { from, to, time } = req.body;
     const { userId } = req;
     Promise.resolve(validateTime(req.body))
       .then((message) => {
         if (message === null) {
-          return db.connection.reminder.save({
-            from, to, userId, time: padValue(time),
-          });
+          return db.connection.reminder.findByUserId(userId);
         }
         return Promise.reject(new HttpError(message, 400, 'Failed'));
       })
+      .then(result => ReminderController.saveReminder(req, result))
       .then((result) => {
         res.status(200).send({
           reminder: result,
@@ -25,6 +23,16 @@ export default class ReminderController {
       .catch((error) => {
         HttpError.sendError(error, res);
       });
+  }
+
+  static saveReminder(req, result) {
+    const { userId } = req;
+    const { from, to, time } = req.body;
+    const reminder = {
+      from, to, userId, time: padValue(time),
+    };
+    if (result) reminder.id = result.id;
+    return db.connection.reminder.save(reminder);
   }
 
   static getReminder(req, res) {
