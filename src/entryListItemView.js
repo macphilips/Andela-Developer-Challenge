@@ -1,32 +1,28 @@
-import { entryTableBodyRowTemplate } from './templates';
-import { formatter, htmlToElement, getValue } from './util';
+import { entryListItemTemplate } from './templates';
+import { formatter, getValue, htmlToElement } from './util';
 import Event from './event';
 
 export default class EntryRowView {
   constructor(model) {
     const self = this;
-    let html = `${entryTableBodyRowTemplate.trim()}`;
+    let html = `${entryListItemTemplate.trim()}`;
     html = formatter(html, model);
     this.view = htmlToElement(html);
     this.model = model;
     this.clickAction = new Event(this);
-    this.checkBoxChange = new Event(this);
     this.updateView();
     // Update view when model changes
     this.model.valueChangeObserver.attach(() => {
       self.updateView();
     });
     this.registerDropDownItemClick();
-    this.registerOnCheckHandler();
     this.handleViewClick();
   }
 
   handleViewClick() {
     this.view.onclick = (e) => {
       const targetElement = e.target;
-      if (targetElement.classList.contains('dropdown-toggle')
-        || targetElement.classList.contains('check-box')
-        || targetElement.classList.contains('check-mark')) {
+      if (targetElement.classList.contains('dropdown-toggle')) {
         return null;
       }
       const attrData = targetElement.getAttribute('tc-data-action');
@@ -38,38 +34,23 @@ export default class EntryRowView {
   }
 
   registerDropDownItemClick() {
-    const self = this;
     // Dispatch onclick event when dropdown item is selected
     const dataActionElements = this.view.querySelectorAll('[tc-data-action]');
     for (let i = 0; i < dataActionElements.length; i += 1) {
-      (function () {
-        const dataActionElement = dataActionElements[i];
-        const dataValue = dataActionElement.getAttribute('tc-data-action');
+      const dataActionElement = dataActionElements[i];
+      const dataValue = dataActionElement.getAttribute('tc-data-action');
 
-        if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
-          dataActionElement.onclick = () => {
-            self.clickAction.notify({ action: dataValue, model: self.model });
-            self.dismissDropDownMenu();
-          };
-        }
-      }());
+      if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
+        dataActionElement.onclick = () => {
+          this.clickAction.notify({ action: dataValue, model: this.model });
+          this.dismissDropDownMenu();
+        };
+      }
     }
     // Show dropdown
     const toggleAction = this.view.querySelector('[tc-data-action="dropdown-toggle"]');
     toggleAction.onclick = (e) => {
-      self.showDropDownMenu(e);
-    };
-  }
-
-  registerOnCheckHandler() {
-    const self = this;
-    // Dispatch onchange event when the checkbox changes
-    const checkbox = this.view.querySelector('[tc-data-action="check"]');
-    checkbox.onchange = (e) => {
-      const index = checkbox.getAttribute('data-index');
-      const id = checkbox.getAttribute('tc-data-id');
-      const result = { position: index, id, checked: e.target.checked };
-      self.checkBoxChange.notify(result);
+      this.showDropDownMenu(e);
     };
   }
 
@@ -100,28 +81,29 @@ export default class EntryRowView {
   }
 
   showDropDownMenu(e) {
-    const self = this;
-    this.dismissDropDownMenu();
-    e.toElement.nextElementSibling.classList.toggle('open');
-    window.onclick = (event) => {
-      if (!event.target.matches('.dropdown-toggle')) {
-        self.dismissDropDownMenu();
+    const { nextElementSibling } = e.target;
+    const handler = (event) => {
+      if (!event.target.matches('.dropdown-toggle-icon')) {
+        this.dismissDropDownMenu();
+        window.removeEventListener('click', handler);
       }
     };
+    if (nextElementSibling.classList.contains('open')) {
+      nextElementSibling.classList.remove('open');
+    } else {
+      this.dismissDropDownMenu();
+      nextElementSibling.classList.add('open');
+    }
+    window.addEventListener('click', handler);
   }
 
   dismissDropDownMenu() {
     const dropdownMenus = document.getElementsByClassName('dropdown-menu');
-    for (let i = 0; i < dropdownMenus.length; i++) {
+    for (let i = 0; i < dropdownMenus.length; i += 1) {
       const openDropdown = dropdownMenus[i];
       if (openDropdown.classList.contains('open')) {
         openDropdown.classList.remove('open');
       }
     }
-  }
-
-  selectCheckBoxState(state) {
-    const checkbox = this.view.querySelector('[tc-data-action="check"]');
-    checkbox.checked = state;
   }
 }

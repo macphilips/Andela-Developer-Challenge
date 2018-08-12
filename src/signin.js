@@ -34,24 +34,6 @@ function matchPassword(form) {
   }
   return valid;
 }
-//
-// function toJSONString(form) {
-//   const obj = {};
-//   const elements = form.querySelectorAll('input, select, textarea');
-//   for (let i = 0; i < elements.length; i += 1) {
-//     const element = elements[i];
-//     const {name} = element;
-//     let {value} = element;
-//     if (element.type === 'checkbox') {
-//       value = element.checked;
-//     }
-//
-//     if (name) {
-//       obj[name] = value;
-//     }
-//   }
-//   return JSON.stringify(obj);
-// }
 
 function createAccount(e) {
   e.preventDefault();
@@ -72,12 +54,11 @@ function signIn(e) {
   if (e) e.preventDefault();
   const form = document.getElementById('signinForm');
   if (validateForm(form)) {
-    // const formJson = toJSONString(form);
     const data = getFieldsAsObject(form);
     http.post(authenticationEndpoint, data).then((res) => {
       localStorage.authenticationToken = res.token;
       window.location.replace('dashboard.html');
-    }, () => {
+    }, (error) => {
       showAlert('Authentication Failed, check email or password', 'error');
     });
   }
