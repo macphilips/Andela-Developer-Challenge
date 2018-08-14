@@ -1,9 +1,9 @@
 import express from 'express';
 import ReminderController from '../../controllers/reminderController';
 
-const routerRouter = express.Router();
+const reminderRouter = express.Router();
 
-routerRouter.put('/user/reminder/settings', ReminderController.updateReminder);
-routerRouter.get('/user/reminder/settings', ReminderController.getReminder);
+reminderRouter.put('/user/reminder/settings', ReminderController.updateReminder);
+reminderRouter.get('/user/reminder/settings', ReminderController.getReminder);
 
-export default routerRouter;
+export default reminderRouter;
