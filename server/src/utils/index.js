@@ -3,6 +3,11 @@ import HttpError from './httpError';
 
 const daysOfTheWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
+/**
+ *
+ * @param value{string}
+ * @returns {string}
+ */
 export function padValue(value) {
   return (value < 10) ? `0${value}` : value;
 }
@@ -10,7 +15,7 @@ export function padValue(value) {
 export function getTimeString(date) {
   if (!date) return null;
   const months = ['Jan', 'Feb', 'Mar', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${padValue(date.getHours())}:${padValue(date.getMinutes())}`;
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${padValue(`${date.getHours()}`)}:${padValue(`${date.getMinutes()}`)}`;
 }
 
 export function isEmpty(data) {
@@ -105,7 +110,7 @@ export function mapAndWrapDbPromise(promise, mapper) {
 
 export function sameDayDateComparison(created) {
   const now = new Date();
-  const within24h = parseInt((now.getTime() - created.getTime()) / 864e5, 10);
+  const within24h = parseInt(`${(now.getTime() - created.getTime()) / 864e5}`, 10);
   return now.getDate() > created.getDate() && within24h > 0;
 }
 
