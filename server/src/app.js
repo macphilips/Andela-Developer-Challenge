@@ -3,10 +3,10 @@ import logger from 'morgan';
 import cors from 'cors';
 import path from 'path';
 import AuthenticationMiddleware from './middlewares/jwtFilter';
-import accountRouter from './routes/v1/account';
-import entriesRouter from './routes/v1/entries';
-import reminderRouter from './routes/v1/reminder';
-import authenticateRouter from './routes/v1/userJwtAuthentication';
+import accountRouter from './routes/v1/accountRouter';
+import entriesRouter from './routes/v1/entriesRouter';
+import reminderRouter from './routes/v1/reminderRouter';
+import authenticateRouter from './routes/v1/authenticationRouter';
 import config from './config/config';
 import db from './db';
 
