@@ -18,7 +18,10 @@ export default class UserRepository extends BaseRepository {
   }
 
   getUserDetailsWithEntryCountById(id) {
-    return mapAndWrapDbPromise(this.db.oneOrNone(this.sql.findUserWithEntriesCount, { id }),
+    const promise = this.db.oneOrNone(this.sql.findUserWithEntriesCount, { id })
+      .then(result => ((result === null)
+        ? this.db.oneOrNone(this.sql.findUser, { id }) : Promise.resolve(result)));
+    return mapAndWrapDbPromise(promise,
       User.mapDBUserEntityToUserDetail);
   }
 

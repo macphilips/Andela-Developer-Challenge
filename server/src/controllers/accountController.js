@@ -87,7 +87,6 @@ export default class AccountController {
       });
   }
 
-
   static saveUser(body) {
     const newUser = new User();
     newUser.firstName = body.firstName;
