@@ -1,15 +1,16 @@
-import { htmlToElement, showToast, DOMDoc } from './util';
-import { entryListHeader, emptyListTemple, floatingButton } from './templates';
-import EntryRowView from './entryListItemView';
-import Event from './event';
-import CreateEntryView from './entryView';
-import ConfirmDeleteEntryView from './confirmDialog';
-import RowItemModel from './itemModel';
-import { entriesEndpoint } from './endpointUrl';
-import http from './fetchWrapper';
-import navBarView from './navbarView';
+import { htmlToElement, showToast, DOMDoc } from './utils/util';
+import { entryListHeader, emptyListTemple, floatingButton } from './utils/templates';
+import EntryRowView from './views/entryRowView';
+import Event from './utils/event';
+import CreateEntryView from './views/entryView';
+import ConfirmDeleteEntryView from './views/confirmDeleteEntryView';
+import EntryItemModel from './views/entryItemModel';
+import { entriesEndpoint } from './utils/endpointUrl';
+import http from './services/fetchWrapper';
+import navBarView from './views/navBarView';
+import modalService from './services/modalViewService';
 
-export class EntryTableView {
+export class EntryListView {
   static contains(arr, element) {
     const items = arr.filter(item => item.id === element.id);
     return items.length > 0;
@@ -23,7 +24,6 @@ export class EntryTableView {
     this.viewElement = DOMDoc.createElement('div');
     this.viewElement.setAttribute('id', 'entries');
     this.viewElement.classList.add('entries-container');
-    this.itemToRemove = [];
     this.addButtonClicked = new Event(this);
     this.adapter.registerChangeObserver(() => {
       this.render();
@@ -77,11 +77,10 @@ export class EntryTableView {
   }
 }
 
-export class EntryTableViewAdapter {
-  constructor(modalService) {
+export class EntryListViewAdapter {
+  constructor() {
     this.data = [];
     this.viewItems = [];
-    this.modalService = modalService;
     this.notifyChangeObserver = new Event(this);
   }
 
@@ -109,11 +108,11 @@ export class EntryTableViewAdapter {
             }
           }
         });
-        this.modalService.open(confirmDeleteView);
+        modalService.open(confirmDeleteView);
       } else {
         const entryView = new CreateEntryView(arg.model, arg.action);
-        entryView.buttonClicked.attach(this.registerButtonLister(arg));
-        this.modalService.open(entryView);
+        entryView.buttonClicked.attach(EntryListViewAdapter.registerButtonLister(arg));
+        modalService.open(entryView);
       }
     });
     this.data.push(itemModel);
@@ -151,7 +150,7 @@ export class EntryTableViewAdapter {
     this.notifyChangeObserver.attach(observer);
   }
 
-  registerButtonLister(arg) {
+  static registerButtonLister(arg) {
     return (context, result) => {
       const { entry } = result;
       const { model } = arg;
@@ -159,19 +158,19 @@ export class EntryTableViewAdapter {
       model.content = entry.content;
       model.lastModified = entry.lastModified;
       model.createdDate = entry.createdDate;
-      this.modalService.getModalView().dismiss();
+      modalService.getModalView().dismiss();
     };
   }
 }
 
-export class EntryTableController {
-  constructor(entryTableView, modalService) {
+export class EntryListController {
+  constructor(entryTableView) {
     this.entryTableView = entryTableView;
     entryTableView.addButtonClicked.attach(() => {
       const component = new CreateEntryView();
       component.buttonClicked.attach((context, args) => {
         modalService.getModalView().dismiss();
-        this.entryTableView.getAdapter().addItem(new RowItemModel(args.entry));
+        this.entryTableView.getAdapter().addItem(new EntryItemModel(args.entry));
       });
       modalService.open(component);
     });
@@ -184,7 +183,7 @@ export class EntryTableController {
       const { entries } = result;
       const models = [];
       for (let i = 0; i < entries.length; i += 1) {
-        models.push(new RowItemModel(entries[i]));
+        models.push(new EntryItemModel(entries[i]));
       }
       adapter.addItems(models);
       this.onReady.notify();

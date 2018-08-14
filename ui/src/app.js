@@ -1,12 +1,12 @@
-import { ModalService } from './modalViewService';
-import { EntryTableController, EntryTableView, EntryTableViewAdapter } from './entryListView';
-import LoadingView from './loadngView';
-import { DOMDoc, gotoUrl, windowInterface } from './util';
+import { EntryListController, EntryListView, EntryListViewAdapter } from './entryListView';
+import LoadingView from './views/loadngView';
+import { DOMDoc, gotoUrl, windowInterface } from './utils/util';
 import route from './route';
-import { SignInPage, SignUpPage } from './signin';
-import ProfilePage from './profile';
-import HomePage from './index';
-import account from './account';
+import SignInPage from './signInPage';
+import ProfilePage from './profilePage';
+import HomePage from './homePage';
+import account from './services/account';
+import SignUpPage from './signUpPage';
 
 class MainView {
   constructor() {
@@ -32,7 +32,7 @@ class MainView {
   removeAllChildren() {
     const { children } = this.viewElement;
     for (let i = 0; i < children.length; i += 1) {
-      this.viewElement.removeChild(children[i]);
+      this.removeChild(children[i]);
     }
   }
 
@@ -42,50 +42,51 @@ class MainView {
 }
 
 class MainViewController {
+  /**
+   *
+   * @param mainView {MainView}
+   */
   constructor(mainView) {
     this.mainView = mainView;
-    this.modalService = new ModalService();
-    this.adapter = new EntryTableViewAdapter(this.modalService);
-    this.entryTableView = new EntryTableView(this.adapter);
-    this.entryTableController = new EntryTableController(this.entryTableView, this.modalService);
-
+    // this.adapter = new EntryListViewAdapter();
+    // this.entryTableView = new EntryListView(this.adapter);
+    // this.entryTableController = new EntryListController(this.entryTableView);
+    const tAdapter = {
+      Type: EntryListViewAdapter, params: null,
+    };
+    const aEntryView = {
+      Type: EntryListView,
+      params: [tAdapter],
+    };
+    const entryCtrl = {
+      Type: EntryListController,
+      params: [aEntryView],
+    };
     this.loadingView = new LoadingView();
-    route.registerRoutes('/dashboard', this.entryTableController, true);
-    route.registerRoutes('/profile', new ProfilePage(), true);
-    route.registerRoutes('/signin', new SignInPage(), false);
-    route.registerRoutes('/signup', new SignUpPage(), false);
-    route.registerRoutes('/', new HomePage(), false);
-    route.registerRoutes('*', new HomePage(), false);
+    route.registerRoutes('/dashboard', entryCtrl, true);
+    route.registerRoutes('/profile', ProfilePage, true);
+    route.registerRoutes('/signin', SignInPage, false);
+    route.registerRoutes('/signup', SignUpPage, false);
+    route.registerRoutes('/', HomePage, false);
+    route.registerRoutes('*', HomePage, false);
   }
 
-  // initialize() {
-  //   if (getToken()) {
-  //     this.mainView.addChild(this.entryTableView.getViewElement());
-  //     this.mainView.addChild(this.loadingView.getViewElement());
-  //     this.entryTableController.initialize();
-  //     this.entryTableController.onReady.attach(() => {
-  //       this.mainView.removeChild(this.loadingView.getViewElement());
-  //     });
-  //   } else {
-  //     gotoUrl('#/signin');
-  //   }
-  // }
-
   route() {
-    return (e) => {
+    return () => {
       const url = windowInterface.location.hash.slice(1) || '/';
       const routes = route.routes[url] || route.routes['*'];
       if (routes && routes.controller) {
-        this.removeOldElement(e, route.routes);
+        this.mainView.removeAllChildren();
         const { controller, requireAuth } = routes;
+        const ctrl = this.createInstant(controller);
         if (requireAuth) {
           account.identify().then(() => {
-            this.renderView(controller);
+            this.renderView(ctrl);
           }).catch(() => {
             gotoUrl('#/signin');
           });
         } else {
-          this.renderView(controller);
+          this.renderView(ctrl);
         }
       }
     };
@@ -118,6 +119,42 @@ class MainViewController {
         this.mainView.removeChild(oldCtrl.getViewElement());
       }
     }
+  }
+
+  getArguments(params) {
+    const args = [];
+    if (params instanceof Array) {
+      params.forEach((Item) => {
+        let instance = null;
+        const type = typeof (Item);
+        if (type === 'object' && Item.Type) {
+          instance = this.createInstant(Item);
+        } else if (type === 'function') {
+          instance = new Item();
+        } else {
+          instance = Item;
+        }
+        args.push(instance);
+      });
+    } else {
+      throw Error('params must be an array ');
+    }
+    return args;
+  }
+
+  createInstant(Obj) {
+    let args = [];
+    const { params, Type } = Obj;
+    if (params) {
+      args = this.getArguments(params, args);
+    }
+    if (Type && typeof (Type) === 'function') {
+      return new Type(...args);
+    }
+    if (typeof (Obj) === 'function') {
+      return new Obj();
+    }
+    return Type || Obj;
   }
 }
 

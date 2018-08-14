@@ -1,8 +1,8 @@
-import { entryListItemTemplate } from './templates';
+import { entryListItemTemplate } from '../utils/templates';
 import {
   formatter, getValue, htmlToElement, DOMDoc, windowInterface,
-} from './util';
-import Event from './event';
+} from '../utils/util';
+import Event from '../utils/event';
 
 export default class EntryRowView {
   constructor(model) {

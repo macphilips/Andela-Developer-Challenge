@@ -1,4 +1,4 @@
-import { userProfile } from './endpointUrl';
+import { userProfile } from '../utils/endpointUrl';
 import http from './fetchWrapper';
 
 class UserAccount {
@@ -7,9 +7,9 @@ class UserAccount {
     this.authenticated = false;
   }
 
-  authenticate(identity) {
-    this.account = identity;
-    this.authenticated = identity !== null;
+  authenticate(userAccount) {
+    this.account = userAccount;
+    this.authenticated = userAccount !== null;
   }
 
   /**

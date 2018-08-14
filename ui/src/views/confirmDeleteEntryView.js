@@ -1,8 +1,8 @@
-import { bindPropertiesToElement, DOMDoc } from './util';
-import { deleteDialogTemple } from './templates';
-import Event from './event';
-import http from './fetchWrapper';
-import { getEntryUrlByID } from './endpointUrl';
+import { bindPropertiesToElement, DOMDoc } from '../utils/util';
+import { deleteDialogTemple } from '../utils/templates';
+import Event from '../utils/event';
+import http from '../services/fetchWrapper';
+import { getEntryUrlByID } from '../utils/endpointUrl';
 
 export default class ConfirmDeleteEntryView {
   constructor(model) {

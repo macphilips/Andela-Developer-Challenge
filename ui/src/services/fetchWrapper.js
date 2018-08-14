@@ -1,5 +1,5 @@
-import { getToken, storeToken } from './util';
-import Event from './event';
+import { getToken, storeToken } from '../utils/util';
+import Event from '../utils/event';
 
 class FetchWrapper {
   constructor() {

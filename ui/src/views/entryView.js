@@ -1,11 +1,11 @@
 import {
   bindPropertiesToElement, htmlToElement, showToast, trimDate, DOMDoc,
-} from './util';
-import { createEntryTemplate, viewEntryTemplate } from './templates';
-import Event from './event';
-import { entriesEndpoint, getEntryUrlByID } from './endpointUrl';
-import http from './fetchWrapper';
-import { getTimeString } from '../../server/src/utils';
+} from '../utils/util';
+import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
+import Event from '../utils/event';
+import { entriesEndpoint, getEntryUrlByID } from '../utils/endpointUrl';
+import http from '../services/fetchWrapper';
+import { getTimeString } from '../../../server/src/utils/index';
 
 
 export default class CreateEntryView {

@@ -1,7 +1,7 @@
-import { DOMDoc, gotoUrl, htmlToElement } from './util';
-import { navbarHeaderTemplate } from './templates';
-import account from './account';
-import loginService from './loginService';
+import { DOMDoc, gotoUrl, htmlToElement } from '../utils/util';
+import { navbarHeaderTemplate } from '../utils/templates';
+import account from '../services/account';
+import loginService from '../services/loginService';
 
 class NavBarView {
   static logoutHandle() {

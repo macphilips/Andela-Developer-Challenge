@@ -1,5 +1,5 @@
-import { htmlToElement } from './util';
-import { loadingTemplate } from './templates';
+import { htmlToElement } from '../utils/util';
+import { loadingTemplate } from '../utils/templates';
 
 
 export default class LoadingView {

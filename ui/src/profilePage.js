@@ -1,12 +1,12 @@
 import {
   bindPropertiesToElement, DOMDoc, getFieldsAsObject, htmlToElement, showToast, trimDate,
-} from './util';
-import { changePassword, reminderUrl } from './endpointUrl';
-import navBarView from './navbarView';
-import http from './fetchWrapper';
-import { profilePageTemplate } from './templates';
-import account from './account';
-import Event from './event';
+} from './utils/util';
+import { changePassword, reminderUrl } from './utils/endpointUrl';
+import navBarView from './views/navBarView';
+import http from './services/fetchWrapper';
+import { profilePageTemplate } from './utils/templates';
+import account from './services/account';
+import Event from './utils/event';
 
 export default class ProfilePage {
   /**
@@ -249,33 +249,37 @@ export default class ProfilePage {
     }
   }
 
-  updatePasswordHandler(e) {
-    e.preventDefault();
-    const changePasswordForm = this.viewElement.querySelector('#changePassword');
-    const data = getFieldsAsObject(changePasswordForm);
-    if (data.newPassword === data.matchPassword) {
-      ProfilePage.consumeAPIResult(http.post(changePassword, data));
-    } else {
-      showToast('Password doesn\'t match', 'error');
-    }
+  updatePasswordHandler() {
+    return (e) => {
+      e.preventDefault();
+      const changePasswordForm = this.viewElement.querySelector('#changePassword');
+      const data = getFieldsAsObject(changePasswordForm);
+      if (data.newPassword === data.matchPassword) {
+        ProfilePage.consumeAPIResult(http.post(changePassword, data));
+      } else {
+        showToast('Password doesn\'t match', 'error');
+      }
+    };
   }
 
-  updateReminderHandler(e) {
-    e.preventDefault();
-    const reminderForm = this.viewElement.querySelector('#reminderForm');
-    const data = getFieldsAsObject(reminderForm);
-    data.time = `${data.hours}:${data.minutes}`;
-    ProfilePage.consumeAPIResult(http.put(reminderUrl, data));
+  updateReminderHandler() {
+    return (e) => {
+      e.preventDefault();
+      const reminderForm = this.viewElement.querySelector('#reminderForm');
+      const data = getFieldsAsObject(reminderForm);
+      data.time = `${data.hours}:${data.minutes}`;
+      ProfilePage.consumeAPIResult(http.put(reminderUrl, data));
+    };
   }
 
   registerEvent() {
     const changePasswordForm = this.viewElement.querySelector('#changePassword');
     const changePasswordButton = changePasswordForm.querySelector('[tc-data-action]');
-    changePasswordButton.onclick = this.updatePasswordHandler;
+    changePasswordButton.onclick = this.updatePasswordHandler();
 
     const reminderForm = this.viewElement.querySelector('#reminderForm');
     const reminderButton = reminderForm.querySelector('[tc-data-action]');
-    reminderButton.onclick = this.updateReminderHandler;
+    reminderButton.onclick = this.updateReminderHandler();
   }
 
   initialize() {

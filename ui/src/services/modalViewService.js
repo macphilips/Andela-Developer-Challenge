@@ -1,11 +1,10 @@
-import { htmlToElement, DOMDoc } from './util';
-import { modalBoxTemplate } from './templates';
-import Event from './event';
+import { htmlToElement, DOMDoc } from '../utils/util';
+import { modalBoxTemplate } from '../utils/templates';
+import Event from '../utils/event';
 
-export class ModalView {
+class ModalView {
   constructor() {
     this.childView = htmlToElement(modalBoxTemplate);
-    this.modalViewContent = null;
     this.onclickEvent = new Event(this);
     this.onDismissEvent = new Event(this);
     const self = this;
@@ -18,7 +17,6 @@ export class ModalView {
     const content = this.childView.querySelector('.modal-content');
     content.innerHTML = '';
     content.appendChild(modalContent);
-    this.modalViewContent = modalContent;
     const self = this;
     const dismissButtons = this.childView.querySelectorAll('[tc-data-dismiss]');
     for (let i = 0; i < dismissButtons.length; i += 1) {
@@ -40,7 +38,7 @@ export class ModalView {
   }
 }
 
-export class ModalService {
+class ModalService {
   constructor() {
     this.modalVieew = new ModalView();
   }
@@ -62,3 +60,5 @@ export class ModalService {
     return this.modalVieew;
   }
 }
+const modalService = new ModalService();
+export default modalService;

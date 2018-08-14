@@ -189,3 +189,36 @@ export function showLoadingAnim(btn, mode) {
     btn.appendChild(htmlToElement(loadingButtonTemplate));
   }
 }
+
+export function validateForm(form) {
+  let valid = true;
+  const inputForms = form.querySelectorAll('input');
+  for (let i = inputForms.length - 1; i >= 0; i -= 1) {
+    const inputForm = inputForms[i];
+    let { value } = inputForm;
+    if (inputForm.type !== 'password') value = value.trim();
+    if (value === '') {
+      inputForm.className += ' invalid';
+      valid = false;
+      showAlert('Input Field(s) cannot be empty', 'error');
+      inputForm.focus();
+      inputForm.oninput = (e) => {
+        e.target.classList.remove('invalid');
+      };
+    }
+  }
+  return valid;
+}
+
+export function matchPassword(form) {
+  let valid = true;
+  const matchPasswordElement = form.querySelector('#match-password');
+  if (matchPasswordElement) {
+    const passwordElement = form.querySelector('#password');
+    if (matchPasswordElement.value !== passwordElement.value) {
+      showAlert('Please input a matching password', 'error');
+      valid = false;
+    }
+  }
+  return valid;
+}
