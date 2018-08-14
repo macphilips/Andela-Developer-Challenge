@@ -1,22 +1,22 @@
-import { bindPropertiesToElement } from './util';
-import { deleteDialogTemple } from './templates';
-import Event from './event';
-import http from './fetchWrapper';
-import { getEntryUrlByID } from './endpointUrl';
+import { bindPropertiesToElement, DOMDoc } from '../utils/util';
+import { deleteDialogTemple } from '../utils/templates';
+import Event from '../utils/event';
+import http from '../services/fetchWrapper';
+import { getEntryUrlByID } from '../utils/endpointUrl';
 
 export default class ConfirmDeleteEntryView {
   constructor(model) {
-    this.vieewElement = document.createElement('div');
-    this.vieewElement.innerHTML = deleteDialogTemple.trim();
+    this.childView = DOMDoc.createElement('div');
+    this.childView.innerHTML = deleteDialogTemple.trim();
     this.actionButtonClicked = new Event(this);
 
     this.model = model;
-    const dataModelElements = this.vieewElement.querySelectorAll('[tc-data-model]');
+    const dataModelElements = this.childView.querySelectorAll('[tc-data-model]');
     bindPropertiesToElement(dataModelElements,
       { message: `This action delete <strong>${model.title}</strong> from database. Are you sure you want to continue?` });
 
-    const okButton = this.vieewElement.querySelector('[tc-data-action="ok"]');
-    const cancelButton = this.vieewElement.querySelector('[tc-data-dismiss="cancel"]');
+    const okButton = this.childView.querySelector('[tc-data-action="ok"]');
+    const cancelButton = this.childView.querySelector('[tc-data-dismiss="cancel"]');
     const self = this;
     okButton.onclick = () => {
       http.delete(getEntryUrlByID(this.model.id))
@@ -38,6 +38,6 @@ export default class ConfirmDeleteEntryView {
   }
 
   getViewElement() {
-    return this.vieewElement;
+    return this.childView;
   }
 }

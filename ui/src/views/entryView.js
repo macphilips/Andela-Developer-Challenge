@@ -1,11 +1,11 @@
 import {
-  bindPropertiesToElement, htmlToElement, showToast, trimDate,
-} from './util';
-import { createEntryTemplate, viewEntryTemplate } from './templates';
-import Event from './event';
-import { entriesEndpoint, getEntryUrlByID } from './endpointUrl';
-import http from './fetchWrapper';
-import { getTimeString } from '../../server/src/utils';
+  bindPropertiesToElement, htmlToElement, showToast, trimDate, DOMDoc,
+} from '../utils/util';
+import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
+import Event from '../utils/event';
+import { entriesEndpoint, getEntryUrlByID } from '../utils/endpointUrl';
+import http from '../services/fetchWrapper';
+import { getTimeString } from '../../../server/src/utils/index';
 
 
 export default class CreateEntryView {
@@ -35,7 +35,7 @@ export default class CreateEntryView {
       const { content } = data;
       const split = content.split(/[\r\n]+/);
       for (let i = 0; i < split.length; i += 1) {
-        const paragraph = document.createElement('p');
+        const paragraph = DOMDoc.createElement('p');
         paragraph.innerHTML = split[i];
         viewEntry.appendChild(paragraph);
       }

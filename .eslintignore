@@ -4,4 +4,7 @@ coverage
 bin
 .nyc_output
 server/build
+ui/dist
+api-doc
+webpack-config.js
 

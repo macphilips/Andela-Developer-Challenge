@@ -1,6 +1,6 @@
-import Event from './event';
+import Event from '../utils/event';
 
-export default class RowItemModel {
+export default class EntryItemModel {
   constructor(obj) {
     this.valueChangeObserver = new Event(null);
     Object.keys(obj).forEach((key) => {

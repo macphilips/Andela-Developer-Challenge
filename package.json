@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "lint": "eslint server/src/**/*.js",
+    "lint": "eslint server/src/**/*.js ui/src/**/*.js",
     "lint:fix": "npm run lint -- --fix",
     "lint:ui": "eslint ui/src/**/*.js",
     "clean": "rimraf server/build/ && rimraf ui/dist/",

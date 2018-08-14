@@ -1,14 +1,11 @@
 const path = require('path');
-const webpack = require('webpack');
+// const webpack = require('webpack');
 
 
 const resolve = path.join(__dirname, '/ui/dist');
 module.exports = {
   entry: {
     app: './ui/src/app.js',
-    account: './ui/src/signin.js',
-    profile: './ui/src/profile.js',
-    index: './ui/src/index.js',
   },
   output: {
     path: resolve,
