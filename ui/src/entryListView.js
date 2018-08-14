@@ -1,4 +1,4 @@
-import { htmlToElement, showToast } from './util';
+import { htmlToElement, showToast, DOMDoc } from './util';
 import { entryListHeader, emptyListTemple, floatingButton } from './templates';
 import EntryRowView from './entryListItemView';
 import Event from './event';
@@ -7,6 +7,7 @@ import ConfirmDeleteEntryView from './confirmDialog';
 import RowItemModel from './itemModel';
 import { entriesEndpoint } from './endpointUrl';
 import http from './fetchWrapper';
+import navBarView from './navbarView';
 
 export class EntryTableView {
   static contains(arr, element) {
@@ -16,9 +17,12 @@ export class EntryTableView {
 
   constructor(adapter) {
     this.adapter = adapter;
-    this.vieww = document.createElement('div');
-    this.vieww.setAttribute('id', 'entries');
-    this.vieww.classList.add('entries-container');
+    this.root = DOMDoc.createElement('div');
+    this.root.classList.add('main');
+
+    this.viewElement = DOMDoc.createElement('div');
+    this.viewElement.setAttribute('id', 'entries');
+    this.viewElement.classList.add('entries-container');
     this.itemToRemove = [];
     this.addButtonClicked = new Event(this);
     this.adapter.registerChangeObserver(() => {
@@ -28,7 +32,7 @@ export class EntryTableView {
 
   getTableBody() {
     const { adapter } = this;
-    const entryList = document.createElement('div');
+    const entryList = DOMDoc.createElement('div');
     entryList.classList.add('entry-list');
     if (adapter.getSize() > 0) {
       for (let i = 0; i < adapter.getSize(); i += 1) {
@@ -49,12 +53,17 @@ export class EntryTableView {
     const floatBtnElement = htmlToElement(floatingButton);
     const entryListBody = this.getTableBody();
 
-    this.vieww.innerHTML = '';
-    this.vieww.appendChild(entryListHead);
-    this.vieww.appendChild(entryListBody);
-    this.vieww.appendChild(floatBtnElement);
+    this.viewElement.innerHTML = '';
+    const navbar = DOMDoc.createElement('div');
+    navbar.setAttribute('id', 'navbar');
+    this.viewElement.appendChild(navbar);
+    this.viewElement.appendChild(entryListHead);
+    this.viewElement.appendChild(entryListBody);
+    this.viewElement.appendChild(floatBtnElement);
+    this.root.appendChild(this.viewElement);
+    navBarView.render(this.viewElement);
 
-    const addButton = this.vieww.querySelector('#addEntry');
+    const addButton = this.viewElement.querySelector('#addEntry');
     addButton.onclick = handler;
     floatBtnElement.onclick = handler;
   }
@@ -64,7 +73,7 @@ export class EntryTableView {
   }
 
   getViewElement() {
-    return this.vieww;
+    return this.root;
   }
 }
 
@@ -183,5 +192,9 @@ export class EntryTableController {
       this.onReady.notify();
     });
     this.entryTableView.render();
+  }
+
+  getViewElement() {
+    return this.entryTableView.getViewElement();
   }
 }

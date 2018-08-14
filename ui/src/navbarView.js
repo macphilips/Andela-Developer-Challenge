@@ -1,31 +1,34 @@
-import { htmlToElement } from './util';
+import { DOMDoc, gotoUrl, htmlToElement } from './util';
 import { navbarHeaderTemplate } from './templates';
+import account from './account';
+import loginService from './loginService';
 
-export default class NavBarView {
+class NavBarView {
   static logoutHandle() {
-    localStorage.clear('authenticationToken');
-    window.location.replace('index.html');
+    loginService.logout();
+    gotoUrl('#/');
   }
 
   constructor() {
-    this.vieewElement = document.getElementById('navbar');
-    this.vieewElement.style.display = 'none';
-    this.vieewElement.appendChild(htmlToElement(navbarHeaderTemplate));
-    const logout = this.vieewElement.querySelectorAll('.logout-js');
+    this.vieewElement = null;
+    this.childView = htmlToElement(navbarHeaderTemplate);
+  }
 
+  init() {
+    const logout = this.childView.querySelectorAll('.logout-js');
     logout[0].onclick = NavBarView.logoutHandle;
     logout[1].onclick = NavBarView.logoutHandle;
 
-    const dismissSideNavButton = this.vieewElement.querySelector('[tc-data-dismiss="side-nav"]');
+    const dismissSideNavButton = this.childView.querySelector('[tc-data-dismiss="side-nav"]');
     dismissSideNavButton.onclick = () => {
       this.hideOrShowSideNav('hide');
     };
-    const showSideNavButton = this.vieewElement.querySelector('.navicon');
+    const showSideNavButton = this.childView.querySelector('.navicon');
     showSideNavButton.onclick = () => {
       this.hideOrShowSideNav('show');
     };
 
-    const sideNav = this.vieewElement.querySelector('.side-nav');
+    const sideNav = this.childView.querySelector('.side-nav');
     sideNav.onclick = (e) => {
       if (e.target.classList.contains('nav')) {
         return;
@@ -34,12 +37,15 @@ export default class NavBarView {
     };
   }
 
-  render() {
-    this.vieewElement.style.display = 'flex';
-    const logoutElement = this.vieewElement.querySelectorAll('.logged-out');
-    const loginElement = this.vieewElement.querySelectorAll('.logged-in');
+  render(element) {
+    if (element) this.vieewElement = element.querySelector('#navbar');
+    else this.vieewElement = DOMDoc.getElementById('navbar');
 
-    if (localStorage.authenticationToken) {
+    this.childView.style.display = 'flex';
+    const logoutElement = this.childView.querySelectorAll('.logged-out');
+    const loginElement = this.childView.querySelectorAll('.logged-in');
+
+    if (account.isAuthenticated()) {
       loginElement[0].style.display = 'flex';
       logoutElement[0].style.display = 'none';
 
@@ -52,10 +58,16 @@ export default class NavBarView {
       loginElement[1].style.display = 'none';
       logoutElement[1].style.display = 'block';
     }
+    this.vieewElement.appendChild(this.childView);
   }
 
+  /**
+   * Hides or Shows Navigation bar
+   * @param action {'hide' | 'show'}
+   * @private
+   */
   hideOrShowSideNav(action) {
-    const sideNav = this.vieewElement.querySelector('.side-nav');
+    const sideNav = this.childView.querySelector('.side-nav');
     const nav = sideNav.querySelector('.nav');
     if (action === 'hide') {
       sideNav.style.width = '0';
@@ -65,4 +77,16 @@ export default class NavBarView {
       nav.style.width = '250px';
     }
   }
+
+  initialize() {
+    this.render();
+  }
+
+  getViewElement() {
+    return this.childView;
+  }
 }
+
+const navBarView = new NavBarView();
+navBarView.init();
+export default navBarView;

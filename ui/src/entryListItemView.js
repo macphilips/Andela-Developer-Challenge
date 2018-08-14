@@ -1,5 +1,7 @@
 import { entryListItemTemplate } from './templates';
-import { formatter, getValue, htmlToElement } from './util';
+import {
+  formatter, getValue, htmlToElement, DOMDoc, windowInterface,
+} from './util';
 import Event from './event';
 
 export default class EntryRowView {
@@ -43,14 +45,14 @@ export default class EntryRowView {
       if (dataValue === 'view' || dataValue === 'edit' || dataValue === 'delete') {
         dataActionElement.onclick = () => {
           this.clickAction.notify({ action: dataValue, model: this.model });
-          this.dismissDropDownMenu();
+          EntryRowView.dismissDropDownMenu();
         };
       }
     }
     // Show dropdown
     const toggleAction = this.view.querySelector('[tc-data-action="dropdown-toggle"]');
     toggleAction.onclick = (e) => {
-      this.showDropDownMenu(e);
+      EntryRowView.showDropDownMenu(e);
     };
   }
 
@@ -80,25 +82,29 @@ export default class EntryRowView {
     }
   }
 
-  showDropDownMenu(e) {
+  static showDropDownMenu(e) {
     const { nextElementSibling } = e.target;
     const handler = (event) => {
       if (!event.target.matches('.dropdown-toggle-icon')) {
-        this.dismissDropDownMenu();
-        window.removeEventListener('click', handler);
+        EntryRowView.dismissDropDownMenu();
+        windowInterface.removeEventListener('click', handler);
       }
     };
     if (nextElementSibling.classList.contains('open')) {
       nextElementSibling.classList.remove('open');
     } else {
-      this.dismissDropDownMenu();
+      EntryRowView.dismissDropDownMenu();
       nextElementSibling.classList.add('open');
     }
-    window.addEventListener('click', handler);
+    windowInterface.addEventListener('click', handler);
   }
 
-  dismissDropDownMenu() {
-    const dropdownMenus = document.getElementsByClassName('dropdown-menu');
+  /**
+   * @static
+   * @private
+   */
+  static dismissDropDownMenu() {
+    const dropdownMenus = DOMDoc.getElementsByClassName('dropdown-menu');
     for (let i = 0; i < dropdownMenus.length; i += 1) {
       const openDropdown = dropdownMenus[i];
       if (openDropdown.classList.contains('open')) {

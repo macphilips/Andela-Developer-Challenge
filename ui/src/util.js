@@ -1,5 +1,15 @@
+
+// eslint-disable-next-line no-undef
+import { loadingButtonTemplate } from './templates';
+
+// eslint-disable-next-line no-undef
+export const DOMDoc = document;
+
+// eslint-disable-next-line no-undef
+export const windowInterface = window;
+
 export function htmlToElement(html) {
-  const template = document.createElement('template');
+  const template = DOMDoc.createElement('template');
   template.innerHTML = html.trim();
   return template.content.firstChild;
 }
@@ -21,7 +31,10 @@ export function getValue(context, contextStr) {
 function setElementValue(target, model) {
   const element = target;
   const data = element.getAttribute('tc-data-model');
-  const value = getValue(model, data);
+  let value = getValue(model, data);
+  if (value === 0) {
+    value = '0';
+  }
   if (element.nodeName === 'INPUT'
     || element.nodeName === 'SELECT'
     || element.nodeName === 'TEXTAREA') {
@@ -61,9 +74,14 @@ export function stopAlertTime() {
   clearTimeout(timer);
 }
 
+/**
+ * Show alert message
+ * @param msg {string}
+ * @param type {'success' | 'error'}
+ */
 export function showAlert(msg, type) {
   stopAlertTime();
-  const alert = document.getElementById('alert');
+  const alert = DOMDoc.getElementById('alert');
   if (!alert) return;
   alert.className = '';
   alert.classList.add('alert');
@@ -101,7 +119,7 @@ function stopToastTimer() {
 
 export function showToast(msg, type) {
   stopToastTimer();
-  const alert = document.getElementById('toast');
+  const alert = DOMDoc.getElementById('toast');
   if (!alert) return;
   alert.className = '';
   alert.classList.add('toast');
@@ -120,7 +138,54 @@ export function showToast(msg, type) {
   toastTimer = setTimeout(closeHandler, 8000);
 }
 
-
 export function trimDate(date) {
+  if (!date) return null;
   return date.substring(0, date.length - 5).trim();
+}
+
+// eslint-disable-next-line no-undef
+const storage = localStorage;
+
+export function storeToken(token) {
+  storage.authenticationToken = token;
+}
+
+export function clearToken() {
+  storage.clear();
+}
+
+export function getToken() {
+  if (typeof (Storage) !== 'undefined') {
+    // Code for localStorage/sessionStorage.
+    if (storage.authenticationToken) {
+      return storage.authenticationToken;
+    }
+  }
+  return null;
+}
+
+export function gotoUrl(url) {
+// eslint-disable-next-line no-undef
+  window.location.replace(url);
+}
+
+export function showLoadingAnim(btn, mode) {
+  const { children } = btn;
+  let visibility = 'hidden';
+  let opacity = '0';
+  if (mode === 'remove') {
+    visibility = 'visible';
+    opacity = '1';
+  }
+  for (let i = 0; i < children.length; i += 1) {
+    const child = children[i];
+    child.style.visibility = visibility;
+    child.style.opacity = opacity;
+  }
+
+  if (mode === 'remove') {
+    btn.removeChild(btn.querySelector('#loading'));
+  } else {
+    btn.appendChild(htmlToElement(loadingButtonTemplate));
+  }
 }

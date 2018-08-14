@@ -108,6 +108,7 @@ section {
     border: none;
     cursor: pointer;
     opacity: 0.8;
+    position: relative;
 }
 
 .btn.fit {
@@ -243,11 +244,26 @@ section {
 }
 
 .signin-top {
-    /* padding-top: 50px; */
+    padding: 50px 0;
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
+}
+
+@media only screen and (min-height: 640px) {
+    .form-title {
+        font-size: 1.6rem;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .signin-top {
+        /*padding-top: 50px;*/
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
 
 table {
@@ -1440,7 +1456,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     border-radius: 5px;
 }
 
-.nav-header .nav .signup:hover,.add-entry .create:hover {
+.nav-header .nav .signup:hover, .add-entry .create:hover {
     background-color: #fff;
     color: #347ac3;
     opacity: 1;
@@ -1452,7 +1468,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     }
 }
 
-#main {
+.main {
     margin-top: 100px;
 }
 
@@ -1912,4 +1928,55 @@ input.modal-header-input:focus, input.modal-header-input:active {
     line-height: 55px;
     font-size: 38px;
     font-weight: 300;
+}
+
+.loading-ball {
+    display: inline-block;
+    min-width: 60px;
+    position: relative;
+    min-height: 20px;
+}
+
+.loading-ball span {
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.loading-ball span:nth-child(1) {
+    left: 14px;
+    animation: loading-ball 1s infinite 0s;
+}
+
+.loading-ball span:nth-child(2) {
+    left: 30px;
+    animation: loading-ball 1s infinite 0.2s;
+}
+
+.loading-ball span:nth-child(3) {
+    left: 46px;
+    animation: loading-ball 1s infinite 0.4s;
+}
+
+@keyframes loading-ball {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.loading-ball-container {
+    height:  inherit;
+    position:  absolute;
+    left:  50%;
+    top:  50%;
+    transform: translate(-50%,-50%)
 }

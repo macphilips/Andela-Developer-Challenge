@@ -4,10 +4,10 @@ import { loadingTemplate } from './templates';
 
 export default class LoadingView {
   constructor() {
-    this.vieewElement = htmlToElement(loadingTemplate);
+    this.childView = htmlToElement(loadingTemplate);
   }
 
   getViewElement() {
-    return this.vieewElement;
+    return this.childView;
   }
 }

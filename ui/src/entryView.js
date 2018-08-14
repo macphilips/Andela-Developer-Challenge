@@ -1,5 +1,5 @@
 import {
-  bindPropertiesToElement, htmlToElement, showToast, trimDate,
+  bindPropertiesToElement, htmlToElement, showToast, trimDate, DOMDoc,
 } from './util';
 import { createEntryTemplate, viewEntryTemplate } from './templates';
 import Event from './event';
@@ -35,7 +35,7 @@ export default class CreateEntryView {
       const { content } = data;
       const split = content.split(/[\r\n]+/);
       for (let i = 0; i < split.length; i += 1) {
-        const paragraph = document.createElement('p');
+        const paragraph = DOMDoc.createElement('p');
         paragraph.innerHTML = split[i];
         viewEntry.appendChild(paragraph);
       }
