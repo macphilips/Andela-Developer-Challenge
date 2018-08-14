@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+      let pathname = location.pathname;
+      console.log(pathname);
+      if (pathname.indexOf('index.html') !== -1) {
+        pathname = pathname.replace('index.html', '');
+        console.log(pathname);
+        location.replace(pathname);
+      }
+    </script>
+    <base href="./"/>
     <meta charset="UTF-8">
     <title>My Diary</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="favicon.ico"/>
     <link rel="stylesheet" href="css/app.css">
-    <script src="dist/index.bundle.js"></script>
 </head>
-<style>
-
-</style>
 <body>
-<div id="navbar"></div>
-<div class="bg bgimg navbar-top-padding fade-in">
-    <div class="overlay">
-        <div class="about left">
-            <h1>MyDiary</h1>
-            <p>MyDiary is an online personal journal where users can pen down their thoughts and feelings, it's simple and convenient in use.</p>
-            <div>
-                <a class="btn get-started" href="signup.html">Get Started</a>
-            </div>
-            <div class="show-on-mobile">
-                <a class="btn signin " href="signin.html">Sign In</a>
-            </div>
-        </div>
-    </div>
+<div id="main"></div>
+
+<div id="toast" class="toast error">
+    <span class="close-btn">&times;</span>
+    <p class="alert-msg">Alert Message</p>
 </div>
+<script src="dist/app.bundle.js"></script>
 </body>
 </html>
