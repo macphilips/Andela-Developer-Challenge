@@ -1,14 +1,12 @@
-import { htmlToElement, showToast, DOMDoc } from './utils/util';
-import { entryListHeader, emptyListTemple, floatingButton } from './utils/templates';
+import { DOMDoc, htmlToElement, showToast } from './utils/util';
+import { emptyListTemple, entryListHeader, floatingButton } from './utils/templates';
 import EntryRowView from './views/entryRowView';
 import Event from './utils/event';
 import CreateEntryView from './views/entryView';
 import ConfirmDeleteEntryView from './views/confirmDeleteEntryView';
 import EntryItemModel from './views/entryItemModel';
-import { entriesEndpoint } from './utils/endpointUrl';
-import http from './services/fetchWrapper';
 import navBarView from './views/navBarView';
-import modalService from './services/modalViewService';
+import { apiRequest, modalService } from './services';
 
 export class EntryListView {
   static contains(arr, element) {
@@ -179,7 +177,7 @@ export class EntryListController {
 
   initialize() {
     const adapter = this.entryTableView.getAdapter();
-    http.get(entriesEndpoint).then((result) => {
+    apiRequest.getEntries().then((result) => {
       const { entries } = result;
       const models = [];
       for (let i = 0; i < entries.length; i += 1) {

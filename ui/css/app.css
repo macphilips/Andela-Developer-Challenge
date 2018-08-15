@@ -1829,6 +1829,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     -webkit-box-align: center;
     -ms-flex-align: center;
     align-items: center;
+    padding-bottom: 16px;
 }
 
 .entries-container > .header .add-entry {

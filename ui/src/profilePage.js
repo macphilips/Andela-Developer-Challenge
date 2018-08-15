@@ -1,11 +1,9 @@
 import {
   bindPropertiesToElement, DOMDoc, getFieldsAsObject, htmlToElement, showToast, trimDate,
 } from './utils/util';
-import { changePassword, reminderUrl } from './utils/endpointUrl';
 import navBarView from './views/navBarView';
-import http from './services/fetchWrapper';
+import { account, apiRequest } from './services';
 import { profilePageTemplate } from './utils/templates';
-import account from './services/account';
 import Event from './utils/event';
 
 export default class ProfilePage {
@@ -255,7 +253,7 @@ export default class ProfilePage {
       const changePasswordForm = this.viewElement.querySelector('#changePassword');
       const data = getFieldsAsObject(changePasswordForm);
       if (data.newPassword === data.matchPassword) {
-        ProfilePage.consumeAPIResult(http.post(changePassword, data));
+        ProfilePage.consumeAPIResult(apiRequest.changePassword(data));
       } else {
         showToast('Password doesn\'t match', 'error');
       }
@@ -268,7 +266,7 @@ export default class ProfilePage {
       const reminderForm = this.viewElement.querySelector('#reminderForm');
       const data = getFieldsAsObject(reminderForm);
       data.time = `${data.hours}:${data.minutes}`;
-      ProfilePage.consumeAPIResult(http.put(reminderUrl, data));
+      ProfilePage.consumeAPIResult(apiRequest.updateReminder(data));
     };
   }
 

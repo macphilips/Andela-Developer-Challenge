@@ -5,7 +5,7 @@ import route from './route';
 import SignInPage from './signInPage';
 import ProfilePage from './profilePage';
 import HomePage from './homePage';
-import account from './services/account';
+import { account } from './services';
 import SignUpPage from './signUpPage';
 
 class MainView {

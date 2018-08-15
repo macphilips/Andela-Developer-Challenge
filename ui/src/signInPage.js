@@ -2,7 +2,7 @@ import {
   getFieldsAsObject, gotoUrl, htmlToElement, showAlert, showLoadingAnim, validateForm,
 } from './utils/util';
 import { signInPageTemplate } from './utils/templates';
-import loginService from './services/loginService';
+import { loginService } from './services';
 
 export default class SignInPage {
   constructor() {

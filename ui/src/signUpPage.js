@@ -7,9 +7,8 @@ import {
   showLoadingAnim,
   validateForm,
 } from './utils/util';
-import { registrationEndpoint } from './utils/endpointUrl';
-import http from './services/fetchWrapper';
 import { signUpPageTemplate } from './utils/templates';
+import { apiRequest } from './services';
 
 export default class SignUpPage {
   constructor() {
@@ -25,7 +24,7 @@ export default class SignUpPage {
       if (validateForm(signUpForm) && matchPassword(signUpForm)) {
         showLoadingAnim(button, 'show');
         const data = getFieldsAsObject(signUpForm);
-        http.post(registrationEndpoint, data).then(() => {
+        apiRequest.createUser(data).then(() => {
           showLoadingAnim(button, 'remove');
           gotoUrl('#/dashboard');
         }).catch((err) => {

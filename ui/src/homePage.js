@@ -1,7 +1,7 @@
 import navBarView from './views/navBarView';
 import { DOMDoc, gotoUrl, htmlToElement } from './utils/util';
 import { homeTemplate } from './utils/templates';
-import account from './services/account';
+import { account } from './services';
 import Event from './utils/event';
 
 export default class HomePage {

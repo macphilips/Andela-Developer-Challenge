@@ -1,7 +1,7 @@
 import { getToken, storeToken } from '../utils/util';
 import Event from '../utils/event';
 
-class FetchWrapper {
+export default class FetchWrapper {
   constructor() {
     this.event = new Event();
   }
@@ -45,8 +45,17 @@ class FetchWrapper {
       .then(res => res.json());
   }
 
-  get(url) {
-    return this.request('GET', url);
+  get(url, data) {
+    const esc = encodeURIComponent;
+    let query = '';
+    if (data) {
+      const params = Object.keys(data)
+        .map(k => `${esc(k)}=${esc(data[k])}`)
+        .join('&');
+      query = `?${params}`;
+    }
+    const urlQuery = `${url}${query}`;
+    return this.request('GET', urlQuery);
   }
 
   post(url, data) {
@@ -61,6 +70,3 @@ class FetchWrapper {
     return this.request('DELETE', url, data);
   }
 }
-
-const http = new FetchWrapper();
-export default http;

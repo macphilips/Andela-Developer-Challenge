@@ -1,12 +1,10 @@
 import {
-  bindPropertiesToElement, htmlToElement, showToast, trimDate, DOMDoc,
+  bindPropertiesToElement, DOMDoc, htmlToElement, showToast, trimDate,
 } from '../utils/util';
 import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
 import Event from '../utils/event';
-import { entriesEndpoint, getEntryUrlByID } from '../utils/endpointUrl';
-import http from '../services/fetchWrapper';
+import { apiRequest } from '../services';
 import { getTimeString } from '../../../server/src/utils/index';
-
 
 export default class CreateEntryView {
   constructor(model, action) {
@@ -75,11 +73,12 @@ export default class CreateEntryView {
         const title = this.viewElement.querySelector('[tc-data-model="title"]').value;
         if (this.mode === 'edit') {
           const data = { ...this.model };
+          const { id } = data;
           data.content = content;
           data.title = title;
-          this.consumeApiResult(http.put(getEntryUrlByID(this.model.id), data), true);
+          this.consumeApiResult(apiRequest.updateEntry(id, data), true);
         } else if (this.mode === 'create') {
-          this.consumeApiResult(http.post(entriesEndpoint, { content, title }), false);
+          this.consumeApiResult(apiRequest.createEntry({ content, title }), false);
         } else {
           this.buttonClicked.notify();
         }

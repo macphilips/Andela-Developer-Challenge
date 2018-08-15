@@ -1,11 +1,15 @@
-import http from './fetchWrapper';
-import account from './account';
 import { clearToken, storeToken } from '../utils/util';
-import { authenticationEndpoint } from '../utils/endpointUrl';
 
-class LoginService {
-  constructor(accountService) {
+export default class LoginService {
+  /**
+   *
+   * @param accountService {UserAccount}
+   * @param http {FetchWrapper}
+   * @param apiRequest {ApiRequestService}
+   */
+  constructor(accountService, http, apiRequest) {
     this.account = accountService;
+    this.apiRequest = apiRequest;
     http.event.attach(() => {
       this.logout();
     });
@@ -17,12 +21,9 @@ class LoginService {
   }
 
   login(credentials) {
-    return http.post(authenticationEndpoint, credentials).then((res) => {
+    return this.apiRequest.authenticateUser(credentials).then((res) => {
       storeToken(res.token);
       return this.account.identify(true);
     });
   }
 }
-
-const loginService = new LoginService(account);
-export default loginService;

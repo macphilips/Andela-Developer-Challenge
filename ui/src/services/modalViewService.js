@@ -38,7 +38,7 @@ class ModalView {
   }
 }
 
-class ModalService {
+export default class ModalService {
   constructor() {
     this.modalVieew = new ModalView();
   }
@@ -60,5 +60,3 @@ class ModalService {
     return this.modalVieew;
   }
 }
-const modalService = new ModalService();
-export default modalService;
