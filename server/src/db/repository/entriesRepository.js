@@ -1,6 +1,6 @@
 import sql from '../sql';
 import Entry from '../../models/entry';
-import { mapAndWrapDbPromise } from '../../utils';
+import { mapAndWrapDbPromise, MAX_INT } from '../../utils';
 import BaseRepository from './baseRepository';
 
 export default class EntryRepository extends BaseRepository {
@@ -9,15 +9,15 @@ export default class EntryRepository extends BaseRepository {
   }
 
   findById(id) {
-    return super.findById({ id }, Entry.mapDBEntriesEntityToEntries);
+    return super.findById({ id }, Entry.mapDBEntityToEntry);
   }
 
   save(input) {
-    return super.save(input, Entry.mapDBEntriesEntityToEntries);
+    return super.save(input, Entry.mapDBEntityToEntry);
   }
 
-  findAllByCreator(userId) {
-    return mapAndWrapDbPromise(this.db.any('SELECT * FROM entries WHERE user_id = $1', +userId),
-      Entry.mapDBArrayEntriesToEntries);
+  findAllByCreator(userId, pageable = { page: 0, size: MAX_INT }) {
+    return mapAndWrapDbPromise(this.db.any(this.sql.entriesByUserPageable, { ...pageable, userId }),
+      Entry.mapDBArrayEntriesToEntries, pageable);
   }
 }
