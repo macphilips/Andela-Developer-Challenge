@@ -355,6 +355,7 @@ table {
 
 .empty-list {
     display: flex;
+    margin-top: 24px;
     justify-content: center;
     align-items: center;
     height: 50px;
@@ -1816,10 +1817,9 @@ input.modal-header-input:focus, input.modal-header-input:active {
     margin: 1.5rem auto;
     padding: 0 20px;
     max-width: 900px;
-    /*max-width: 1040px;*/
 }
 
-.entries-container > .header {
+.entries-container .header, .pagination-container {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
@@ -1832,7 +1832,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     padding-bottom: 16px;
 }
 
-.entries-container > .header .add-entry {
+.entries-container .header .add-entry {
     margin: auto 0 auto auto;
     display: none;
 }
@@ -1842,7 +1842,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
 }
 
 @media only screen and (min-width: 600px) {
-    .entries-container > .header .add-entry {
+    .entries-container .header .add-entry {
         display: flex;
     }
 
@@ -1975,9 +1975,35 @@ input.modal-header-input:focus, input.modal-header-input:active {
 }
 
 .loading-ball-container {
-    height:  inherit;
-    position:  absolute;
-    left:  50%;
-    top:  50%;
-    transform: translate(-50%,-50%)
+    height: inherit;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%)
+}
+
+.pagination-container {
+    justify-content: flex-end;
+    padding: 16px 0 0;
+}
+
+.pagination-container > div:first-child {
+    padding-right: 8px;
+}
+
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+    border: 1px solid #ddd;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
 }

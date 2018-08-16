@@ -18,11 +18,14 @@ export const deleteDialogTemple = `
         </div>`;
 
 export const entryListHeader = `
-        <div class="header">
-            <span class="title">Your Diary Entries</span>
-            <div class="add-entry">
-                <a id="addEntry" title="Add Entry" class="btn create" role="button">Add Diary Entry</a>
-            </div>
+        <div>
+          <div class="header">
+              <span class="title">Your Diary Entries</span>
+              <div class="add-entry">
+                  <a id="addEntry" title="Add Entry" class="btn create" role="button">Add Diary Entry</a>
+              </div>
+          </div>
+          <div id="pagination"></div>
         </div>`;
 
 export const entryListItemTemplate = `
@@ -446,3 +449,18 @@ export const profilePageTemplate = `
 `;
 
 export const notFoundTemplate = '<div></div>';
+
+export const footerTemplate = '<div></div>';
+
+export const paginationTemplate = `
+<div class="pagination-container">
+  <div tc-data-page-index="page">
+    <span tc-data-model="visibleEntries"></span>
+    &nbsp;<span>of</span> &nbsp;
+    <span tc-data-model="totalEntries"></span>
+  </div>
+  <div class="pagination">
+    <a data-direction="prev">❮</a>
+    <a data-direction="next">❯</a>
+  </div>
+</div>`;

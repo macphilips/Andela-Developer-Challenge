@@ -9,6 +9,10 @@ import {
 } from '../utils/endpointUrl';
 
 export default class ApiRequestService {
+  /**
+   *
+   * @param httpClient {FetchWrapper}
+   */
   constructor(httpClient) {
     this.httpClient = httpClient;
   }

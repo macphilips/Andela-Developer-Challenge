@@ -40,7 +40,7 @@ BEGIN
   RETURN QUERY SELECT *
                FROM ${schema~}.entries
                WHERE user_id = userId
-               ORDER BY id ASC
+               ORDER BY created_date DESC
                LIMIT size
                OFFSET startOffset;
 END;

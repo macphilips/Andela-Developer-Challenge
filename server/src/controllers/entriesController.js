@@ -7,8 +7,9 @@ import HttpError from '../utils/httpError';
 export default class EntriesController {
   static getEntries(req, res) {
     const pageable = {};
-    pageable.page = req.query.page || 1;
-    pageable.size = req.query.size || MAX_INT;
+    // todo return 400 for invalid query input
+    pageable.page = (!Number.isNaN(Number(req.query.page))) ? req.query.page || 1 : 1;
+    pageable.size = (!Number.isNaN(Number(req.query.size))) ? req.query.size || MAX_INT : MAX_INT;
     db.connection.entries.findAllByCreator(req.userId, pageable)
       .then((result) => {
         const data = result;

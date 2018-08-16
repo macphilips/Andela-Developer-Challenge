@@ -96,29 +96,13 @@ class MainViewController {
     if (ctrl.onReady) {
       this.mainView.addChild(this.loadingView.getViewElement());
       ctrl.onReady.attach(() => {
-        const loader = this.mainView.getViewElement().querySelector('#loader');
-        this.mainView.removeChild(loader);
+        this.mainView.removeAllChildren();
         this.mainView.addChild(ctrl.getViewElement());
       });
     } else {
       this.mainView.addChild(ctrl.getViewElement());
     }
     if (ctrl.initialize) ctrl.initialize();
-  }
-
-  removeOldElement(e, routes) {
-    if (e.oldURL) {
-      const start = e.oldURL.indexOf('#');
-      let oldPath = '/';
-      if (start > 0) {
-        oldPath = e.oldURL.substring(start + 1);
-      }
-      const routee = routes[oldPath];
-      if (routee && routee.controller) {
-        const oldCtrl = routee.controller;
-        this.mainView.removeChild(oldCtrl.getViewElement());
-      }
-    }
   }
 
   getArguments(params) {
