@@ -117,19 +117,24 @@ function stopToastTimer() {
   clearTimeout(toastTimer);
 }
 
-export function showToast(msg, type) {
+export function showToast(data, type) {
   stopToastTimer();
   const alert = DOMDoc.getElementById('toast');
   if (!alert) return;
   alert.className = '';
   alert.classList.add('toast');
   const msgElement = alert.querySelector('.alert-msg');
+  if (data.message) {
+    msgElement.style.display = 'block';
+  } else {
+    msgElement.style.display = 'none';
+  }
   const closeElement = alert.querySelector('.close-btn');
   const closeHandler = () => {
     alert.classList.remove('show');
     alert.classList.add('dismiss');
   };
-  msgElement.innerHTML = msg;
+  bindPropertiesToElement(alert.querySelectorAll('[tc-data-model]'), data);
   alert.classList.add('show');
   alert.classList.remove('dismiss');
   alert.classList.add(type);

@@ -1,23 +1,16 @@
 import {
-  getFieldsAsObject,
-  gotoUrl,
-  htmlToElement,
-  matchPassword,
-  showAlert,
-  showLoadingAnim,
-  validateForm,
+  getFieldsAsObject, gotoUrl, matchPassword, showAlert, showLoadingAnim, validateForm,
 } from './utils/util';
 import { signUpPageTemplate } from './utils/templates';
 import { apiRequest } from './services';
+import BasePage from './basePage';
 
-export default class SignUpPage {
+export default class SignUpPage extends BasePage {
   constructor() {
-    this.signUpPageTemplate = signUpPageTemplate;
-    this.viewElement = htmlToElement(this.signUpPageTemplate);
-    this.registerSignUpEvent();
+    super(signUpPageTemplate);
   }
 
-  registerSignUpEvent() {
+  registerPageEvent() {
     const signUpForm = this.viewElement.querySelector('#signupForm');
     const createAccount = () => {
       const button = signUpForm.querySelector('.btn');
@@ -38,9 +31,5 @@ export default class SignUpPage {
       const btn = signUpForm.querySelector('.btn');
       btn.onclick = createAccount;
     }
-  }
-
-  getViewElement() {
-    return this.viewElement;
   }
 }

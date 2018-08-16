@@ -93,12 +93,12 @@ export default class CreateEntryView {
   consumeApiResult(promise, update) {
     promise.then((res) => {
       if (update) {
-        showToast('Entry updated', 'success');
+        showToast({ title: 'Entry updated' }, 'success');
       }
       this.buttonClicked.notify(res);
     }).catch((err) => {
-      const message = (update) ? 'Unable to update entry' : 'Unable to save entry';
-      showToast(`${message}<br>${err.message}`, 'error');
+      const title = (update) ? 'Unable to update entry' : 'Unable to save entry';
+      showToast({ title, message: err.message }, 'error');
     });
   }
 }

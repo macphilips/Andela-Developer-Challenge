@@ -18,11 +18,25 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-<div id="main"></div>
+<div id="main">
+    <div id="loader" class="center-in-page loading-bg">
+        <div class="loading-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+</div>
 
 <div id="toast" class="toast error">
-    <span class="close-btn">&times;</span>
-    <p class="alert-msg">Alert Message</p>
+    <div class="title">
+        <span class="close-btn">&times;</span>
+        <p tc-data-model="title">Title</p>
+    </div>
+    <div>
+        <p tc-data-model="message" class="alert-msg"></p>
+    </div>
 </div>
 <script src="dist/app.bundle.js"></script>
 </body>

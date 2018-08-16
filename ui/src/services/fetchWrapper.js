@@ -11,7 +11,7 @@ export default class FetchWrapper {
    *
    * @param method {'DELETE' | 'GET' | 'POST' |  'PUT'}
    * @param url {string}
-   * @param [body] {object} [body=null]
+   * @param [body] {object}
    * @returns {Promise<T>}
    * @private
    */
@@ -23,17 +23,15 @@ export default class FetchWrapper {
         'Content-Type': 'application/json',
       },
     };
-    const token = getToken();
-    if (token) {
-      fetchData.headers['X-Access-Token'] = token;
+    if (getToken()) {
+      fetchData.headers['X-Access-Token'] = getToken();
     }
     // eslint-disable-next-line no-undef
     return fetch(url, fetchData)
       .then((res) => {
         const { status } = res;
         if (status === 401) {
-          this.event.notify({});
-          return null;
+          return this.event.notify({});
         }
         if (status < 400 || status >= 600) {
           const accessToken = res.headers.get('X-Access-Token');

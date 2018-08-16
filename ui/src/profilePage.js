@@ -5,6 +5,7 @@ import navBarView from './views/navBarView';
 import { account, apiRequest } from './services';
 import { profilePageTemplate } from './utils/templates';
 import Event from './utils/event';
+import footerView from './views/footerView';
 
 export default class ProfilePage {
   /**
@@ -74,9 +75,9 @@ export default class ProfilePage {
    */
   static consumeAPIResult(promise) {
     promise.then((result) => {
-      showToast(result.message, 'success');
+      showToast({ title: result.message }, 'success');
     }).catch((err) => {
-      showToast(err.message, 'error');
+      showToast({ title: err.message }, 'error');
     });
   }
 
@@ -255,7 +256,7 @@ export default class ProfilePage {
       if (data.newPassword === data.matchPassword) {
         ProfilePage.consumeAPIResult(apiRequest.changePassword(data));
       } else {
-        showToast('Password doesn\'t match', 'error');
+        showToast({ title: 'Validation Error', message: 'Password doesn\'t match' }, 'error');
       }
     };
   }
@@ -282,6 +283,7 @@ export default class ProfilePage {
 
   initialize() {
     navBarView.render(this.viewElement);
+    footerView.render(this.viewElement);
     this.timeInputController();
     account.identify()
       .then((result) => {
@@ -293,7 +295,7 @@ export default class ProfilePage {
         this.onReady.notify({});
       })
       .catch((err) => {
-        showToast(err.message, 'error');
+        showToast({ title: 'Error', message: err.message }, 'error');
         this.onReady.notify({});
       });
   }

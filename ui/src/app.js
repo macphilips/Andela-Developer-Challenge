@@ -7,6 +7,7 @@ import ProfilePage from './profilePage';
 import HomePage from './homePage';
 import { account } from './services';
 import SignUpPage from './signUpPage';
+import PageNotFound from './notFount';
 
 class MainView {
   constructor() {
@@ -48,9 +49,6 @@ class MainViewController {
    */
   constructor(mainView) {
     this.mainView = mainView;
-    // this.adapter = new EntryListViewAdapter();
-    // this.entryTableView = new EntryListView(this.adapter);
-    // this.entryTableController = new EntryListController(this.entryTableView);
     const tAdapter = {
       Type: EntryListViewAdapter, params: null,
     };
@@ -68,7 +66,7 @@ class MainViewController {
     route.registerRoutes('/signin', SignInPage, false);
     route.registerRoutes('/signup', SignUpPage, false);
     route.registerRoutes('/', HomePage, false);
-    route.registerRoutes('*', HomePage, false);
+    route.registerRoutes('*', PageNotFound, false);
   }
 
   route() {
@@ -77,32 +75,36 @@ class MainViewController {
       const routes = route.routes[url] || route.routes['*'];
       if (routes && routes.controller) {
         this.mainView.removeAllChildren();
+        this.mainView.addChild(this.loadingView.getViewElement());
         const { controller, requireAuth } = routes;
         const ctrl = this.createInstant(controller);
-        if (requireAuth) {
-          account.identify().then(() => {
-            this.renderView(ctrl);
-          }).catch(() => {
-            gotoUrl('#/signin');
-          });
-        } else {
+        account.identify().then(() => {
           this.renderView(ctrl);
-        }
+        }).catch(() => {
+          if (requireAuth) {
+            gotoUrl('#/signin');
+          } else {
+            this.renderView(ctrl);
+          }
+        });
       }
     };
   }
 
   renderView(ctrl) {
     if (ctrl.onReady) {
-      this.mainView.addChild(this.loadingView.getViewElement());
       ctrl.onReady.attach(() => {
-        this.mainView.removeAllChildren();
-        this.mainView.addChild(ctrl.getViewElement());
+        this.addViewToMainView(ctrl);
       });
     } else {
-      this.mainView.addChild(ctrl.getViewElement());
+      this.addViewToMainView(ctrl);
     }
     if (ctrl.initialize) ctrl.initialize();
+  }
+
+  addViewToMainView(ctrl) {
+    this.mainView.removeAllChildren();
+    this.mainView.addChild(ctrl.getViewElement());
   }
 
   getArguments(params) {

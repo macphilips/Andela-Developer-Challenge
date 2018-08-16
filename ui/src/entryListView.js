@@ -8,6 +8,7 @@ import EntryItemModel from './views/entryItemModel';
 import navBarView from './views/navBarView';
 import { apiRequest, modalService } from './services';
 import PaginationView from './views/paginationView';
+import footerView from './views/footerView';
 
 export class EntryListView {
   static contains(arr, element) {
@@ -25,8 +26,11 @@ export class EntryListView {
 
     const navbar = DOMDoc.createElement('div');
     navbar.setAttribute('id', 'navbar');
+    const footer = DOMDoc.createElement('div');
+    footer.setAttribute('id', 'footer');
     this.root.appendChild(navbar);
     this.root.appendChild(this.viewElement);
+    this.root.appendChild(footer);
 
     this.addButtonClicked = new Event(this);
     this.paginationView = new PaginationView();
@@ -35,7 +39,7 @@ export class EntryListView {
     });
   }
 
-  getTableBody() {
+  getListBody() {
     const { adapter } = this;
     const entryList = DOMDoc.createElement('div');
     entryList.classList.add('entry-list');
@@ -54,24 +58,27 @@ export class EntryListView {
     const handler = () => {
       this.addButtonClicked.notify({});
     };
-    const entryListHead = htmlToElement(entryListHeader);
-    const floatBtnElement = htmlToElement(floatingButton);
-    const entryListBody = this.getTableBody();
-
-    this.viewElement.innerHTML = '';
-    this.viewElement.appendChild(entryListHead);
-    this.viewElement.appendChild(entryListBody);
-    this.viewElement.appendChild(floatBtnElement);
+    const { entryListHead, floatBtnElement } = this.appendBody();
     navBarView.render(this.root);
-
+    footerView.render(this.root);
     const addButton = this.viewElement.querySelector('#addEntry');
     addButton.onclick = handler;
     floatBtnElement.onclick = handler;
-
     const paginationViewHolder = entryListHead.querySelector('#pagination');
     paginationViewHolder.innerHTML = '';
     paginationViewHolder.appendChild(this.paginationView.getViewElement());
     this.paginationView.render(this.adapter.getPageInfo());
+  }
+
+  appendBody() {
+    const entryListHead = htmlToElement(entryListHeader);
+    const floatBtnElement = htmlToElement(floatingButton);
+    const entryListBody = this.getListBody();
+    this.viewElement.innerHTML = '';
+    this.viewElement.appendChild(entryListHead);
+    this.viewElement.appendChild(entryListBody);
+    this.viewElement.appendChild(floatBtnElement);
+    return { entryListHead, floatBtnElement };
   }
 
   getAdapter() {
@@ -133,7 +140,8 @@ export class EntryListViewAdapter {
             if (args.status === 'success') {
               this.removeItems([itemModel]);
             } else {
-              showToast(`Unable to delete ${entryRowView.getModel()}`, 'error');
+              const data = { title: 'Error', message: `Unable to delete ${entryRowView.getModel()}` };
+              showToast(data, 'error');
             }
           }
         });

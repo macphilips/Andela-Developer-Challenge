@@ -1,17 +1,16 @@
 import {
-  getFieldsAsObject, gotoUrl, htmlToElement, showAlert, showLoadingAnim, validateForm,
+  getFieldsAsObject, gotoUrl, showAlert, showLoadingAnim, validateForm,
 } from './utils/util';
 import { signInPageTemplate } from './utils/templates';
 import { loginService } from './services';
+import BasePage from './basePage';
 
-export default class SignInPage {
+export default class SignInPage extends BasePage {
   constructor() {
-    this.signInPageTemplate = signInPageTemplate;
-    this.viewElement = htmlToElement(this.signInPageTemplate);
-    this.registerSignInEvent();
+    super(signInPageTemplate);
   }
 
-  registerSignInEvent() {
+  registerPageEvent() {
     const signInForm = this.viewElement.querySelector('#signinForm');
     const signIn = () => {
       const button = signInForm.querySelector('.btn');
@@ -32,9 +31,5 @@ export default class SignInPage {
       const btn = signInForm.querySelector('.btn');
       btn.onclick = signIn;
     }
-  }
-
-  getViewElement() {
-    return this.viewElement;
   }
 }

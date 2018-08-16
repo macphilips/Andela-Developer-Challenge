@@ -3,6 +3,7 @@ import { DOMDoc, gotoUrl, htmlToElement } from './utils/util';
 import { homeTemplate } from './utils/templates';
 import { account } from './services';
 import Event from './utils/event';
+import footerView from './views/footerView';
 
 export default class HomePage {
   constructor() {
@@ -28,6 +29,7 @@ export default class HomePage {
       .catch(() => {
         this.viewElement = htmlToElement(homeTemplate);
         navBarView.render(this.viewElement);
+        footerView.render(this.viewElement);
         this.onReady.notify({});
       });
   }
