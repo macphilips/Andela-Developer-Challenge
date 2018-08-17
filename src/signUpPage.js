@@ -1,5 +1,5 @@
 import {
-  getFieldsAsObject, gotoUrl, matchPassword, showAlert, showLoadingAnim, validateForm,
+  getFormFieldsAsObject, gotoUrl, matchPassword, showAlert, showLoadingAnim, validateForm,
 } from './utils';
 import { signUpPageTemplate } from './utils/templates';
 import { apiRequest } from './services';
@@ -16,14 +16,14 @@ export default class SignUpPage extends BasePage {
       const button = signUpForm.querySelector('.btn');
       if (validateForm(signUpForm) && matchPassword(signUpForm)) {
         showLoadingAnim(button, 'show');
-        const data = getFieldsAsObject(signUpForm);
+        const data = getFormFieldsAsObject(signUpForm);
         apiRequest.createUser(data).then(() => {
-          showLoadingAnim(button, 'remove');
           gotoUrl('#/dashboard');
         }).catch((err) => {
           const { message } = err;
-          showLoadingAnim(button, 'remove');
           showAlert(`Registration Failed:<br>${message}`, 'error');
+        }).finally(() => {
+          showLoadingAnim(button, 'remove');
         });
       }
     };

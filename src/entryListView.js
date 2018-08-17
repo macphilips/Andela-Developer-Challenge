@@ -19,10 +19,23 @@ export class EntryListView {
     return items.length > 0;
   }
 
+  static registerButtonLister(arg) {
+    return (context, result) => {
+      const { entry } = result;
+      const { model } = arg;
+      model.title = entry.title;
+      model.content = entry.content;
+      model.lastModified = entry.lastModified;
+      model.createdDate = entry.createdDate;
+      modalService.getModalView().dismiss();
+    };
+  }
+
   constructor(adapter) {
     this.adapter = adapter;
     this.root = htmlToElement(entryListPageTemplate);
     this.addButtonClicked = new Event(this);
+    this.refresh = new Event(this);
     this.paginationView = new PaginationView();
     this.floatBtn = this.root.querySelector('#floatBtn .floating-button ');
     this.floatBtn.style.transform = 'scale(1)';
@@ -66,12 +79,50 @@ export class EntryListView {
     if (adapter.getSize() > 0) {
       for (let i = 0; i < adapter.getSize(); i += 1) {
         const viewItem = adapter.getViewItem(i);
+        this.registerViewItemEvents(viewItem);
         entryList.appendChild(viewItem.getViewElement());
       }
     } else {
       entryList.appendChild(htmlToElement(emptyListTemple.trim()));
     }
     return entryList;
+  }
+
+  registerViewItemEvents(viewItem) {
+    viewItem.clickAction.attach((source, arg) => {
+      if (arg && arg.action === 'delete') {
+        this.openConfirmationDialog(viewItem);
+      } else {
+        const entryView = new CreateEntryView(arg.model, arg.action);
+        entryView.buttonClicked.attach(EntryListView.registerButtonLister(arg));
+        modalService.open(entryView);
+      }
+    });
+  }
+
+  openConfirmationDialog(viewItem) {
+    const confirmDeleteView = new ConfirmDeleteEntryView(viewItem.getModel());
+    confirmDeleteView.actionButtonClicked.attach((context, args) => {
+      if (args.action === 'ok') {
+        if (args.status === 'success') {
+          this.refresh.notify();
+        } else {
+          const data = { title: 'Error', message: `Unable to delete ${viewItem.getModel()}` };
+          showToast(data, 'error');
+        }
+      }
+    });
+    modalService.open(confirmDeleteView);
+  }
+
+  openCreateEntryView() {
+    const component = new CreateEntryView();
+    component.buttonClicked.attach((context, args) => {
+      modalService.getModalView().dismiss();
+      this.adapter.addItems([new EntryItemModel(args.entry)]);
+      this.refresh.notify();
+    });
+    modalService.open(component);
   }
 
   render() {
@@ -83,7 +134,8 @@ export class EntryListView {
 
   registerAddBtnClicked() {
     const handler = () => {
-      this.addButtonClicked.notify({});
+      // this.addButtonClicked.notify({});
+      this.openCreateEntryView();
     };
     const addButton = this.root.querySelectorAll('.add-btn-js');
     for (let i = 0; i < addButton.length; i += 1) {
@@ -91,6 +143,10 @@ export class EntryListView {
     }
   }
 
+  /**
+   *
+   * @returns {EntryListViewAdapter}
+   */
   getAdapter() {
     return this.adapter;
   }
@@ -121,18 +177,6 @@ export class EntryListView {
 }
 
 export class EntryListViewAdapter {
-  static registerButtonLister(arg) {
-    return (context, result) => {
-      const { entry } = result;
-      const { model } = arg;
-      model.title = entry.title;
-      model.content = entry.content;
-      model.lastModified = entry.lastModified;
-      model.createdDate = entry.createdDate;
-      modalService.getModalView().dismiss();
-    };
-  }
-
   constructor() {
     this.data = [];
     this.viewItems = [];
@@ -158,29 +202,8 @@ export class EntryListViewAdapter {
 
   addItem(itemModel) {
     const entryRowView = new EntryRowView(itemModel);
-    entryRowView.clickAction.attach((source, arg) => {
-      if (arg && arg.action === 'delete') {
-        const confirmDeleteView = new ConfirmDeleteEntryView(entryRowView.getModel());
-        confirmDeleteView.actionButtonClicked.attach((context, args) => {
-          if (args.action === 'ok') {
-            if (args.status === 'success') {
-              this.removeItems([itemModel]);
-            } else {
-              const data = { title: 'Error', message: `Unable to delete ${entryRowView.getModel()}` };
-              showToast(data, 'error');
-            }
-          }
-        });
-        modalService.open(confirmDeleteView);
-      } else {
-        const entryView = new CreateEntryView(arg.model, arg.action);
-        entryView.buttonClicked.attach(EntryListViewAdapter.registerButtonLister(arg));
-        modalService.open(entryView);
-      }
-    });
     this.data.push(itemModel);
     this.viewItems.push(entryRowView);
-    // this.notifyChangeObservers();
   }
 
   addItems(items) {
@@ -190,7 +213,6 @@ export class EntryListViewAdapter {
   removeItem(model) {
     this.viewItems = this.viewItems.filter(viewItem => viewItem.getModel().id !== model.id);
     this.data = this.data.filter(item => model.id !== item.id);
-    // this.notifyChangeObservers();
   }
 
   removeItems(items) {
@@ -229,21 +251,22 @@ export class EntryListController {
    */
   constructor(entryListView) {
     this.page = 1;
-    this.size = 25;
+    this.size = 10;
     this.entryListView = entryListView;
-    entryListView.addButtonClicked.attach(() => {
-      const component = new CreateEntryView();
-      component.buttonClicked.attach((context, args) => {
-        modalService.getModalView().dismiss();
-        this.entryListView.getAdapter().addItems([new EntryItemModel(args.entry)]);
-      });
-      modalService.open(component);
-    });
     entryListView.getPaginationView().onChangePage.attach((context, args) => {
-      this.entryListView.onLoadEntries();
-      this.loadEntries({ page: args.page, size: this.size });
+      this.page = args.page;
+      this.refreshEntriesList();
+    });
+    entryListView.refresh.attach(() => {
+      this.refreshEntriesList();
     });
     this.onReady = new Event(this);
+  }
+
+  refreshEntriesList() {
+    windowInterface.scrollTo(0, 0);
+    this.entryListView.onLoadEntries();
+    this.loadEntries({ page: this.page, size: this.size });
   }
 
   initialize() {
@@ -263,6 +286,7 @@ export class EntryListController {
       }
       adapter.setPageInfo({ page, totalEntries, size });
       adapter.addItems(models);
+      this.page = page;
       this.onReady.notify();
     }).catch(() => {
       this.onReady.notify();

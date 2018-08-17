@@ -98,7 +98,7 @@ export function showAlert(msg, type) {
   timer = setTimeout(closeHandler, 8000);
 }
 
-export function getFieldsAsObject(form) {
+export function getFormFieldsAsObject(form) {
   const data = {};
   form.querySelectorAll('input').forEach((inputElement) => {
     const name = inputElement.getAttribute('name');
