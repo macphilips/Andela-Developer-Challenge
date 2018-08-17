@@ -1,4 +1,4 @@
-import { htmlToElement } from '../utils/util';
+import { htmlToElement } from '../utils';
 import { loadingTemplate } from '../utils/templates';
 
 

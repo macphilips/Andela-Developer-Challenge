@@ -1,8 +1,10 @@
-import { userProfile } from '../utils/endpointUrl';
-import http from './fetchWrapper';
-
-class UserAccount {
-  constructor() {
+export default class UserAccount {
+  /**
+   *
+   * @param apiRequest {ApiRequestService}
+   */
+  constructor(apiRequest) {
+    this.apiRequest = apiRequest;
     this.account = null;
     this.authenticated = false;
   }
@@ -25,7 +27,7 @@ class UserAccount {
     if (this.account) {
       return Promise.resolve(this.account);
     }
-    return http.get(userProfile)
+    return this.apiRequest.getUserDetails()
       .then((res) => {
         this.account = res;
         this.authenticated = this.account !== null;
@@ -37,6 +39,3 @@ class UserAccount {
     return this.authenticated;
   }
 }
-
-const account = new UserAccount();
-export default account;
