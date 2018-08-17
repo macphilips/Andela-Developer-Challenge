@@ -1,19 +1,18 @@
+import { modalService } from '../services';
 import {
-  htmlToElement, showToast, DOMDoc, windowInterface,
-} from './utils/index';
-import { emptyListTemple, entryListPageTemplate } from './utils/templates';
-import EntryRowView from './views/entryRowView';
-import Event from './utils/event';
-import CreateEntryView from './views/entryView';
-import ConfirmDeleteEntryView from './views/confirmDeleteEntryView';
-import EntryItemModel from './views/entryItemModel';
-import navBarView from './views/navBarView';
-import { apiRequest, modalService } from './services';
-import PaginationView from './views/paginationView';
-import footerView from './views/footerView';
-import LoadingView from './views/loadngView';
+  DOMDoc, htmlToElement, showToast, windowInterface,
+} from '../utils';
+import { emptyListTemple, entryListPageTemplate } from '../utils/templates';
+import Event from '../utils/event';
+import PaginationView from './paginationView';
+import CreateEntryView from './entryView';
+import ConfirmDeleteEntryView from './confirmDeleteEntryView';
+import EntryItemModel from './entryItemModel';
+import navBarView from './navBarView';
+import footerView from './footerView';
+import LoadingView from './loadngView';
 
-export class EntryListView {
+export default class EntryListView {
   static contains(arr, element) {
     const items = arr.filter(item => item.id === element.id);
     return items.length > 0;
@@ -173,132 +172,5 @@ export class EntryListView {
 
   onDestroy() {
     DOMDoc.removeEventListener('scroll', this.scrollEvent);
-  }
-}
-
-export class EntryListViewAdapter {
-  constructor() {
-    this.data = [];
-    this.viewItems = [];
-    this.notifyChangeObserver = new Event(this);
-    this.pageInfo = null;
-  }
-
-  reset() {
-    this.data = [];
-    this.viewItems = [];
-    this.notifyChangeObservers();
-  }
-
-  getSize() {
-    return (this.viewItems) ? this.viewItems.length : 0;
-  }
-
-  getViewItem(position) {
-    const viewItem = this.viewItems[position];
-    viewItem.setPosition(position);
-    return viewItem;
-  }
-
-  addItem(itemModel) {
-    const entryRowView = new EntryRowView(itemModel);
-    this.data.push(itemModel);
-    this.viewItems.push(entryRowView);
-  }
-
-  addItems(items) {
-    this.updateList(items, item => this.addItem(item));
-  }
-
-  removeItem(model) {
-    this.viewItems = this.viewItems.filter(viewItem => viewItem.getModel().id !== model.id);
-    this.data = this.data.filter(item => model.id !== item.id);
-  }
-
-  removeItems(items) {
-    this.updateList(items, item => this.removeItem(item));
-  }
-
-  updateList(items, action) {
-    if (action === null) return;
-    for (let i = 0; i < items.length; i += 1) {
-      action(items[i]);
-    }
-    this.notifyChangeObservers();
-  }
-
-  notifyChangeObservers() {
-    this.notifyChangeObserver.notify();
-  }
-
-  registerChangeObserver(observer) {
-    this.notifyChangeObserver.attach(observer);
-  }
-
-  setPageInfo(info) {
-    this.pageInfo = info;
-  }
-
-  getPageInfo() {
-    return this.pageInfo;
-  }
-}
-
-export class EntryListController {
-  /**
-   *
-   * @param entryListView {EntryListView}
-   */
-  constructor(entryListView) {
-    this.page = 1;
-    this.size = 10;
-    this.entryListView = entryListView;
-    entryListView.getPaginationView().onChangePage.attach((context, args) => {
-      this.page = args.page;
-      this.refreshEntriesList();
-    });
-    entryListView.refresh.attach(() => {
-      this.refreshEntriesList();
-    });
-    this.onReady = new Event(this);
-  }
-
-  refreshEntriesList() {
-    windowInterface.scrollTo(0, 0);
-    this.entryListView.onLoadEntries();
-    this.loadEntries({ page: this.page, size: this.size });
-  }
-
-  initialize() {
-    this.loadEntries({ page: this.page, size: this.size });
-  }
-
-  loadEntries(query) {
-    const adapter = this.entryListView.getAdapter();
-    apiRequest.getEntries(query).then((result) => {
-      adapter.reset();
-      const { size } = query;
-      const { data } = result;
-      const { entries, page, totalEntries } = data;
-      const models = [];
-      for (let i = 0; i < entries.length; i += 1) {
-        models.push(new EntryItemModel(entries[i]));
-      }
-      adapter.setPageInfo({ page, totalEntries, size });
-      adapter.addItems(models);
-      this.page = page;
-      this.onReady.notify();
-    }).catch(() => {
-      this.onReady.notify();
-    });
-    this.entryListView.render();
-  }
-
-  getViewElement() {
-    return this.entryListView.getViewElement();
-  }
-
-  onRemove() {
-    this.entryListView.onDestroy();
   }
 }
