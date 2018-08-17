@@ -1,6 +1,6 @@
 import {
   bindPropertiesToElement, DOMDoc, getFieldsAsObject, htmlToElement, showToast, trimDate,
-} from './utils/util';
+} from './utils';
 import navBarView from './views/navBarView';
 import { account, apiRequest } from './services';
 import { profilePageTemplate } from './utils/templates';

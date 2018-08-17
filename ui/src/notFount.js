@@ -1,5 +1,5 @@
 import navBarView from './views/navBarView';
-import { htmlToElement } from './utils/util';
+import { htmlToElement } from './utils';
 import { notFoundTemplate } from './utils/templates';
 import footerView from './views/footerView';
 

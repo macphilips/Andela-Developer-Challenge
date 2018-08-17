@@ -1,4 +1,4 @@
-import { DOMDoc, htmlToElement } from '../utils/util';
+import { DOMDoc, htmlToElement } from '../utils';
 import { footerTemplate } from '../utils/templates';
 
 class FooterView {

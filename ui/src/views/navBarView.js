@@ -1,4 +1,4 @@
-import { DOMDoc, gotoUrl, htmlToElement } from '../utils/util';
+import { DOMDoc, gotoUrl, htmlToElement } from '../utils';
 import { navbarHeaderTemplate } from '../utils/templates';
 import { account, loginService } from '../services';
 
@@ -58,6 +58,7 @@ class NavBarView {
       loginElement[1].style.display = 'none';
       logoutElement[1].style.display = 'block';
     }
+    this.viewElement.innerHTML = '';
     this.viewElement.appendChild(this.childView);
   }
 

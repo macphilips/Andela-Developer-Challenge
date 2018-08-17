@@ -1,6 +1,6 @@
 import { EntryListController, EntryListView, EntryListViewAdapter } from './entryListView';
 import LoadingView from './views/loadngView';
-import { DOMDoc, gotoUrl, windowInterface } from './utils/util';
+import { DOMDoc, gotoUrl, windowInterface } from './utils';
 import route from './route';
 import SignInPage from './signInPage';
 import ProfilePage from './profilePage';
@@ -12,6 +12,7 @@ import PageNotFound from './notFount';
 class MainView {
   constructor() {
     this.viewElement = DOMDoc.getElementById('main');
+    this.currentController = null;
   }
 
   addChild(content) {
@@ -74,7 +75,7 @@ class MainViewController {
       const url = windowInterface.location.hash.slice(1) || '/';
       const routes = route.routes[url] || route.routes['*'];
       if (routes && routes.controller) {
-        this.mainView.removeAllChildren();
+        this.removeController();
         this.mainView.addChild(this.loadingView.getViewElement());
         const { controller, requireAuth } = routes;
         const ctrl = this.createInstant(controller);
@@ -91,6 +92,14 @@ class MainViewController {
     };
   }
 
+  removeController() {
+    windowInterface.scrollTo(0, 0);
+    if (this.currentController && this.currentController.onRemove) {
+      this.currentController.onRemove();
+    }
+    this.mainView.removeAllChildren();
+  }
+
   renderView(ctrl) {
     if (ctrl.onReady) {
       ctrl.onReady.attach(() => {
@@ -100,6 +109,7 @@ class MainViewController {
       this.addViewToMainView(ctrl);
     }
     if (ctrl.initialize) ctrl.initialize();
+    this.currentController = ctrl;
   }
 
   addViewToMainView(ctrl) {

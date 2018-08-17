@@ -1,5 +1,5 @@
 import navBarView from './views/navBarView';
-import { DOMDoc, gotoUrl, htmlToElement } from './utils/util';
+import { DOMDoc, gotoUrl, htmlToElement } from './utils';
 import { homeTemplate } from './utils/templates';
 import { account } from './services';
 import Event from './utils/event';

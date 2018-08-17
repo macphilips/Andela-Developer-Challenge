@@ -1,7 +1,7 @@
 import { entryListItemTemplate } from '../utils/templates';
 import {
   formatter, getValue, htmlToElement, DOMDoc, windowInterface,
-} from '../utils/util';
+} from '../utils';
 import Event from '../utils/event';
 
 export default class EntryRowView {

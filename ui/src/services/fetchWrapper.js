@@ -1,4 +1,4 @@
-import { getToken, storeToken } from '../utils/util';
+import { getToken, storeToken } from '../utils';
 import Event from '../utils/event';
 
 export default class FetchWrapper {

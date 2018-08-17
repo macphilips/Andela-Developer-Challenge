@@ -1737,6 +1737,10 @@ input.modal-header-input:focus, input.modal-header-input:active {
     display: flex;
 }
 
+.entry-list {
+    margin-bottom: 16px;
+}
+
 .entry-list > div:last-child {
     border-bottom: none;
 }
@@ -1928,7 +1932,11 @@ input.modal-header-input:focus, input.modal-header-input:active {
     display: inline-block;
 }
 
-.pagination a {
+.center {
+    text-align: center;
+}
+
+.pagination a, .pagination select {
     color: black;
     float: left;
     padding: 8px 16px;
@@ -1937,8 +1945,17 @@ input.modal-header-input:focus, input.modal-header-input:active {
     border: 1px solid #ddd;
 }
 
-.pagination a:hover {
+.pagination a:hover:not(.disable) {
     background-color: #ddd;
+}
+
+.pagination a.disable {
+    border: none;
+    /*border-top: 1px solid #ddd;*/
+    /*border-right-style: none;*/
+    /*border-bottom: 1px solid #ddd;*/
+    /*border-left-style: none;*/
+    padding: 8px 24px;
 }
 
 .page-404 {

@@ -1,4 +1,4 @@
-import { htmlToElement, DOMDoc } from '../utils/util';
+import { htmlToElement, DOMDoc } from '../utils';
 import { modalBoxTemplate } from '../utils/templates';
 import Event from '../utils/event';
 

@@ -1,4 +1,4 @@
-import { htmlToElement } from './utils/util';
+import { htmlToElement } from './utils';
 import footerView from './views/footerView';
 import navBarView from './views/navBarView';
 

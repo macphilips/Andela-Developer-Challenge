@@ -17,6 +17,31 @@ export const deleteDialogTemple = `
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
 
+export const entryListPageTemplate = `
+  <div class="main">   
+    <div id="navbar"></div>
+    <div id="entries" class="entries-container">
+      <div>
+        <div class="header">
+            <span class="title">Your Diary Entries</span>
+            <div class="add-entry">
+                <a id="addEntry" title="Add Entry" class="btn create add-btn-js" role="button">Add Diary Entry</a>
+            </div>
+        </div>
+        <div id="paginationTop"></div>
+      </div>
+      <div class="entry-list"></div>   
+        <div id="paginationBottom"></div>   
+      <a id="floatBtn" class=" add-btn-js" title="Add Entry" role="button">
+        <div class="floating-button show-on-mobile">
+            <span title="Add Entry" role="button" class="plus">&plus;</span>
+        </div>
+      </a>
+    </div>
+    <div id="footer"></div> 
+  </div>
+`;
+
 export const entryListHeader = `
         <div>
           <div class="header">
@@ -170,7 +195,7 @@ export const navbarHeaderTemplate = `
     </div>
 `;
 export const floatingButton = `
-    <a title="Add Entry" role="button">
+    <a id="floatBtn" title="Add Entry" role="button">
       <div class="floating-button show-on-mobile">
           <span title="Add Entry" role="button" class="plus">&plus;</span>
       </div>
@@ -469,7 +494,7 @@ export const footerTemplate = `
         <div>&copy; 2018 MyDiary </div>
     </div>`;
 
-export const paginationTemplate = `
+export const paginationTopTemplate = `
 <div class="pagination-container">
   <div tc-data-page-index="page">
     <span tc-data-model="visibleEntries"></span>
@@ -481,3 +506,13 @@ export const paginationTemplate = `
     <a data-direction="next">❯</a>
   </div>
 </div>`;
+export const paginationBottomTemplate = ` 
+ 
+<div class="center">
+    <div class="pagination">
+        <a data-direction="prev">❮</a>
+        <a tc-data-model="page" class="disable">0</a>
+        <a data-direction="next">❯</a>
+    </div>
+</div>
+`;

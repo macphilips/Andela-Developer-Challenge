@@ -1,6 +1,6 @@
 import {
   bindPropertiesToElement, DOMDoc, htmlToElement, showToast, trimDate,
-} from '../utils/util';
+} from '../utils';
 import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
 import Event from '../utils/event';
 import { apiRequest } from '../services';

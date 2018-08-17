@@ -1,4 +1,4 @@
-import { bindPropertiesToElement, DOMDoc } from '../utils/util';
+import { bindPropertiesToElement, DOMDoc } from '../utils';
 import { deleteDialogTemple } from '../utils/templates';
 import Event from '../utils/event';
 import { apiRequest } from '../services';

@@ -1,4 +1,4 @@
-import { clearToken, storeToken } from '../utils/util';
+import { clearToken, storeToken } from '../utils';
 
 export default class LoginService {
   /**

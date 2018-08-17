@@ -1,6 +1,6 @@
 import {
   getFieldsAsObject, gotoUrl, showAlert, showLoadingAnim, validateForm,
-} from './utils/util';
+} from './utils';
 import { signInPageTemplate } from './utils/templates';
 import { loginService } from './services';
 import BasePage from './basePage';
