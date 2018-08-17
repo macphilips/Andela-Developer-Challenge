@@ -15,6 +15,17 @@ paths:
     get:
       summary: Get List of User's diary Entries
       description: Returns the list of entry created by the user with the token provided with the request. Access Token is required to use this endpoint.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            description: Page number.
+        - in: query
+          name: size
+          schema:
+            type: integer
+            description: The number of entries to retrieve.
       responses:
         200:
           description: OK
@@ -129,6 +140,47 @@ paths:
         - Entries
       security:
         - UserSecurity: []
+    delete:
+      summary: Deletes an Entry.
+      description: Deletes a single entry with the {id} provided. Access Token is required to use this endpoint. 404 Error is return when not entry is found.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the Entry to delete.
+          type: number
+      responses:
+        200:
+          description: A Person
+          schema:
+            properties:
+              status:
+                type: string
+                example: Successful
+              message:
+                type: string
+                example: Successfully deleted entry
+
+        400:
+          description: Invalid parameter {id}. {id} must an integer.
+          schema:
+            $ref: "#/definitions/Error"
+        401:
+          description: Unauthorizated access.
+          schema:
+            $ref: "#/definitions/Error"
+        403:
+          description: Authenticated user trying to access this Entity doesn't permission to retrieve Entity.
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: No entries found with {id}.
+          schema:
+            $ref: "#/definitions/Error"
+      tags:
+        - Entries
+      security:
+        - UserSecurity: []
 
   /account/me:
     get:
@@ -139,6 +191,22 @@ paths:
           description: A Person
           schema:
             $ref: "#/definitions/User"
+        401:
+          description: Unauthorizated Access.
+      tags:
+        - Account
+      security:
+        - UserSecurity: []
+
+  /account/me/detailed:
+    get:
+      summary: Gets the user information
+      description: Returns the user information with the provided access token
+      responses:
+        200:
+          description: A Person
+          schema:
+            $ref: "#/definitions/DetailedUser"
         401:
           description: Unauthorizated Access.
       tags:
@@ -207,6 +275,7 @@ paths:
           description: Email [xyz@example.com] already in use.
         500:
           description: Internal Server Error.
+
   /auth/login:
     post:
       summary: Sign in Account
@@ -231,6 +300,13 @@ paths:
             properties:
               token:
                 type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNTM0NTE1NDg3LCJleHAiOjE1MzQ2MDE4ODd9.CDlQ2W9Gv-nuYHRMesfL1bJhQmZGCtqOM4pIQGplwsd
+              status:
+                type: string
+                example: Successful
+              message:
+                type: string
+                example: Successfully authenticated user
         401:
           description: Authorization Failed. Check if email or password are correct.
           schema:
@@ -244,68 +320,7 @@ schemes:
 
 definitions:
 
-  UserForm:
-    required:
-      - email
-      - password
-    properties:
-      firstName:
-        type: string
-        example: John
-      lastName:
-        type: string
-        example: DOe
-      email:
-        type: string
-        example: john.doe@example.com
-      password:
-        type: string
-        example: topsecret
-  User:
-    properties:
-      id:
-        type: number
-        example: 12
-      firstName:
-        type: string
-        example: John
-      lastName:
-        type: string
-        example: DOe
-      email:
-        type: string
-        example: john.doe@example.com
-      createdDate:
-        type: string
-        example: Jul 12, 2018
-      lastModified:
-        type: string
-        example: Jul 12, 2018
-      reminder:
-        type: object
-        properties:
-          id:
-            type: number
-            example: 13
-          time:
-            type: string
-            example: 18:39
-          userId:
-            type: number
-            example: 1
-
-
-  EntryForm:
-    required:
-      - content
-    properties:
-      title:
-        type: string
-        example: Nice Title
-      content:
-        type: string
-        example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue nulla sem, ut luctus turpis pulvinar sollicitudin. Aliquam ut hendrerit leo. Phasellus euismod vel dolor non rutrum. Morbi efficitur pellentesque odio, at ornare augue commodo ac. Quisque suscipit nisi quis urna tempus imperdiet. Cras congue, felis scelerisque luctus euismod, nibh leo sagittis odio, eget feugiat dolor libero quis tellus.
-  Entry:
+  EntryModel:
     properties:
       id:
         type: number
@@ -325,18 +340,132 @@ definitions:
         type: number
         example: 1
 
+  UserModel:
+        properties:
+          id:
+            type: number
+            example: 12
+          firstName:
+            type: string
+            example: John
+          lastName:
+            type: string
+            example: Doe
+          email:
+            type: string
+            example: john.doe@example.com
+          createdDate:
+            type: string
+            example: Jul 12, 2018
+          lastModified:
+            type: string
+            example: Jul 12, 2018
+
+  UserForm:
+    required:
+      - email
+      - password
+    properties:
+      firstName:
+        type: string
+        example: John
+      lastName:
+        type: string
+        example: Doe
+      email:
+        type: string
+        example: john.doe@example.com
+      password:
+        type: string
+        example: topsecret
+
+  User:
+    properties:
+      user:
+        $ref: "#/definitions/UserModel"
+      status:
+        type: string
+        example: Successful
+      message:
+        type: string
+        example: Successfully retrieved all user information
+
+  DetailedUser:
+    properties:
+      data:
+        type: object
+        properties:
+          user:
+            $ref: "#/definitions/UserModel"
+          reminder:
+            $ref: "#/definitions/ReminderModel"
+          entry:
+            type: object
+            properties:
+              count:
+                type: number
+                example: 10
+              lastModified:
+                type: string
+                example: Jul 12, 2018
+      status:
+        type: string
+        example: Successful
+      message:
+        type: string
+        example: Successfully retrieved all user information
+
+  EntryForm:
+    required:
+      - content
+    properties:
+      title:
+        type: string
+        example: Nice Title
+      content:
+        type: string
+        example: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla congue nulla sem, ut luctus turpis pulvinar sollicitudin. Aliquam ut hendrerit leo. Phasellus euismod vel dolor non rutrum. Morbi efficitur pellentesque odio, at ornare augue commodo ac. Quisque suscipit nisi quis urna tempus imperdiet. Cras congue, felis scelerisque luctus euismod, nibh leo sagittis odio, eget feugiat dolor libero quis tellus.
+
+  Entry:
+    properties:
+      entry:
+        $ref: "#/definitions/EntryModel"
+      status:
+        type: string
+        example: Successful
+      message:
+        type: string
+        example: Successfully created/retrieved/updated entry
+
   Entries:
     properties:
-      entries:
-        type: array
-        items:
-          $ref: "#/definitions/Entry"
+      data:
+        type: object
+        properties:
+          entries:
+            type: array
+            items:
+              $ref: "#/definitions/EntryModel"
+          page:
+            type: number
+            example: 5
+          totalEntries:
+            type: number
+            example: 70
+      status:
+        type: string
+        example: Successful
+      message:
+        type: string
+        example: Successfully retrieved all user information
+
   Error:
     properties:
       message:
         type: string
         example: Error Message
-  Reminder:
+
+  ReminderModel:
     properties:
       id:
         type: number
@@ -344,6 +473,24 @@ definitions:
       time:
         type: string
         example: 18:39
+      from:
+        type: string
+        example: MONDAY
+      to:
+        type: string
+        example: FRIDAY
       userId:
         type: number
         example: 1
+
+
+  Reminder:
+    properties:
+      reminder:
+        $ref: "#/definitions/ReminderModel"
+      status:
+        type: string
+        example: Successful
+      message:
+        type: string
+        example: Successfully retrieved reminder settings
