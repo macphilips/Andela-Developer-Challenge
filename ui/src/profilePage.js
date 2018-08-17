@@ -1,12 +1,11 @@
 import {
   bindPropertiesToElement, DOMDoc, getFieldsAsObject, htmlToElement, showToast, trimDate,
-} from './utils/util';
-import { changePassword, reminderUrl } from './utils/endpointUrl';
+} from './utils';
 import navBarView from './views/navBarView';
-import http from './services/fetchWrapper';
+import { account, apiRequest } from './services';
 import { profilePageTemplate } from './utils/templates';
-import account from './services/account';
 import Event from './utils/event';
+import footerView from './views/footerView';
 
 export default class ProfilePage {
   /**
@@ -76,9 +75,9 @@ export default class ProfilePage {
    */
   static consumeAPIResult(promise) {
     promise.then((result) => {
-      showToast(result.message, 'success');
+      showToast({ title: result.message }, 'success');
     }).catch((err) => {
-      showToast(err.message, 'error');
+      showToast({ title: err.message }, 'error');
     });
   }
 
@@ -255,9 +254,9 @@ export default class ProfilePage {
       const changePasswordForm = this.viewElement.querySelector('#changePassword');
       const data = getFieldsAsObject(changePasswordForm);
       if (data.newPassword === data.matchPassword) {
-        ProfilePage.consumeAPIResult(http.post(changePassword, data));
+        ProfilePage.consumeAPIResult(apiRequest.changePassword(data));
       } else {
-        showToast('Password doesn\'t match', 'error');
+        showToast({ title: 'Validation Error', message: 'Password doesn\'t match' }, 'error');
       }
     };
   }
@@ -268,7 +267,7 @@ export default class ProfilePage {
       const reminderForm = this.viewElement.querySelector('#reminderForm');
       const data = getFieldsAsObject(reminderForm);
       data.time = `${data.hours}:${data.minutes}`;
-      ProfilePage.consumeAPIResult(http.put(reminderUrl, data));
+      ProfilePage.consumeAPIResult(apiRequest.updateReminder(data));
     };
   }
 
@@ -284,6 +283,7 @@ export default class ProfilePage {
 
   initialize() {
     navBarView.render(this.viewElement);
+    footerView.render(this.viewElement);
     this.timeInputController();
     account.identify()
       .then((result) => {
@@ -295,7 +295,7 @@ export default class ProfilePage {
         this.onReady.notify({});
       })
       .catch((err) => {
-        showToast(err.message, 'error');
+        showToast({ title: 'Error', message: err.message }, 'error');
         this.onReady.notify({});
       });
   }

@@ -1,31 +1,23 @@
 import {
-  getFieldsAsObject,
-  gotoUrl,
-  htmlToElement,
-  matchPassword,
-  showAlert,
-  showLoadingAnim,
-  validateForm,
-} from './utils/util';
-import { registrationEndpoint } from './utils/endpointUrl';
-import http from './services/fetchWrapper';
+  getFieldsAsObject, gotoUrl, matchPassword, showAlert, showLoadingAnim, validateForm,
+} from './utils';
 import { signUpPageTemplate } from './utils/templates';
+import { apiRequest } from './services';
+import BasePage from './basePage';
 
-export default class SignUpPage {
+export default class SignUpPage extends BasePage {
   constructor() {
-    this.signUpPageTemplate = signUpPageTemplate;
-    this.viewElement = htmlToElement(this.signUpPageTemplate);
-    this.registerSignUpEvent();
+    super(signUpPageTemplate);
   }
 
-  registerSignUpEvent() {
+  registerPageEvent() {
     const signUpForm = this.viewElement.querySelector('#signupForm');
     const createAccount = () => {
       const button = signUpForm.querySelector('.btn');
       if (validateForm(signUpForm) && matchPassword(signUpForm)) {
         showLoadingAnim(button, 'show');
         const data = getFieldsAsObject(signUpForm);
-        http.post(registrationEndpoint, data).then(() => {
+        apiRequest.createUser(data).then(() => {
           showLoadingAnim(button, 'remove');
           gotoUrl('#/dashboard');
         }).catch((err) => {
@@ -39,9 +31,5 @@ export default class SignUpPage {
       const btn = signUpForm.querySelector('.btn');
       btn.onclick = createAccount;
     }
-  }
-
-  getViewElement() {
-    return this.viewElement;
   }
 }

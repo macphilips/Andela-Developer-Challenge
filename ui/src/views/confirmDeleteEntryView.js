@@ -1,8 +1,7 @@
-import { bindPropertiesToElement, DOMDoc } from '../utils/util';
+import { bindPropertiesToElement, DOMDoc } from '../utils';
 import { deleteDialogTemple } from '../utils/templates';
 import Event from '../utils/event';
-import http from '../services/fetchWrapper';
-import { getEntryUrlByID } from '../utils/endpointUrl';
+import { apiRequest } from '../services';
 
 export default class ConfirmDeleteEntryView {
   constructor(model) {
@@ -19,7 +18,7 @@ export default class ConfirmDeleteEntryView {
     const cancelButton = this.childView.querySelector('[tc-data-dismiss="cancel"]');
     const self = this;
     okButton.onclick = () => {
-      http.delete(getEntryUrlByID(this.model.id))
+      apiRequest.deleteEntry(this.model.id)
         .then(() => {
           this.notifyObserver('success');
         })

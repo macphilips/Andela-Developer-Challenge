@@ -1,19 +1,24 @@
-import { getTimeString, sameDayDateComparison, validateEntry } from '../utils';
+import {
+  getTimeString, MAX_INT, sameDayDateComparison, validateEntry,
+} from '../utils';
 import db from '../db';
 import HttpError from '../utils/httpError';
 
 export default class EntriesController {
   static getEntries(req, res) {
-    db.connection.entries.findAllByCreator(req.userId)
-      .then((entries) => {
-        if (entries.length > 0) {
-          return Promise.resolve(EntriesController.convertEntries(entries));
-        }
-        return Promise.reject(new HttpError('No Entries found', 404, 'Failed'));
+    const pageable = {};
+    // todo return 400 for invalid query input
+    pageable.page = (!Number.isNaN(Number(req.query.page))) ? req.query.page || 1 : 1;
+    pageable.size = (!Number.isNaN(Number(req.query.size))) ? req.query.size || MAX_INT : MAX_INT;
+    db.connection.entries.findAllByCreator(req.userId, pageable)
+      .then((result) => {
+        const data = result;
+        data.entries = EntriesController.convertEntries(result.entries);
+        return Promise.resolve(data);
       })
       .then((entries) => {
         res.status(200).send({
-          entries,
+          data: entries,
           message: 'Successfully retrieved Users entry list',
           status: 'Successful',
         });

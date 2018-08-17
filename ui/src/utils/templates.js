@@ -17,12 +17,40 @@ export const deleteDialogTemple = `
             <button tc-data-dismiss="cancel"  name="cancel">Cancel</button>
         </div>`;
 
-export const entryListHeader = `
+export const entryListPageTemplate = `
+  <div class="main">   
+    <div id="navbar"></div>
+    <div id="entries" class="entries-container">
+      <div>
         <div class="header">
             <span class="title">Your Diary Entries</span>
             <div class="add-entry">
-                <a id="addEntry" title="Add Entry" class="btn create" role="button">Add Diary Entry</a>
+                <a id="addEntry" title="Add Entry" class="btn create add-btn-js" role="button">Add Diary Entry</a>
             </div>
+        </div>
+        <div id="paginationTop"></div>
+      </div>
+      <div class="entry-list"></div>   
+        <div id="paginationBottom"></div>   
+      <a id="floatBtn" class=" add-btn-js" title="Add Entry" role="button">
+        <div class="floating-button show-on-mobile">
+            <span title="Add Entry" role="button" class="plus">&plus;</span>
+        </div>
+      </a>
+    </div>
+    <div id="footer"></div> 
+  </div>
+`;
+
+export const entryListHeader = `
+        <div>
+          <div class="header">
+              <span class="title">Your Diary Entries</span>
+              <div class="add-entry">
+                  <a id="addEntry" title="Add Entry" class="btn create" role="button">Add Diary Entry</a>
+              </div>
+          </div>
+          <div id="pagination"></div>
         </div>`;
 
 export const entryListItemTemplate = `
@@ -88,7 +116,7 @@ export const viewEntryTemplate = `
      </div>
 `;
 export const loadingTemplate = `
-    <div id="loader" class="loading-container loading-bg">
+    <div id="loader" class="center-in-page loading-bg">
         <div class="loading-ring">
             <div></div>
             <div></div>
@@ -167,7 +195,7 @@ export const navbarHeaderTemplate = `
     </div>
 `;
 export const floatingButton = `
-    <a title="Add Entry" role="button">
+    <a id="floatBtn" title="Add Entry" role="button">
       <div class="floating-button show-on-mobile">
           <span title="Add Entry" role="button" class="plus">&plus;</span>
       </div>
@@ -219,6 +247,7 @@ export const signInPageTemplate = `
                       </form>
                   </div>
               </div>
+              <div id="footer" class="fixed-bottom white"></div> 
           </div>
       </div>
 `;
@@ -226,52 +255,53 @@ export const signInPageTemplate = `
 export const signUpPageTemplate = `
     <div class="bg bgimg-1">
           <div class="overlay">
-          <div class="container signin-top">
-              <div class="form-container card">
-                  <form method="post" id="signupForm" name="signupForm">
-                      <div class="form-title">
-                          <span>Create Account</span>
-                      </div>
-                      <hr>
-                      <div>
-                          <div id="alert" class="alert error">
-                              <p class="alert-msg">Alert Message</p>
-                              <a href="javascript:void(0);" class="close-btn">&times;</a>
-                          </div>
-                          <div class="row-col-2">
-                              <div>
-                                  <label for="first_name"><b>First name</b></label>
-                                  <input class="form-input" id="first_name" type="text" placeholder="First name"
-                                         name="firstName"
-                                         required>
-                              </div>
-                              <div>
-                                  <label for="last_name"><b>Last name</b></label>
-                                  <input class="form-input" id="last_name" type="text" placeholder="Last name"
-                                         name="lastName"
-                                         required>
-                              </div>
-                          </div>
-                          <label for="email"><b>Email</b></label>
-                          <input class="form-input" id="email" type="email" placeholder="Enter Email" name="email"
-                                 required>
-                          <label for="password"><b>Password</b></label>
-                          <input class="form-input" id="password" type="password" placeholder="Enter Password"
-                                 name="password"
-                                 required>
-                          <label for="match-password"><b>Confirm Password</b></label>
-                          <input class="form-input" id="match-password" type="password" placeholder="Confirm Password"
-                                 name="match-password" required>
-                          <hr>
-                          <button type="button" class="btn fit"><span>Register</span></button>
-                      </div>
-                      <div class="form-footer">
-                          <p>Already have an account? <a href="#/signin">Sign in</a>.</p>
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
+            <div class="container signin-top">
+                <div class="form-container card">
+                    <form method="post" id="signupForm" name="signupForm">
+                        <div class="form-title">
+                            <span>Create Account</span>
+                        </div>
+                        <hr>
+                        <div>
+                            <div id="alert" class="alert error">
+                                <p class="alert-msg">Alert Message</p>
+                                <a href="javascript:void(0);" class="close-btn">&times;</a>
+                            </div>
+                            <div class="row-col-2">
+                                <div>
+                                    <label for="first_name"><b>First name</b></label>
+                                    <input class="form-input" id="first_name" type="text" placeholder="First name"
+                                           name="firstName"
+                                           required>
+                                </div>
+                                <div>
+                                    <label for="last_name"><b>Last name</b></label>
+                                    <input class="form-input" id="last_name" type="text" placeholder="Last name"
+                                           name="lastName"
+                                           required>
+                                </div>
+                            </div>
+                            <label for="email"><b>Email</b></label>
+                            <input class="form-input" id="email" type="email" placeholder="Enter Email" name="email"
+                                   required>
+                            <label for="password"><b>Password</b></label>
+                            <input class="form-input" id="password" type="password" placeholder="Enter Password"
+                                   name="password"
+                                   required>
+                            <label for="match-password"><b>Confirm Password</b></label>
+                            <input class="form-input" id="match-password" type="password" placeholder="Confirm Password"
+                                   name="match-password" required>
+                            <hr>
+                            <button type="button" class="btn fit"><span>Register</span></button>
+                        </div>
+                        <div class="form-footer">
+                            <p>Already have an account? <a href="#/signin">Sign in</a>.</p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="footer" class="fixed-bottom white"></div>
+          </div> 
       </div>
 `;
 export const homeTemplate = ` 
@@ -293,6 +323,7 @@ export const homeTemplate = `
         </div>
     </div>
     </div>
+    <div id="footer" class="fixed-bottom white"></div> 
  </div>
 `;
 export const profilePageTemplate = ` 
@@ -442,7 +473,46 @@ export const profilePageTemplate = `
           </div>
         </div>
         </div>
+        <div id="footer"></div> 
     </div>
 `;
 
-export const notFoundTemplate = '<div></div>';
+export const notFoundTemplate = `
+  <div>
+    <div id="navbar"></div>    
+    <div class="center-in-page">
+        <div class="page-404">
+            <div>Page Not Found</div>
+        </div>
+    </div>
+    <div id="footer" class="fixed-bottom"></div> 
+  </div>
+`;
+
+export const footerTemplate = `
+    <div class="page-footer">
+        <div>&copy; 2018 MyDiary </div>
+    </div>`;
+
+export const paginationTopTemplate = `
+<div class="pagination-container">
+  <div tc-data-page-index="page">
+    <span tc-data-model="visibleEntries"></span>
+    &nbsp;<span>of</span> &nbsp;
+    <span tc-data-model="totalEntries"></span>
+  </div>
+  <div class="pagination">
+    <a data-direction="prev">❮</a>
+    <a data-direction="next">❯</a>
+  </div>
+</div>`;
+export const paginationBottomTemplate = ` 
+ 
+<div class="center">
+    <div class="pagination">
+        <a data-direction="prev">❮</a>
+        <a tc-data-model="page" class="disable">0</a>
+        <a data-direction="next">❯</a>
+    </div>
+</div>
+`;

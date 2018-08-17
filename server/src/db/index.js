@@ -33,7 +33,8 @@ class Database {
   }
 
   init() {
-    return this.connection.none(sql.myDiary);
+    return this.connection.none(sql.myDiary)
+      .then(() => this.connection.none(sql.functions));
   }
 }
 

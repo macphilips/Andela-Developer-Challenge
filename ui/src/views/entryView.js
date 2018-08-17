@@ -1,12 +1,10 @@
 import {
-  bindPropertiesToElement, htmlToElement, showToast, trimDate, DOMDoc,
-} from '../utils/util';
+  bindPropertiesToElement, DOMDoc, htmlToElement, showToast, trimDate,
+} from '../utils';
 import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
 import Event from '../utils/event';
-import { entriesEndpoint, getEntryUrlByID } from '../utils/endpointUrl';
-import http from '../services/fetchWrapper';
+import { apiRequest } from '../services';
 import { getTimeString } from '../../../server/src/utils/index';
-
 
 export default class CreateEntryView {
   constructor(model, action) {
@@ -75,11 +73,12 @@ export default class CreateEntryView {
         const title = this.viewElement.querySelector('[tc-data-model="title"]').value;
         if (this.mode === 'edit') {
           const data = { ...this.model };
+          const { id } = data;
           data.content = content;
           data.title = title;
-          this.consumeApiResult(http.put(getEntryUrlByID(this.model.id), data), true);
+          this.consumeApiResult(apiRequest.updateEntry(id, data), true);
         } else if (this.mode === 'create') {
-          this.consumeApiResult(http.post(entriesEndpoint, { content, title }), false);
+          this.consumeApiResult(apiRequest.createEntry({ content, title }), false);
         } else {
           this.buttonClicked.notify();
         }
@@ -94,12 +93,12 @@ export default class CreateEntryView {
   consumeApiResult(promise, update) {
     promise.then((res) => {
       if (update) {
-        showToast('Entry updated', 'success');
+        showToast({ title: 'Entry updated' }, 'success');
       }
       this.buttonClicked.notify(res);
     }).catch((err) => {
-      const message = (update) ? 'Unable to update entry' : 'Unable to save entry';
-      showToast(`${message}<br>${err.message}`, 'error');
+      const title = (update) ? 'Unable to update entry' : 'Unable to save entry';
+      showToast({ title, message: err.message }, 'error');
     });
   }
 }

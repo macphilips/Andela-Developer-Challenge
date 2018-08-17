@@ -10,13 +10,33 @@ export default class Entry {
     this.lastModified = LastModified;
   }
 
-  static mapDBEntriesEntityToEntries(entity) {
-    const mapped = Entry.map(entity);
-    return Promise.resolve(mapped);
+  static mapDBEntityToEntry(entity) {
+    return Promise.resolve(Entry.map(entity));
   }
 
-  static mapDBArrayEntriesToEntries(array) {
-    return mapArray(array, Entry.map);
+  static mapDBArrayEntriesToEntries(array, pageInfo) {
+    let totalEntries = 0;
+    let { page } = pageInfo;
+    const { size } = pageInfo;
+    const [entry] = array;
+    if (entry) {
+      totalEntries = entry.num_entries;
+      const totalPages = Math.ceil(totalEntries / size);
+      if (page < 1) {
+        page = 1;
+      } else if (page > totalPages) {
+        page = totalPages;
+      }
+    }
+
+    return mapArray(array, Entry.map).then((entries) => {
+      const result = {
+        entries,
+        page,
+        totalEntries,
+      };
+      return Promise.resolve(result);
+    });
   }
 
   static map(entity) {

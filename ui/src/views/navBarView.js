@@ -1,7 +1,6 @@
-import { DOMDoc, gotoUrl, htmlToElement } from '../utils/util';
+import { DOMDoc, gotoUrl, htmlToElement } from '../utils';
 import { navbarHeaderTemplate } from '../utils/templates';
-import account from '../services/account';
-import loginService from '../services/loginService';
+import { account, loginService } from '../services';
 
 class NavBarView {
   static logoutHandle() {
@@ -10,7 +9,7 @@ class NavBarView {
   }
 
   constructor() {
-    this.vieewElement = null;
+    this.viewElement = null;
     this.childView = htmlToElement(navbarHeaderTemplate);
   }
 
@@ -38,13 +37,14 @@ class NavBarView {
   }
 
   render(element) {
-    if (element) this.vieewElement = element.querySelector('#navbar');
-    else this.vieewElement = DOMDoc.getElementById('navbar');
+    if (element) this.viewElement = element.querySelector('#navbar');
+    else this.viewElement = DOMDoc.getElementById('navbar');
+
+    if (!this.viewElement) return;
 
     this.childView.style.display = 'flex';
     const logoutElement = this.childView.querySelectorAll('.logged-out');
     const loginElement = this.childView.querySelectorAll('.logged-in');
-
     if (account.isAuthenticated()) {
       loginElement[0].style.display = 'flex';
       logoutElement[0].style.display = 'none';
@@ -58,7 +58,8 @@ class NavBarView {
       loginElement[1].style.display = 'none';
       logoutElement[1].style.display = 'block';
     }
-    this.vieewElement.appendChild(this.childView);
+    this.viewElement.innerHTML = '';
+    this.viewElement.appendChild(this.childView);
   }
 
   /**

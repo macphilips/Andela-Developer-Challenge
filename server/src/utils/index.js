@@ -1,6 +1,7 @@
 import validator from 'validator';
 import HttpError from './httpError';
 
+export const MAX_INT = 2147483647;
 const daysOfTheWeek = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 
 /**
@@ -103,8 +104,15 @@ export function validateLoginInfo(user) {
   return null;
 }
 
-export function mapAndWrapDbPromise(promise, mapper) {
-  return promise.then(result => mapper(result))
+/**
+ *
+ * @param promise {Promise<T>}
+ * @param mapper
+ * @param params
+ * @returns {Promise<T>}
+ */
+export function mapAndWrapDbPromise(promise, mapper, params) {
+  return promise.then(result => mapper(result, params))
     .catch(HttpError.wrapAndThrowError);
 }
 
@@ -114,6 +122,12 @@ export function sameDayDateComparison(created) {
   return now.getDate() > created.getDate() && within24h > 0;
 }
 
+/**
+ *
+ * @param array {Array}
+ * @param mapper
+ * @returns {Promise<Array>}
+ */
 export function mapArray(array, mapper) {
   const entity = [];
   array.forEach((item) => {
