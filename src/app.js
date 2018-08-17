@@ -1,4 +1,4 @@
-import { EntryListController, EntryListView, EntryListViewAdapter } from './entryListView';
+import EntryListController from './entryListPage';
 import LoadingView from './views/loadngView';
 import { DOMDoc, gotoUrl, windowInterface } from './utils';
 import route from './route';
@@ -8,6 +8,8 @@ import HomePage from './homePage';
 import { account } from './services';
 import SignUpPage from './signUpPage';
 import PageNotFound from './notFount';
+import EntryListView from './views/entryListView';
+import EntryListViewAdapter from './views/entryListViewAdapter';
 
 class MainView {
   constructor() {
@@ -27,7 +29,7 @@ class MainView {
         this.viewElement.removeChild(content);
       }
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     }
   }
 
