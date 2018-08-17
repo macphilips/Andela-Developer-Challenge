@@ -13,7 +13,7 @@ export default class CreateEntryView {
     this.buttonClicked = new Event(this);
     this.model = model;
     this.prepareView();
-    this.buttonClickHandler();
+    this.registerViewEvents();
   }
 
   prepareView() {
@@ -21,68 +21,36 @@ export default class CreateEntryView {
     const lastModified = (data && data.lastModified)
       ? data.lastModified : getTimeString(new Date());
     data.lastModified = trimDate(lastModified);
+    this.attachDataToView(data);
+  }
+
+  attachDataToView(data) {
     const dataModelElements = this.viewElement.querySelectorAll('[tc-data-model]');
     bindPropertiesToElement(dataModelElements, data);
-
     if (this.mode !== 'view') {
       const textArea = this.viewElement.querySelector('textarea');
       textArea.value = (data && data.content) ? data.content : '';
       textArea.focus();
     } else {
-      const viewEntry = this.viewElement.querySelector('.content-container');
-      const { content } = data;
-      const split = content.split(/[\r\n]+/);
-      for (let i = 0; i < split.length; i += 1) {
-        const paragraph = DOMDoc.createElement('p');
-        paragraph.innerHTML = split[i];
-        viewEntry.appendChild(paragraph);
-      }
+      this.renderInViewMode(data);
     }
   }
 
-  static splitByNewLine(content) {
-    const textSplit = [];
-    let start = 0;
-    for (let i = 0; i < content.length - 1; i += 1) {
-      if (content.charCodeAt(i) === 10 && content.charCodeAt(i + 1) === 10) {
-        const subStr = content.substring(start, i).trim();
-        start = i + 1;
-        textSplit.push(subStr);
-      }
-    }
-    textSplit.push(content.substring(start).trim());
-    return textSplit;
-  }
-
-  actionButtonVisibility(visibility) {
-    const footer = this.viewElement.querySelector('.modal-footer');
-    if (visibility === 'hide') {
-      footer.style.opacity = 0;
-      footer.style.visibility = 'hidden';
-    } else {
-      footer.style.opacity = 1;
-      footer.style.visibility = 'block';
+  renderInViewMode(data) {
+    const viewEntry = this.viewElement.querySelector('.content-container');
+    const { content } = data;
+    const split = content.split(/[\r\n]+/);
+    for (let i = 0; i < split.length; i += 1) {
+      const paragraph = DOMDoc.createElement('p');
+      paragraph.innerHTML = split[i];
+      viewEntry.appendChild(paragraph);
     }
   }
 
-  buttonClickHandler() {
+  registerViewEvents() {
     const okButton = this.viewElement.querySelector('[tc-data-action="save"]');
     if (okButton) {
-      okButton.onclick = () => {
-        const content = this.viewElement.querySelector('textarea').value;
-        const title = this.viewElement.querySelector('[tc-data-model="title"]').value;
-        if (this.mode === 'edit') {
-          const data = { ...this.model };
-          const { id } = data;
-          data.content = content;
-          data.title = title;
-          this.consumeApiResult(apiRequest.updateEntry(id, data), true);
-        } else if (this.mode === 'create') {
-          this.consumeApiResult(apiRequest.createEntry({ content, title }), false);
-        } else {
-          this.buttonClicked.notify();
-        }
-      };
+      okButton.onclick = this.buttonClickHandler();
     }
   }
 
@@ -100,5 +68,23 @@ export default class CreateEntryView {
       const title = (update) ? 'Unable to update entry' : 'Unable to save entry';
       showToast({ title, message: err.message }, 'error');
     });
+  }
+
+  buttonClickHandler() {
+    return () => {
+      const content = this.viewElement.querySelector('textarea').value;
+      const title = this.viewElement.querySelector('[tc-data-model="title"]').value;
+      if (this.mode === 'edit') {
+        const data = { ...this.model };
+        const { id } = data;
+        data.content = content;
+        data.title = title;
+        this.consumeApiResult(apiRequest.updateEntry(id, data), true);
+      } else if (this.mode === 'create') {
+        this.consumeApiResult(apiRequest.createEntry({ content, title }), false);
+      } else {
+        this.buttonClicked.notify();
+      }
+    };
   }
 }

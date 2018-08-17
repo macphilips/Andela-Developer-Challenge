@@ -4,8 +4,8 @@ import {
   entriesEndpoint,
   getEntryUrlByID,
   registrationEndpoint,
-  reminderUrl,
-  userProfile,
+  reminderUrl, userProfile,
+  userProfileDetails,
 } from '../utils/endpointUrl';
 
 export default class ApiRequestService {
@@ -18,7 +18,11 @@ export default class ApiRequestService {
   }
 
   getUserDetails() {
-    return this.httpClient.get(userProfile);
+    return this.httpClient.get(userProfileDetails);
+  }
+
+  updateUserDetails(data) {
+    return this.httpClient.post(userProfile, data);
   }
 
   changePassword(data) {

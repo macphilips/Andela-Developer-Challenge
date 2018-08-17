@@ -385,25 +385,10 @@ export const profilePageTemplate = `
                               </div>
                               <div>
                                   <label class="show-on-mobile">TIME</label>
-                                  <div class="time-spinner">
-                                      <input name="hours" tc-data-model="hours" id="hours" type="number"
-                                             class="time-input hours"
-                                             data-unit="hours"
-                                             placeholder="HH" autocomplete="off">
-                                      <span class="time-delimiter">&colon;</span>
-                                      <input name="minutes" tc-data-model="minutes" id="minutes" type="number"
-                                             class="time-input minutes"
-                                             placeholder="MM" data-unit="minutes" autocomplete="off">
-                                      <div class="time-controller">
-                                              <span class="time-controller-btn up" data-direction="up">
-                                              </span>
-                                          <span class="time-controller-btn down" data-direction="down">
-                                              </span>
-                                      </div>
-                                  </div>
+                                  <div id="timeSwitcher"></div>
                               </div>
                               <div class="btn-container">
-                                  <button tc-data-action="reminder" type="button" class="btn right">Set Reminder</button>
+                                  <button tc-data-action="reminder" type="button" class="btn right"><span> Update Reminder</span></button>
                               </div>
                           </div>
                       </form>
@@ -415,7 +400,7 @@ export const profilePageTemplate = `
                   </div>
                   <hr>
                   <div class="section-content">
-                      <form id="signupForm" name="signupForm">
+                      <form id="updateProfile" name="updateProfile">
                           <div>
                               <div class="row-col-2">
                                   <div>
@@ -438,13 +423,12 @@ export const profilePageTemplate = `
                                      placeholder="Enter Email" name="email"
                                      required>
                               <div class="btn-container">
-                                  <button type="submit" class="btn right">Update Profile</button>
+                                  <button tc-data-action="update-profile" type="button" class="btn right"><span>Update Profile</span></button>
                               </div>
                           </div>
                       </form>
                   </div>
-              </section>
-  
+              </section>  
               <section id="changePassword">
                   <div class="section-title">
                       <span>Change Password</span>
@@ -464,7 +448,7 @@ export const profilePageTemplate = `
                           <input class="form-input" id="match-password" type="password" placeholder="Confirm Password"
                                  name="matchPassword" required>
                           <div class="btn-container">
-                              <button tc-data-action="change-password" type="submit" class="btn right">Change Password
+                              <button tc-data-action="change-password" type="button" class="btn right"><span>Change Password</span> 
                               </button>
                           </div>
                       </form>
@@ -495,7 +479,7 @@ export const footerTemplate = `
     </div>`;
 
 export const paginationTopTemplate = `
-<div class="pagination-container">
+    <div class="pagination-container">
   <div tc-data-page-index="page">
     <span tc-data-model="visibleEntries"></span>
     &nbsp;<span>of</span> &nbsp;
@@ -506,13 +490,25 @@ export const paginationTopTemplate = `
     <a data-direction="next">❯</a>
   </div>
 </div>`;
-export const paginationBottomTemplate = ` 
- 
-<div class="center">
+export const paginationBottomTemplate = `
+    <div class="center">
     <div class="pagination">
         <a data-direction="prev">❮</a>
         <a tc-data-model="page" class="disable">0</a>
         <a data-direction="next">❯</a>
+    </div>
+</div>
+`;
+export const timeSwitcherTemplate = `
+    <div class="time-spinner">
+    <input name="hours" tc-data-model="hours" id="hours" type="number" class="time-input hours" data-unit="hours"
+           placeholder="HH" autocomplete="off">
+    <span class="time-delimiter">&colon;</span>
+    <input name="minutes" tc-data-model="minutes" id="minutes" type="number" class="time-input minutes" placeholder="MM"
+           data-unit="minutes" autocomplete="off">
+    <div class="time-controller">
+        <span class="time-controller-btn up" data-direction="up"></span>
+        <span class="time-controller-btn down" data-direction="down"></span>
     </div>
 </div>
 `;

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
-import { getTimeString, validateEmailAndPassword } from '../utils';
+import { getTimeString, validateEmailAndPassword, validateNameAndEmail } from '../utils';
 import db from '../db';
 import HttpError from '../utils/httpError';
 import Reminder from '../models/reminder';
@@ -42,6 +42,34 @@ export default class AccountController {
     }).catch((err) => {
       HttpError.sendError(err, res);
     });
+  }
+
+  static updateUser(req, res) {
+    const { userId } = req;
+    const { email } = req.body;
+    const message = validateNameAndEmail(req.body);
+    Promise.resolve(message)
+      .then(() => {
+        if (message !== null) {
+          return Promise.reject(new HttpError(message, 400, 'Failed'));
+        }
+        return db.connection.users.findOneByEmail(email);
+      })
+      .then((data) => {
+        if (data && data.id !== userId) {
+          return Promise.reject(new HttpError('Email already exist', 409, 'Failed'));
+        }
+        const { password, ...user } = req.body;
+        user.id = userId;
+        return db.connection.users.save({ ...user });
+      })
+      .then((result) => {
+        const user = removePasswordField(result);
+        res.status(200).send({ user, status: 'successful', message: 'Updated User Account successfully' });
+      })
+      .catch((err) => {
+        HttpError.sendError(err, res);
+      });
   }
 
   static registerUser(req, res) {

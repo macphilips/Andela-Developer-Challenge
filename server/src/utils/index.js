@@ -39,17 +39,23 @@ export function validateName(user) {
   return null;
 }
 
-export function validateEmailAndPassword(user) {
+export function validateEmailAndPassword(user, ignorePassword = false) {
   if (isEmpty(user.email)) {
     return 'Email address is required';
   }
   if (!isEmpty(user.email) && !validator.isEmail(user.email)) {
     return 'Email address is not valid;';
   }
-  if (isEmpty(user.password) || !validator.isLength(user.password, { min: 8 })) {
+  if (!ignorePassword
+    && (isEmpty(user.password) || !validator.isLength(user.password, { min: 8 }))) {
     return 'Password must be at least 8;\n\r';
   }
+
   return validateName(user);
+}
+
+export function validateNameAndEmail(user) {
+  return validateEmailAndPassword(user, true);
 }
 
 function isValidDayOfWeek(field) {
