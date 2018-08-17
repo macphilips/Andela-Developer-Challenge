@@ -1,7 +1,7 @@
 import { bindPropertiesToElement, DOMDoc } from '../utils';
 import { deleteDialogTemple } from '../utils/templates';
 import Event from '../utils/event';
-import { apiRequest } from '../services';
+import { account, apiRequest } from '../services';
 
 export default class ConfirmDeleteEntryView {
   constructor(model) {
@@ -21,6 +21,7 @@ export default class ConfirmDeleteEntryView {
       apiRequest.deleteEntry(this.model.id)
         .then(() => {
           this.notifyObserver('success');
+          account.identify(true).then();
         })
         .catch(() => this.notifyObserver('failed'));
     };
