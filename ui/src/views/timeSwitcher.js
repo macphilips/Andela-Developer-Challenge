@@ -75,14 +75,22 @@ export default class TimeSwitcher {
     if (!direction) return result;
 
     if (direction === 'up') {
-      result = (value % minuteStep === 0)
-        ? value + minuteStep : minuteStep * (parseInt(`${value / minuteStep}`, 10) + 1);
+      result = this.calcUpStep(value, minuteStep);
     } else if (direction === 'down') {
-      const round = (value === 0) ? 60 : value;
-      result = (value % minuteStep === 0)
-        ? value - minuteStep : minuteStep * (parseInt(`${round / minuteStep}`, 10));
+      result = this.calcDownStep(value, minuteStep);
     }
     return result;
+  }
+
+  static calcDownStep(value, minuteStep) {
+    const round = (value === 0) ? 60 : value;
+    return (value % minuteStep === 0)
+      ? value - minuteStep : minuteStep * (parseInt(`${round / minuteStep}`, 10));
+  }
+
+  static calcUpStep(value, minuteStep) {
+    return (value % minuteStep === 0)
+      ? value + minuteStep : minuteStep * (parseInt(`${value / minuteStep}`, 10) + 1);
   }
 
   /**
