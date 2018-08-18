@@ -1,16 +1,16 @@
-import navBarView from './views/navBarView';
 import { htmlToElement } from './utils';
 import { notFoundTemplate } from './utils/templates';
-import footerView from './views/footerView';
 
 export default class PageNotFound {
-  constructor() {
+  constructor(footerViewService, navBarViewService) {
     this.viewElement = htmlToElement(notFoundTemplate);
+    this.footerViewService = footerViewService;
+    this.navBarViewService = navBarViewService;
   }
 
   initialize() {
-    navBarView.render(this.viewElement);
-    footerView.render(this.viewElement);
+    this.navBarViewService.render(this.viewElement);
+    this.footerViewService.render(this.viewElement);
   }
 
   getViewElement() {

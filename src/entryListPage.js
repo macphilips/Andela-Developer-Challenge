@@ -1,22 +1,27 @@
 import { windowInterface } from './utils/index';
 import Event from './utils/event';
 import EntryItemModel from './views/entryItemModel';
-import { apiRequest } from './services';
+import EntryListView from './views/entryListView';
 
-export default class EntryListController {
+export default class EntryListPage {
   /**
    *
-   * @param entryListView {EntryListView}
+   * @param apiRequest {ApiRequestService}
+   * @param footerViewService {FooterViewService}
+   * @param navBarViewService {NavBarViewService}
+   * @param modalService {ModalService}
    */
-  constructor(entryListView) {
+  constructor(apiRequest, footerViewService, navBarViewService, modalService) {
     this.page = 1;
     this.size = 10;
-    this.entryListView = entryListView;
-    entryListView.getPaginationView().onChangePage.attach((context, args) => {
+    this.apiRequest = apiRequest;
+    this.entryListView = new EntryListView(apiRequest, footerViewService,
+      navBarViewService, modalService);
+    this.entryListView.getPaginationView().onChangePage.attach((context, args) => {
       this.page = args.page;
       this.refreshEntriesList();
     });
-    entryListView.refresh.attach(() => {
+    this.entryListView.refresh.attach(() => {
       this.refreshEntriesList();
     });
     this.onReady = new Event(this);
@@ -34,7 +39,7 @@ export default class EntryListController {
 
   loadEntries(query) {
     const adapter = this.entryListView.getAdapter();
-    apiRequest.getEntries(query).then((result) => {
+    this.apiRequest.getEntries(query).then((result) => {
       adapter.reset();
       const { size } = query;
       const { data } = result;

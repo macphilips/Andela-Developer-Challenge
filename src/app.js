@@ -1,15 +1,15 @@
-import EntryListController from './entryListPage';
+import EntryListPage from './entryListPage';
 import LoadingView from './views/loadngView';
 import { DOMDoc, gotoUrl, windowInterface } from './utils';
 import route from './route';
 import SignInPage from './signInPage';
 import ProfilePage from './profilePage';
 import HomePage from './homePage';
-import { account } from './services';
+import {
+  account, apiRequest, loginService, footerViewService, navBarViewService, modalService,
+} from './services';
 import SignUpPage from './signUpPage';
 import PageNotFound from './notFount';
-import EntryListView from './views/entryListView';
-import EntryListViewAdapter from './views/entryListViewAdapter';
 
 class MainView {
   constructor() {
@@ -52,24 +52,33 @@ class MainViewController {
    */
   constructor(mainView) {
     this.mainView = mainView;
-    const tAdapter = {
-      Type: EntryListViewAdapter, params: null,
-    };
-    const aEntryView = {
-      Type: EntryListView,
-      params: [tAdapter],
-    };
+    const navFooterParam = [footerViewService, navBarViewService];
+    const apiRequestWithNavFooter = [apiRequest, ...navFooterParam];
     const entryCtrl = {
-      Type: EntryListController,
-      params: [aEntryView],
+      Type: EntryListPage, params: [...apiRequestWithNavFooter, modalService],
+    };
+    const profilePageCtrl = {
+      Type: ProfilePage, params: [account, ...apiRequestWithNavFooter],
+    };
+    const signInPageCtrl = {
+      Type: SignInPage, params: [loginService, ...navFooterParam],
+    };
+    const signUpPageCtrl = {
+      Type: SignUpPage, params: apiRequestWithNavFooter,
+    };
+    const homePageCtrl = {
+      Type: HomePage, params: [account, ...navFooterParam],
+    };
+    const pageNotFoundCtrl = {
+      Type: PageNotFound, params: navFooterParam,
     };
     this.loadingView = new LoadingView();
     route.registerRoutes('/dashboard', entryCtrl, true);
-    route.registerRoutes('/profile', ProfilePage, true);
-    route.registerRoutes('/signin', SignInPage, false);
-    route.registerRoutes('/signup', SignUpPage, false);
-    route.registerRoutes('/', HomePage, false);
-    route.registerRoutes('*', PageNotFound, false);
+    route.registerRoutes('/profile', profilePageCtrl, true);
+    route.registerRoutes('/signin', signInPageCtrl, false);
+    route.registerRoutes('/signup', signUpPageCtrl, false);
+    route.registerRoutes('/', homePageCtrl, false);
+    route.registerRoutes('*', pageNotFoundCtrl, false);
   }
 
   route() {

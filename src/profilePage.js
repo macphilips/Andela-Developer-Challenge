@@ -7,11 +7,8 @@ import {
   showToast,
   trimDate,
 } from './utils';
-import navBarView from './views/navBarView';
-import { account, apiRequest } from './services';
 import { profilePageTemplate } from './utils/templates';
 import Event from './utils/event';
-import footerView from './views/footerView';
 import TimeSwitcher from './views/timeSwitcher';
 
 export default class ProfilePage {
@@ -21,11 +18,11 @@ export default class ProfilePage {
    * @param button
    * @private
    */
-  static consumeAPIResult(promise, button) {
+  consumeAPIResult(promise, button) {
     if (button) showLoadingAnim(button, 'show');
     promise.then((result) => {
       showToast({ title: result.message }, 'success');
-      account.identify(true).then();
+      this.account.identify(true).then();
     }).catch((err) => {
       showToast({ title: err.message }, 'error');
     }).finally(() => {
@@ -33,7 +30,18 @@ export default class ProfilePage {
     });
   }
 
-  constructor() {
+  /**
+   *
+   * @param account {UserAccount}
+   * @param apiRequest {ApiRequestService}
+   * @param footerViewService {FooterViewService}
+   * @param navBarViewService {NavBarViewService}
+   */
+  constructor(account, apiRequest, footerViewService, navBarViewService) {
+    this.account = account;
+    this.apiRequest = apiRequest;
+    this.footerViewService = footerViewService;
+    this.navBarViewService = navBarViewService;
     this.viewElement = htmlToElement(profilePageTemplate);
     this.timeSwitchView = new TimeSwitcher();
     this.onReady = new Event(this);
@@ -77,7 +85,7 @@ export default class ProfilePage {
       const changePasswordForm = this.viewElement.querySelector('#changePassword');
       const data = getFormFieldsAsObject(changePasswordForm);
       if (data.newPassword === data.matchPassword) {
-        ProfilePage.consumeAPIResult(apiRequest.changePassword(data), changePasswordForm.querySelector('.btn'));
+        this.consumeAPIResult(this.apiRequest.changePassword(data), changePasswordForm.querySelector('.btn'));
       } else {
         showToast({ title: 'Validation Error', message: 'Password doesn\'t match' }, 'error');
       }
@@ -90,7 +98,7 @@ export default class ProfilePage {
       const reminderForm = this.viewElement.querySelector('#reminderForm');
       const data = getFormFieldsAsObject(reminderForm);
       data.time = `${data.hours}:${data.minutes}`;
-      ProfilePage.consumeAPIResult(apiRequest.updateReminder(data), reminderForm.querySelector('.btn'));
+      this.consumeAPIResult(this.apiRequest.updateReminder(data), reminderForm.querySelector('.btn'));
     };
   }
 
@@ -99,7 +107,7 @@ export default class ProfilePage {
       e.preventDefault();
       const updateProfileForm = this.viewElement.querySelector('#updateProfile');
       const data = getFormFieldsAsObject(updateProfileForm);
-      ProfilePage.consumeAPIResult(apiRequest.updateUserDetails(data), updateProfileForm.querySelector('.btn'));
+      this.consumeAPIResult(this.apiRequest.updateUserDetails(data), updateProfileForm.querySelector('.btn'));
     };
   }
 
@@ -117,10 +125,10 @@ export default class ProfilePage {
 
   initialize() {
     this.timeSwitchView.initialize();
-    navBarView.render(this.viewElement);
-    footerView.render(this.viewElement);
+    this.navBarViewService.render(this.viewElement);
+    this.footerViewService.render(this.viewElement);
     this.timeSwitchView.render(this.viewElement, null);
-    account.identify()
+    this.account.identify()
       .then((result) => {
         const { user, reminder, entry } = result.data;
         this.bindProfile(user);

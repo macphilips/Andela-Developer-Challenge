@@ -1,14 +1,17 @@
 import { bindPropertiesToElement, DOMDoc } from '../utils';
 import { deleteDialogTemple } from '../utils/templates';
 import Event from '../utils/event';
-import { apiRequest } from '../services';
 
 export default class ConfirmDeleteEntryView {
-  constructor(model) {
+  /**
+   *
+   * @param apiRequest {ApiRequestService}
+   * @param model
+   */
+  constructor(apiRequest, model) {
     this.childView = DOMDoc.createElement('div');
     this.childView.innerHTML = deleteDialogTemple.trim();
     this.actionButtonClicked = new Event(this);
-
     this.model = model;
     const dataModelElements = this.childView.querySelectorAll('[tc-data-model]');
     bindPropertiesToElement(dataModelElements,

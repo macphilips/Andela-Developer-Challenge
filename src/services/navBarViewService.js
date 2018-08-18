@@ -1,22 +1,31 @@
-import { DOMDoc, gotoUrl, htmlToElement } from '../utils';
+import { DOMDoc, gotoUrl, htmlToElement } from '../utils/index';
 import { navbarHeaderTemplate } from '../utils/templates';
-import { account, loginService } from '../services';
 
-class NavBarView {
-  static logoutHandle() {
-    loginService.logout();
-    gotoUrl('#/');
+export default class NavBarViewService {
+  logoutHandle() {
+    return () => {
+      this.loginService.logout();
+      gotoUrl('#/');
+    };
   }
 
-  constructor() {
+  /**
+   *
+   * @param account {UserAccount}
+   * @param loginService {LoginService}
+   */
+  constructor(account, loginService) {
     this.viewElement = null;
     this.childView = htmlToElement(navbarHeaderTemplate);
+    this.account = account;
+    this.loginService = loginService;
   }
 
   init() {
     const logout = this.childView.querySelectorAll('.logout-js');
-    logout[0].onclick = NavBarView.logoutHandle;
-    logout[1].onclick = NavBarView.logoutHandle;
+    const handle = this.logoutHandle();
+    logout[0].onclick = handle;
+    logout[1].onclick = handle;
 
     const dismissSideNavButton = this.childView.querySelector('[tc-data-dismiss="side-nav"]');
     dismissSideNavButton.onclick = () => {
@@ -45,7 +54,7 @@ class NavBarView {
     this.childView.style.display = 'flex';
     const logoutElement = this.childView.querySelectorAll('.logged-out');
     const loginElement = this.childView.querySelectorAll('.logged-in');
-    if (account.isAuthenticated()) {
+    if (this.account.isAuthenticated()) {
       loginElement[0].style.display = 'flex';
       logoutElement[0].style.display = 'none';
 
@@ -87,7 +96,3 @@ class NavBarView {
     return this.childView;
   }
 }
-
-const navBarView = new NavBarView();
-navBarView.init();
-export default navBarView;
