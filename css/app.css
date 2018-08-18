@@ -265,20 +265,6 @@ section {
     }
 }
 
-.empty-list {
-    display: flex;
-    margin-top: 24px;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-}
-
-.empty-list span {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #555;
-}
-
 .content-width {
     max-width: 600px;
 }
@@ -1737,6 +1723,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
 
 .entry-list {
     margin-bottom: 16px;
+    min-height: 40vh;
 }
 
 .entry-list > div:last-child {
@@ -1746,6 +1733,25 @@ input.modal-header-input:focus, input.modal-header-input:active {
 .entry-list > div:first-child {
     border-top: 1px #e5e5e5 solid;
     margin-top: 16px;
+}
+
+.entry-list > div.empty-list{
+    border: none;
+    margin-top: 50px;
+}
+
+.empty-list {
+    display: flex;
+    margin-top: 24px;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.empty-list span {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #555;
 }
 
 .entries-container {
@@ -1941,6 +1947,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     text-decoration: none;
     transition: background-color .3s;
     border: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .pagination a:hover:not(.disable) {
