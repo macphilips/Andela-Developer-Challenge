@@ -125,7 +125,7 @@ export const loadingTemplate = `
         </div>
     </div>`;
 
-export const emptyListTemple = '<div class="empty-list"><span>No Entry</span></div>';
+export const emptyListTemple = '<div class="empty-list"><span>No Entries</span></div>';
 
 export const navbarHeaderTemplate = ` 
     <div>

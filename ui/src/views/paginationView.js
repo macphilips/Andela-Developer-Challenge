@@ -31,7 +31,7 @@ export default class PaginationView {
 
   renderBottom(data, element) {
     const { page, size, totalEntries } = data;
-    const totalPages = Math.ceil(totalEntries / size);
+    const totalPages = Math.max(Math.ceil(totalEntries / size), 1);
     const paginationBottom = element.querySelector('#paginationBottom');
     if (paginationBottom) {
       paginationBottom.innerHTML = '';
@@ -54,7 +54,7 @@ export default class PaginationView {
       { totalEntries, visibleEntries, page });
     if (paginationTop) {
       paginationTop.innerHTML = '';
-      paginationTop.appendChild(this.viewElementTop);
+      if (totalEntries > 0) paginationTop.appendChild(this.viewElementTop);
     }
   }
 

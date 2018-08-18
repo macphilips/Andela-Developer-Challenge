@@ -54,24 +54,12 @@ class MainViewController {
     this.mainView = mainView;
     const navFooterParam = [footerViewService, navBarViewService];
     const apiRequestWithNavFooter = [apiRequest, ...navFooterParam];
-    const entryCtrl = {
-      Type: EntryListPage, params: [...apiRequestWithNavFooter, modalService],
-    };
-    const profilePageCtrl = {
-      Type: ProfilePage, params: [account, ...apiRequestWithNavFooter],
-    };
-    const signInPageCtrl = {
-      Type: SignInPage, params: [loginService, ...navFooterParam],
-    };
-    const signUpPageCtrl = {
-      Type: SignUpPage, params: apiRequestWithNavFooter,
-    };
-    const homePageCtrl = {
-      Type: HomePage, params: [account, ...navFooterParam],
-    };
-    const pageNotFoundCtrl = {
-      Type: PageNotFound, params: navFooterParam,
-    };
+    const entryCtrl = { Type: EntryListPage, params: [...apiRequestWithNavFooter, modalService] };
+    const profilePageCtrl = { Type: ProfilePage, params: [account, ...apiRequestWithNavFooter] };
+    const signInPageCtrl = { Type: SignInPage, params: [loginService, ...navFooterParam] };
+    const signUpPageCtrl = { Type: SignUpPage, params: apiRequestWithNavFooter };
+    const homePageCtrl = { Type: HomePage, params: [account, ...navFooterParam] };
+    const pageNotFoundCtrl = { Type: PageNotFound, params: navFooterParam };
     this.loadingView = new LoadingView();
     route.registerRoutes('/dashboard', entryCtrl, true);
     route.registerRoutes('/profile', profilePageCtrl, true);
