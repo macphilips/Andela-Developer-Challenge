@@ -2,12 +2,12 @@ import {
   getFormFieldsAsObject, gotoUrl, showAlert, showLoadingAnim, validateForm,
 } from './utils';
 import { signInPageTemplate } from './utils/templates';
-import { loginService } from './services';
 import BasePage from './basePage';
 
 export default class SignInPage extends BasePage {
-  constructor() {
-    super(signInPageTemplate);
+  constructor(loginService, footerViewService, navBarViewService) {
+    super(footerViewService, navBarViewService, signInPageTemplate);
+    this.loginService = loginService;
   }
 
   registerPageEvent() {
@@ -17,7 +17,7 @@ export default class SignInPage extends BasePage {
       if (validateForm(signInForm)) {
         showLoadingAnim(button, 'show');
         const data = getFormFieldsAsObject(signInForm);
-        loginService.login(data).then(() => {
+        this.loginService.login(data).then(() => {
           // storeToken(res.token);
           gotoUrl('#/dashboard');
         }).catch(() => {

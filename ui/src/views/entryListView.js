@@ -1,4 +1,3 @@
-import { modalService } from '../services';
 import {
   DOMDoc, htmlToElement, showToast, windowInterface,
 } from '../utils';
@@ -8,9 +7,8 @@ import PaginationView from './paginationView';
 import CreateEntryView from './entryView';
 import ConfirmDeleteEntryView from './confirmDeleteEntryView';
 import EntryItemModel from './entryItemModel';
-import navBarView from './navBarView';
-import footerView from './footerView';
 import LoadingView from './loadngView';
+import EntryListViewAdapter from './entryListViewAdapter';
 
 export default class EntryListView {
   static contains(arr, element) {
@@ -18,7 +16,7 @@ export default class EntryListView {
     return items.length > 0;
   }
 
-  static registerButtonLister(arg) {
+  registerButtonLister(arg) {
     return (context, result) => {
       const { entry } = result;
       const { model } = arg;
@@ -26,14 +24,24 @@ export default class EntryListView {
       model.content = entry.content;
       model.lastModified = entry.lastModified;
       model.createdDate = entry.createdDate;
-      modalService.getModalView().dismiss();
+      this.modalService.getModalView().dismiss();
     };
   }
 
-  constructor(adapter) {
-    this.adapter = adapter;
+  /**
+   *
+   * @param apiRequest {ApiRequestService}
+   * @param footerViewService {FooterViewService}
+   * @param navBarViewService {NavBarViewService}
+   * @param modalService {ModalService}
+   */
+  constructor(apiRequest, footerViewService, navBarViewService, modalService) {
+    this.apiRequest = apiRequest;
+    this.modalService = modalService;
+    this.footerViewService = footerViewService;
+    this.navBarViewService = navBarViewService;
+    this.adapter = new EntryListViewAdapter();
     this.root = htmlToElement(entryListPageTemplate);
-    this.addButtonClicked = new Event(this);
     this.refresh = new Event(this);
     this.paginationView = new PaginationView();
     this.floatBtn = this.root.querySelector('#floatBtn .floating-button ');
@@ -92,15 +100,15 @@ export default class EntryListView {
       if (arg && arg.action === 'delete') {
         this.openConfirmationDialog(viewItem);
       } else {
-        const entryView = new CreateEntryView(arg.model, arg.action);
-        entryView.buttonClicked.attach(EntryListView.registerButtonLister(arg));
-        modalService.open(entryView);
+        const entryView = new CreateEntryView(this.apiRequest, arg.model, arg.action);
+        entryView.buttonClicked.attach(this.registerButtonLister(arg));
+        this.modalService.open(entryView);
       }
     });
   }
 
   openConfirmationDialog(viewItem) {
-    const confirmDeleteView = new ConfirmDeleteEntryView(viewItem.getModel());
+    const confirmDeleteView = new ConfirmDeleteEntryView(this.apiRequest, viewItem.getModel());
     confirmDeleteView.actionButtonClicked.attach((context, args) => {
       if (args.action === 'ok') {
         if (args.status === 'success') {
@@ -111,29 +119,28 @@ export default class EntryListView {
         }
       }
     });
-    modalService.open(confirmDeleteView);
+    this.modalService.open(confirmDeleteView);
   }
 
   openCreateEntryView() {
-    const component = new CreateEntryView();
+    const component = new CreateEntryView(this.apiRequest);
     component.buttonClicked.attach((context, args) => {
-      modalService.getModalView().dismiss();
+      this.modalService.getModalView().dismiss();
       this.adapter.addItems([new EntryItemModel(args.entry)]);
       this.refresh.notify();
     });
-    modalService.open(component);
+    this.modalService.open(component);
   }
 
   render() {
     this.paginationView.render(this.root, this.adapter.getPageInfo());
-    navBarView.render(this.root);
-    footerView.render(this.root);
+    this.navBarViewService.render(this.root);
+    this.footerViewService.render(this.root);
     this.renderList();
   }
 
   registerAddBtnClicked() {
     const handler = () => {
-      // this.addButtonClicked.notify({});
       this.openCreateEntryView();
     };
     const addButton = this.root.querySelectorAll('.add-btn-js');

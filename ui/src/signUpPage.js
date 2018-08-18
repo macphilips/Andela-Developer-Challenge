@@ -2,12 +2,18 @@ import {
   getFormFieldsAsObject, gotoUrl, matchPassword, showAlert, showLoadingAnim, validateForm,
 } from './utils';
 import { signUpPageTemplate } from './utils/templates';
-import { apiRequest } from './services';
 import BasePage from './basePage';
 
 export default class SignUpPage extends BasePage {
-  constructor() {
-    super(signUpPageTemplate);
+  /**
+   *
+   * @param apiRequest {ApiRequestService}
+   * @param footerViewService {FooterViewService}
+   * @param navBarViewService {NavBarViewService}
+   */
+  constructor(apiRequest, footerViewService, navBarViewService) {
+    super(footerViewService, navBarViewService, signUpPageTemplate);
+    this.apiRequest = apiRequest;
   }
 
   registerPageEvent() {
@@ -17,7 +23,7 @@ export default class SignUpPage extends BasePage {
       if (validateForm(signUpForm) && matchPassword(signUpForm)) {
         showLoadingAnim(button, 'show');
         const data = getFormFieldsAsObject(signUpForm);
-        apiRequest.createUser(data).then(() => {
+        this.apiRequest.createUser(data).then(() => {
           gotoUrl('#/dashboard');
         }).catch((err) => {
           const { message } = err;

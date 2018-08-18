@@ -1,7 +1,7 @@
-import { DOMDoc, htmlToElement } from '../utils';
+import { DOMDoc, htmlToElement } from '../utils/index';
 import { footerTemplate } from '../utils/templates';
 
-class FooterView {
+export default class FooterViewService {
   constructor() {
     this.viewElement = null;
     this.childView = htmlToElement(footerTemplate);
@@ -21,6 +21,3 @@ class FooterView {
     return this.childView;
   }
 }
-
-const footerView = new FooterView();
-export default footerView;

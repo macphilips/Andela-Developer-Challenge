@@ -3,11 +3,17 @@ import {
 } from '../utils';
 import { createEntryTemplate, viewEntryTemplate } from '../utils/templates';
 import Event from '../utils/event';
-import { apiRequest } from '../services';
 import { getTimeString } from '../../../server/src/utils/index';
 
 export default class CreateEntryView {
-  constructor(model, action) {
+  /**
+   *
+   * @param apiRequest
+   * @param [model]
+   * @param [action]
+   */
+  constructor(apiRequest, model, action) {
+    this.apiRequest = apiRequest;
     this.mode = action || 'create';
     this.viewElement = (this.mode === 'view') ? htmlToElement(viewEntryTemplate.trim()) : htmlToElement(createEntryTemplate.trim());
     this.buttonClicked = new Event(this);
@@ -79,9 +85,9 @@ export default class CreateEntryView {
         const { id } = data;
         data.content = content;
         data.title = title;
-        this.consumeApiResult(apiRequest.updateEntry(id, data), true);
+        this.consumeApiResult(this.apiRequest.updateEntry(id, data), true);
       } else if (this.mode === 'create') {
-        this.consumeApiResult(apiRequest.createEntry({ content, title }), false);
+        this.consumeApiResult(this.apiRequest.createEntry({ content, title }), false);
       } else {
         this.buttonClicked.notify();
       }

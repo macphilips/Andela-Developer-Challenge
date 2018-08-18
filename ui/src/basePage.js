@@ -1,13 +1,11 @@
 import { htmlToElement } from './utils';
-import footerView from './views/footerView';
-import navBarView from './views/navBarView';
 
 export default class BasePage {
-  constructor(template) {
+  constructor(footerViewService, navBarViewService, template) {
     this.template = template;
     this.viewElement = htmlToElement(template);
-    navBarView.render(this.viewElement);
-    footerView.render(this.viewElement);
+    navBarViewService.render(this.viewElement);
+    footerViewService.render(this.viewElement);
     this.registerPageEvent();
   }
 
