@@ -1,7 +1,7 @@
 import sql from '../sql';
 import Reminder from '../../models/reminder';
 import BaseRepository from './baseRepository';
-import { mapAndWrapDbPromise } from '../../utils';
+import { mapAndWrapDbPromise, padValue } from '../../utils';
 
 /**
  * This implementation is based on examples from pg-promise repo:
@@ -24,5 +24,23 @@ export default class ReminderRepository extends BaseRepository {
 
   save(input) {
     return super.save(input, Reminder.mapDBReminderEntityToReminder);
+  }
+
+  /**
+   *
+   * @param now {Date}
+   * @returns {Promise<T>}
+   */
+  findAllWithinLast15Minutes(now) {
+    return mapAndWrapDbPromise(this.db.any(this.sql.findAllWithinTime,
+      ReminderRepository.calculateTime(now)),
+    Reminder.mapDBUserArrayToReminder);
+  }
+
+  static calculateTime(now) {
+    let timeBefore = new Date(now.getTime() - (60 * 14 * 1000));
+    const timeAfter = `${padValue(`${now.getHours()}`)}:${padValue(`${now.getMinutes()}`)}`;
+    timeBefore = `${padValue(`${timeBefore.getHours()}`)}:${padValue(`${timeBefore.getMinutes()}`)}`;
+    return { timeBefore, timeAfter };
   }
 }

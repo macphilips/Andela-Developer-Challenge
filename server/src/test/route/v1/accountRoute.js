@@ -204,7 +204,7 @@ describe('Account API test', () => {
           .then((user) => {
             token = createToken({ id: user.id });
             return reminderRepository.save({
-              from: 'Monday', to: 'Sunday', time: '19:10', userId: user.id,
+              from: 'Monday', to: 'Sunday', time: '19:10', userId: user.id, enabled: false,
             });
           })
           .then((reminder) => {
@@ -217,6 +217,7 @@ describe('Account API test', () => {
               .send(settings)
               .then((res) => {
                 assertDefaultResponseBody(res);
+                settings.time = `${settings.time}:00`;
                 assetReminderBody(res.body, settings, userId);
               });
           });
@@ -239,7 +240,7 @@ describe('Account API test', () => {
             .then((user) => {
               token = createToken({ id: user.id });
               return reminderRepository.save({
-                from: 'Monday', to: 'Sunday', time: '19:10', userId: user.id,
+                from: 'Monday', to: 'Sunday', time: '19:10', userId: user.id, enabled: false,
               });
             })
             .then(result => chai.request(app)

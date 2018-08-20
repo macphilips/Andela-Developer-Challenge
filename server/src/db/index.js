@@ -9,8 +9,9 @@ import promise from 'bluebird';
 import config from '../config/config';
 import UserRepository from './repository/usersRepository';
 import EntriesRepository from './repository/entriesRepository';
-import sql from './sql';
 import ReminderRepository from './repository/reminderRepository';
+import GcmTokenRepository from './repository/gcmTokenRepository';
+import sql from './sql';
 
 class Database {
   get connection() {
@@ -25,6 +26,7 @@ class Database {
         obj.users = new UserRepository(obj);
         obj.entries = new EntriesRepository(obj);
         obj.reminder = new ReminderRepository(obj);
+        obj.gcmToken = new GcmTokenRepository(obj);
       },
     };
 

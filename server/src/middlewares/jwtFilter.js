@@ -14,7 +14,7 @@ class AuthenticationMiddleware {
       return next();
     }
     if (antPathMatcher.isMatch('/api/v1/**', url)) {
-      return Promise.resolve(req.body.token || req.query.token
+      return Promise.resolve(req.body.accessToken || req.query.accessToken
         || req.headers[AuthenticationMiddleware.AUTHORIZATION_HEADER])
         .then((token) => {
           if (!token) {

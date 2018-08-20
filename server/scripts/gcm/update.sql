@@ -4,10 +4,8 @@
     NOTE: We only add schema here to demonstrate the ability of class QueryFile
     to pre-format SQL with static formatting parameters when needs to be.
 */
-UPDATE ${schema~}.reminder
+UPDATE ${schema~}.gcm_token
 SET
-  from_date = ${from}, to_date = ${to}, md_time = ${time}, enabled=${enabled}
-
+  token = ${gcmToken}
 WHERE id = ${id} AND user_id = ${userId}
-
 RETURNING *

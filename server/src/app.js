@@ -9,16 +9,21 @@ import reminderRouter from './routes/v1/reminderRouter';
 import authenticateRouter from './routes/v1/authenticationRouter';
 import config from './config/config';
 import db from './db';
+import ScheduleTask from './task';
 
 // eslint-disable-next-line import/prefer-default-export
 export const app = express();
 
 const pathToSwaggerUi = path.join(__dirname, '../../../api-doc/dist');
+const apiVersion = '/api/v1';
 
 app.use('/docs/api/v1', express.static(pathToSwaggerUi));
 
 if (config.nodeEnv !== 'test') {
-  db.init().then();
+  db.init().then(() => {
+    const task = new ScheduleTask();
+    task.init();
+  });
   app.use(logger('combined'));
 }
 app.use(express.json());
@@ -27,7 +32,6 @@ app.use(cors(config.cors));
 
 
 app.use(AuthenticationMiddleware.doFilter);
-const apiVersion = '/api/v1';
 app.use(`${apiVersion}/account`, accountRouter);
 app.use(`${apiVersion}/account`, reminderRouter);
 app.use(`${apiVersion}/auth`, authenticateRouter);

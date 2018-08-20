@@ -5,6 +5,6 @@
     to pre-format SQL with static formatting parameters when needs to be.
 */
 
-INSERT INTO ${schema~}.reminder (from_date, to_date, user_id, md_time, enabled)
-VALUES (${from}, ${to}, ${userId}, ${time}, ${enabled})
+INSERT INTO ${schema~}.gcm_token (token, user_id)
+VALUES (${gcmToken}, ${userId})
 RETURNING *

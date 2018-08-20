@@ -1,4 +1,5 @@
 export default {
+  accountServiceKey: process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
   secret: process.env.JWT_SECRET,
   validity: parseInt(process.env.TOKEN_VALIDITY, 10),
   nodeEnv: process.env.NODE_ENV || 'dev',

@@ -4,7 +4,9 @@ import {
   entriesEndpoint,
   getEntryUrlByID,
   registrationEndpoint,
-  reminderUrl, userProfile,
+  reminderUrl,
+  updateToken,
+  userProfile,
   userProfileDetails,
 } from '../utils/endpointUrl';
 
@@ -31,6 +33,14 @@ export default class ApiRequestService {
 
   updateReminder(data) {
     return this.httpClient.put(reminderUrl, data);
+  }
+
+  updateGcmToken(data) {
+    return this.httpClient.post(updateToken, data);
+  }
+
+  deleteGcmToken() {
+    return this.httpClient.delete(updateToken);
   }
 
   authenticateUser(credentials) {

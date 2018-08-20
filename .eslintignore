@@ -6,5 +6,5 @@ bin
 server/build
 ui/dist
 api-doc
-webpack-config.js
+webpack
 

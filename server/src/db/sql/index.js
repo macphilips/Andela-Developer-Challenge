@@ -32,7 +32,7 @@ function getBasicQuery(dir) {
   const folder = `${root}scripts/${dir}/`;
   return {
     add: sql(`${folder}add.sql`),
-    create: sql(`${folder}create.sql`),
+    // create: sql(`${folder}create.sql`),
     delete: sql(`${folder}delete.sql`),
     empty: sql(`${folder}empty.sql`),
     find: sql(`${folder}find.sql`),
@@ -43,12 +43,17 @@ function getBasicQuery(dir) {
 const users = getBasicQuery('users');
 const entries = getBasicQuery('entries');
 const reminder = getBasicQuery('reminder');
+const gcmToken = getBasicQuery('gcm');
 
 export default {
-  reminder,
+  gcmToken,
   myDiary: sql(`${root}scripts/my_diary.sql`),
   functions: sql(`${root}scripts/functions.sql`),
 
+  reminder: {
+    ...reminder,
+    findAllWithinTime: sql(`${root}scripts/reminder/findAllWithinTime.sql`),
+  },
   entries: {
     ...entries,
     entriesByUserPageable: sql(`${root}scripts/entries/entriesByUserPageable.sql`),
