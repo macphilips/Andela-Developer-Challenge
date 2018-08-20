@@ -32,7 +32,7 @@ before_script:
       - psql -c 'create database mydiary_test;' -U postgres
       - npm install codeclimate-test-reporter -g
       - npm install -g sonarqube-scanner
-      - npm run webpack:build
+      - npm run webpack:prod
       - mv .env.sample .env
       - mv sonar-project.properties.sample sonar-project.properties
 after_success:

@@ -1,4 +1,4 @@
-export const baseUrl = 'https://shielded-waters-94006.herokuapp.com';
+export const baseUrl = process.env.SERVER_API_URL;
 export const apiVersion = '/api/v1';
 export const apiUrl = baseUrl + apiVersion;
 export const userProfile = `${apiUrl}/account`;

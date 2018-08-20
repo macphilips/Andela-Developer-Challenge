@@ -12,7 +12,8 @@
     "build": "npm run clean:server && npm run build-babel",
     "start": "npm run build && node --require dotenv/config ./server/bin/server",
     "test": "cross-env NODE_ENV=test nyc mocha \"server/src/test/**/*.js\"",
-    "webpack:build": "npm run clean:ui && webpack",
+    "webpack:dev": "npm run clean:ui && webpack --config webpack/webpack.dev.js --profile",
+    "webpack:prod": "npm run clean:ui && webpack --config webpack/webpack.prod.js --profile",
     "coverage": "npm run coveralls:coverage && npm run sonar:coverage",
     "coveralls:coverage": "nyc report --reporter=text-lcov | coveralls",
     "sonar:coverage": "cross-var sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_CLOUD_TOKEN"
@@ -38,7 +39,8 @@
     "randomstring": "^1.1.5",
     "rimraf": "^2.6.2",
     "swagger-ui-dist": "^3.17.6",
-    "validator": "^10.4.0"
+    "validator": "^10.4.0",
+    "webpack-merge": "^4.1.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
