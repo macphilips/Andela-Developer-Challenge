@@ -1,9 +1,11 @@
+import { mapArray } from '../utils';
+
 export default class Reminder {
   constructor(id, time, from, to, userId) {
     this.id = id;
     this.time = time;
     this.userId = userId;
-    this.daily = true;
+    this.enabled = false;
     this.from = from;
     this.to = to;
   }
@@ -21,8 +23,17 @@ export default class Reminder {
       reminder.to = entity.to_date;
       reminder.from = entity.from_date;
       reminder.time = entity.md_time;
+      reminder.enabled = entity.enabled;
+      if (entity.token) reminder.gcm = { token: entity.token };
     }
 
     return reminder;
+  }
+
+  static mapDBUserArrayToReminder(array) {
+    if (array instanceof Array) {
+      return mapArray(array, Reminder.map);
+    }
+    throw new Error();
   }
 }

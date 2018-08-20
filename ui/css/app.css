@@ -272,8 +272,8 @@ section {
 .custom-checkbox {
     display: block;
     position: relative;
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     font-size: 1rem;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1735,7 +1735,7 @@ input.modal-header-input:focus, input.modal-header-input:active {
     margin-top: 16px;
 }
 
-.entry-list > div.empty-list{
+.entry-list > div.empty-list {
     border: none;
     margin-top: 50px;
 }
@@ -1859,11 +1859,10 @@ input.modal-header-input:focus, input.modal-header-input:active {
 .plus {
     color: white;
     position: absolute;
-    top: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     display: block;
-    bottom: 0;
-    left: 0;
-    right: 0;
     text-align: center;
     padding: 0;
     margin: 0;
@@ -1990,4 +1989,77 @@ input.modal-header-input:focus, input.modal-header-input:active {
 .white .page-footer {
     color: #fff;
     border-top: none;
+}
+
+.enable-reminder {
+    padding:.75rem 0;
+    flex-direction: column;
+    display: flex;
+}
+
+.enable-reminder > div {
+    display: flex;
+    font-size: 1.2rem;
+    color: #999;
+    margin: 0 0 16px;
+}
+
+.enable-reminder .label {
+    margin: 4px .75rem;
+    font-size: 1rem;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 43px;
+    height: 20px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}
+
+.hide-reminder-settings {
+    display: none;
 }

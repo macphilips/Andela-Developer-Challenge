@@ -345,7 +345,18 @@ export const profilePageTemplate = `
                   <hr>
                   <div class="section-content">
                       <form id="reminderForm" name="reminderForm">
-                          <div>
+                          <div class="enable-reminder">
+                            <div>Turn on reminder notification?</div>
+                                <div>
+                                    <span class="label">No</span>
+                                    <label class="switch switch-js">
+                                        <input tc-data-action="enable-switch" tc-data-model="enabled" name="enabled" type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    <span class="label">Yes</span>
+                                </div>
+                          </div>
+                          <div class="reminder-setting-js">                                
                               <div class="sub-title">
                                   <span>Set daily reminder</span>
                               </div>

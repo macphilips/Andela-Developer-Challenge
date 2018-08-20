@@ -7,9 +7,9 @@
 
 CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
   id        SERIAL PRIMARY KEY,
-  md_time     VARCHAR(50) NULL,
+  md_time   VARCHAR(50) NULL,
   user_id   BIGINT      NULL,
   from_date TIMESTAMP   NULL,
   to_date   TIMESTAMP   NULL,
-  daily     BOOLEAN DEFAULT TRUE
+  enabled   BOOLEAN DEFAULT FALSE
 );

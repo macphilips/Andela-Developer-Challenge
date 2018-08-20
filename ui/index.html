@@ -37,6 +37,150 @@
         <p tc-data-model="message" class="alert-msg"></p>
     </div>
 </div>
+<!--
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+    <script>
+      const config = {
+        apiKey: 'AIzaSyBSW5FtfJmEKLDXEM0SM4_LRkw11AiYbys',
+        authDomain: 'alc-mydiary.firebaseapp.com',
+        databaseURL: 'https://alc-mydiary.firebaseio.com',
+        projectId: 'alc-mydiary',
+        storageBucket: 'alc-mydiary.appspot.com',
+        messagingSenderId: '432621595115',
+      };
+      firebase.initializeApp(config);
+      const messaging = firebase.messaging();
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('firebase-messaging-sw.js')
+          .then(registration => {
+            messaging.useServiceWorker(registration)
+          })
+          .catch(err => console.log('Service Worker Error', err));
+      } else {
+        alert('Push not supported.');
+      }
+
+      // const messaging = firebase.messaging();
+      messaging.usePublicVapidKey('BAYKQUQdxCIqAvMEam9T3TVMXjjlSbDhD7YzxIOtvGCO7pnpdvs4-boURQaaSlbcETXcMDb8NGaQ77sNDbswwuY');
+
+      messaging.onTokenRefresh(() => {
+        messaging.getToken().then((refreshedToken) => {
+          console.log('Token refreshed.');
+          setTokenSentToServer(false);
+          sendTokenToServer(refreshedToken);
+        }).catch((err) => {
+          console.log('Unable to retrieve refreshed token ', err);
+        });
+      });
+
+      // messaging.onMessage((payload) => {
+      //   console.log('Message received. ', payload);
+      // });
+
+
+      messaging.onMessage(payload => {
+        console.log('Message received. ', payload);
+        const notificationTitle = "[FG]" + payload.data.title;
+        const notificationOptions = {
+          body: payload.data.body,
+          icon: payload.data.icon,
+          requireInteraction: payload.data.requireInteraction,
+          tag: payload.data.tag
+        };
+
+        if (!("Notification" in window)) {
+          console.log("This browser does not support system notifications");
+        }
+        // Let's check whether notification permissions have already been granted
+        else {
+          if (Notification.permission === "granted") {
+            // If it's okay let's create a notification
+            try {
+              var notification = new Notification(notificationTitle, notificationOptions);
+              notification.onclick = function(event) {
+                event.preventDefault(); //prevent the browser from focusing the Notification's tab
+                window.open(payload.data.tag, '_blank');
+                notification.close();
+              }
+            } catch (err) {
+              try { //Need this part as on Android we can only display notifications thru the serviceworker
+                navigator.serviceWorker.ready.then(function(registration) {
+                  registration.showNotification(notificationTitle, notificationOptions);
+                });
+              } catch (err1) {
+                console.log(err1.message);
+              }
+            }
+          }
+        }
+      });
+
+      requestPermission();
+
+      function isTokenSentToServer() {
+        return window.localStorage.getItem('sentToServer') === '1';
+      }
+
+      function
+      setTokenSentToServer(sent) {
+        window.localStorage.setItem('sentToServer', sent ? '1' : '0');
+      }
+
+      function
+      sendTokenToServer(currentToken) {
+        if (!isTokenSentToServer()) {
+          console.log('Sending token to server...');
+          apiRequest.updateGcmToken({token: currentToken}).then((result) => {
+            console.log('Saved token => ', result);
+          });
+          setTokenSentToServer(true);
+        } else {
+          console.log('Token already sent to server so won\'t send it again '
+            + 'unless it changes');
+        }
+      }
+
+      function  requestPermission() {
+        console.log('Requesting permission...');
+        messaging.requestPermission().then(() => {
+          console.log('Notification permission granted.');
+          getToken();
+        }).catch((err) => {
+          console.log('Unable to get permission to notify.', err);
+        });
+      }
+
+      function
+      getToken() {
+        messaging.getToken().then((currentToken) => {
+          if (currentToken) {
+            console.log('retrieved token => ', currentToken);
+            sendTokenToServer(currentToken);
+          }
+        }).catch((err) => {
+          console.log('An error occurred while retrieving token. ', err);
+          setTokenSentToServer(false);
+        });
+      }
+
+      function
+      deleteToken() {
+        messaging.getToken().then((currentToken) => {
+          messaging.deleteToken(currentToken).then(() => {
+            console.log('Token deleted.');
+            setTokenSentToServer(false);
+          }).catch((err) => {
+            console.log('Unable to delete token. ', err);
+          });
+        }).catch((err) => {
+          console.log('Error retrieving Instance ID token. ', err);
+        });
+      }
+    </script>
+-->
 <script src="dist/app.bundle.js"></script>
 </body>
 </html>

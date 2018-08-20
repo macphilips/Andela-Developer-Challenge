@@ -27,9 +27,11 @@ export default class ReminderController {
 
   static saveReminder(req, result) {
     const { userId } = req;
-    const { from, to, time } = req.body;
+    const {
+      from, to, time, enabled,
+    } = req.body;
     const reminder = {
-      from, to, userId, time: padValue(time),
+      from, to, userId, enabled, time: padValue(time),
     };
     if (result) reminder.id = result.id;
     return db.connection.reminder.save(reminder);

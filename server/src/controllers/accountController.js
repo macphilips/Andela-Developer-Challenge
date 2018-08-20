@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
-import { getTimeString, validateEmailAndPassword, validateNameAndEmail } from '../utils';
+import {
+  getTimeString, isEmpty, validateEmailAndPassword, validateNameAndEmail,
+} from '../utils';
 import db from '../db';
 import HttpError from '../utils/httpError';
 import Reminder from '../models/reminder';
@@ -110,6 +112,48 @@ export default class AccountController {
         status: 'Successful',
         message: 'Password updated',
       }))
+      .catch((err) => {
+        HttpError.sendError(err, res);
+      });
+  }
+
+  static registerToken(req, res) {
+    const { gcmToken } = req.body;
+    const { userId } = req;
+    Promise.resolve(!isEmpty(gcmToken))
+      .then((result) => {
+        if (result) {
+          return db.connection.gcmToken.findByUserId(userId);
+        }
+        return Promise.reject(new HttpError('Invalid token', 401));
+      })
+      .then((result) => {
+        const data = { gcmToken, userId };
+        if (result) data.id = result.id;
+        return db.connection.gcmToken.save(data);
+      })
+      .then(result => res.status(200).send({
+        gcmToken: result,
+        status: 'successful',
+        message: 'Firebase token updated',
+      }))
+      .catch((err) => {
+        HttpError.sendError(err, res);
+      });
+  }
+
+  static removeToken(req, res) {
+    const { userId } = req;
+    db.connection.gcmToken.findByUserId(userId)
+      .then((result) => {
+        if (result) {
+          return db.connection.gcmToken.remove(result.id);
+        }
+        return Promise.resolve(true);
+      })
+      .then(() => {
+        res.status(200).send({ status: 'successful', message: 'Successfully removed Firebase Token' });
+      })
       .catch((err) => {
         HttpError.sendError(err, res);
       });

@@ -85,3 +85,4 @@ ui/dist
 sonar-project.properties
 .scannerwork
 analyse.js
+serviceAccountKey.json

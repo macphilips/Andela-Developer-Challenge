@@ -1,11 +1,20 @@
-import { DOMDoc, gotoUrl, htmlToElement } from '../utils/index';
+import {
+  DOMDoc, gotoUrl, htmlToElement, printError,
+} from '../utils';
 import { navbarHeaderTemplate } from '../utils/templates';
 
 export default class NavBarViewService {
   logoutHandle() {
     return () => {
-      this.loginService.logout();
-      gotoUrl('#/');
+      this.notificationService.deleteToken()
+        .then()
+        .catch((error) => {
+          printError(error);
+        })
+        .finally(() => {
+          this.loginService.logout();
+          gotoUrl('#/');
+        });
     };
   }
 
@@ -13,8 +22,10 @@ export default class NavBarViewService {
    *
    * @param account {UserAccount}
    * @param loginService {LoginService}
+   * @param notificationService {NotificationSettings}
    */
-  constructor(account, loginService) {
+  constructor(account, loginService, notificationService) {
+    this.notificationService = notificationService;
     this.viewElement = null;
     this.childView = htmlToElement(navbarHeaderTemplate);
     this.account = account;

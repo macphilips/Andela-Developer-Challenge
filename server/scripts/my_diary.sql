@@ -25,22 +25,18 @@ CREATE TABLE IF NOT EXISTS ${schema~}.entries
 
 CREATE TABLE IF NOT EXISTS ${schema~}.reminder (
   id        SERIAL PRIMARY KEY,
-  md_time   VARCHAR(50) NULL,
+  md_time   TIME        NULL,
   user_id   INT         NULL,
   from_date VARCHAR(10) NULL,
   to_date   VARCHAR(10) NULL,
-  daily     BOOLEAN DEFAULT TRUE,
+  enabled   BOOLEAN DEFAULT FALSE,
 
   CONSTRAINT fk_reminder_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
 );
 
-/*
-
-ALTER TABLE ${schema~}.entries
-  ADD CONSTRAINT entries_md_user_id_fk
-FOREIGN KEY (owner_id) REFERENCES md_user (id);
-
-ALTER TABLE ${schema~}.reminder
-  ADD CONSTRAINT reminder_md_user_id_fk
-FOREIGN KEY (user_id) REFERENCES md_user (id);
- */
+CREATE TABLE IF NOT EXISTS ${schema~}.gcm_token (
+  id      SERIAL PRIMARY KEY,
+  user_id INT UNIQUE     NULL,
+  token   VARCHAR(255)   NULL,
+  CONSTRAINT fk_gcm_token_user_id FOREIGN KEY (user_id) REFERENCES md_user (id)
+);

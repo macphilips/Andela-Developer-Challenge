@@ -25,6 +25,7 @@ export default class ProfilePage {
       this.account.identify(true).then();
     }).catch((err) => {
       showToast({ title: err.message }, 'error');
+      // printError(err);
     }).finally(() => {
       if (button) showLoadingAnim(button, 'remove');
     });
@@ -36,12 +37,14 @@ export default class ProfilePage {
    * @param apiRequest {ApiRequestService}
    * @param footerViewService {FooterViewService}
    * @param navBarViewService {NavBarViewService}
+   * @param notificationService {NotificationSettings}
    */
-  constructor(account, apiRequest, footerViewService, navBarViewService) {
+  constructor(account, apiRequest, footerViewService, navBarViewService, notificationService) {
     this.account = account;
     this.apiRequest = apiRequest;
     this.footerViewService = footerViewService;
     this.navBarViewService = navBarViewService;
+    this.notificationService = notificationService;
     this.viewElement = htmlToElement(profilePageTemplate);
     this.timeSwitchView = new TimeSwitcher();
     this.onReady = new Event(this);
@@ -67,10 +70,12 @@ export default class ProfilePage {
 
   bindReminder(model) {
     if (model.time) {
-      const { time, from, to } = model;
+      const {
+        time, from, to, enabled,
+      } = model;
       const [hours, minutes] = time.split(':');
       const data = {
-        hours, minutes, from, to,
+        hours, minutes, from, to, enabled,
       };
       const reminderSection = this.viewElement.querySelector('#reminder');
       const reminderDataModelElements = reminderSection.querySelectorAll('[tc-data-model]');
@@ -99,6 +104,11 @@ export default class ProfilePage {
       const data = getFormFieldsAsObject(reminderForm);
       data.time = `${data.hours}:${data.minutes}`;
       this.consumeAPIResult(this.apiRequest.updateReminder(data), reminderForm.querySelector('.btn'));
+      if (data.enabled) {
+        this.notificationService.requestPermission();
+      } else {
+        this.notificationService.deleteToken().then();
+      }
     };
   }
 
@@ -115,12 +125,34 @@ export default class ProfilePage {
     this.registerBtnHandler('changePassword', this.updatePasswordHandler());
     this.registerBtnHandler('reminderForm', this.updateReminderHandler());
     this.registerBtnHandler('updateProfile', this.updateProfileHandler());
+
+    const enableNotification = this.viewElement.querySelector('[tc-data-action="enable-switch"]');
+    enableNotification.onchange = () => {
+      this.showReminderSettings(enableNotification.checked);
+    };
+  }
+
+  /**
+   *
+   * @param show {boolean}
+   */
+  showReminderSettings(show) {
+    const reminderSettingsView = this.viewElement.querySelector('.reminder-setting-js');
+    if (show) {
+      reminderSettingsView.classList.remove('hide-reminder-settings');
+    } else {
+      reminderSettingsView.classList.add('hide-reminder-settings');
+    }
   }
 
   registerBtnHandler(formId, handler) {
     const form = this.viewElement.querySelector(`#${formId}`);
-    const btn = form.querySelector('[tc-data-action]');
-    btn.onclick = handler;
+    let selector = '[tc-data-action]';
+    if (formId === 'reminderForm') selector = '[tc-data-action="reminder"]';
+    const btn = form.querySelector(selector);
+    if (btn.nodeName === 'BUTTON') {
+      btn.onclick = handler;
+    }
   }
 
   initialize() {
@@ -135,10 +167,12 @@ export default class ProfilePage {
         this.bindReminder(reminder);
         this.bindEntriesSummary(entry);
         this.registerPageEvent();
+        this.showReminderSettings(reminder.enabled);
         this.onReady.notify({});
       })
       .catch((err) => {
         showToast({ title: 'Error', message: err.message }, 'error');
+        // printError(err);
         this.onReady.notify({});
       });
   }
