@@ -18,9 +18,10 @@ const pathToSwaggerUi = path.join(__dirname, '../../../api-doc/dist');
 const apiVersion = '/api/v1';
 
 app.use('/docs/api/v1', express.static(pathToSwaggerUi));
-const task = new ScheduleTask();
+
 if (config.nodeEnv !== 'test') {
   db.init().then(() => {
+    const task = new ScheduleTask();
     task.init();
   });
   app.use(logger('combined'));
