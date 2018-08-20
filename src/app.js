@@ -6,7 +6,13 @@ import SignInPage from './signInPage';
 import ProfilePage from './profilePage';
 import HomePage from './homePage';
 import {
-  account, apiRequest, loginService, footerViewService, navBarViewService, modalService,
+  account,
+  apiRequest,
+  footerViewService,
+  loginService,
+  modalService,
+  navBarViewService,
+  notificationService,
 } from './services';
 import SignUpPage from './signUpPage';
 import PageNotFound from './notFount';
@@ -55,7 +61,11 @@ class MainViewController {
     const navFooterParam = [footerViewService, navBarViewService];
     const apiRequestWithNavFooter = [apiRequest, ...navFooterParam];
     const entryCtrl = { Type: EntryListPage, params: [...apiRequestWithNavFooter, modalService] };
-    const profilePageCtrl = { Type: ProfilePage, params: [account, ...apiRequestWithNavFooter] };
+    const profilePageCtrl = {
+      Type: ProfilePage,
+      params: [account, ...apiRequestWithNavFooter,
+        notificationService],
+    };
     const signInPageCtrl = { Type: SignInPage, params: [loginService, ...navFooterParam] };
     const signUpPageCtrl = { Type: SignUpPage, params: apiRequestWithNavFooter };
     const homePageCtrl = { Type: HomePage, params: [account, ...navFooterParam] };

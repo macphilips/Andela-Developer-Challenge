@@ -1,4 +1,3 @@
-
 // eslint-disable-next-line no-undef
 import { loadingButtonTemplate } from './templates';
 
@@ -38,7 +37,11 @@ function setElementValue(target, model) {
   if (element.nodeName === 'INPUT'
     || element.nodeName === 'SELECT'
     || element.nodeName === 'TEXTAREA') {
-    element.value = value || '';
+    if (element.type === 'checkbox') {
+      element.checked = value;
+    } else {
+      element.value = value || '';
+    }
   } else {
     element.innerHTML = value;
   }
@@ -102,7 +105,11 @@ export function getFormFieldsAsObject(form) {
   const data = {};
   form.querySelectorAll('input').forEach((inputElement) => {
     const name = inputElement.getAttribute('name');
-    data[name] = inputElement.value;
+    if (inputElement.type === 'checkbox') {
+      data[name] = inputElement.checked;
+    } else {
+      data[name] = inputElement.value;
+    }
   });
   form.querySelectorAll('select').forEach((inputElement) => {
     const name = inputElement.getAttribute('name');
@@ -226,4 +233,9 @@ export function matchPassword(form) {
     }
   }
   return valid;
+}
+
+export function printError(err) {
+// eslint-disable-next-line no-console
+  console.error(err);
 }
