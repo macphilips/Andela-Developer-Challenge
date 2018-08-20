@@ -174,7 +174,7 @@ export default class AccountController {
     reminder.daily = true;
     reminder.from = 'SUNDAY';
     reminder.to = 'SATURDAY';
-    reminder.time = '09:00';
+    reminder.time = '09:00:00';
     return reminder;
   }
 }
