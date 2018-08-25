@@ -1,7 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 
 const resolve = path.join(__dirname, '../ui/dist');
-module.exports = {
+module.exports = (options) => ({
   entry: {
     app: './ui/src/app.js',
   },
@@ -26,4 +27,12 @@ module.exports = {
       },
     ],
   },
-};
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(options.env),
+        SERVER_API_URL: JSON.stringify(options.apiUrl),
+      },
+    }),
+  ],
+});
