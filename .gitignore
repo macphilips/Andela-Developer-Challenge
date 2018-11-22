@@ -76,13 +76,15 @@ Desktop.ini
 .coveralls.yml
 .nyc_output
 coverage/
+coverage-jest/
 
 docker
 .env
 .env.test
 swagger-ui
-ui/dist
+client/dist
 sonar-project.properties
 .scannerwork
 analyse.js
 serviceAccountKey.json
+yarn.lock
