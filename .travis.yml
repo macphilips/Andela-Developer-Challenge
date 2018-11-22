@@ -1,6 +1,10 @@
 language: node_js
 node_js:
-  - "stable"
+- "8.11.4"
+
+cache:
+  directories:
+  - node_modules
 
 env:
   - DB_URL=postgres://postgres:oreoluwa@localhost:5432/mydiary_test
@@ -36,5 +40,5 @@ before_script:
       - mv .env.sample .env
       - mv sonar-project.properties.sample sonar-project.properties
 after_success:
-  - codeclimate-test-reporter < ./coverage/lcov.info
+  - codeclimate-test-reporter < ./coverage-jest/lcov.info
   - npm run coverage
