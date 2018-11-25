@@ -10,6 +10,7 @@ module.exports = {
   // An array of glob patterns indicating a set of files for which coverage information should be collected
   collectCoverageFrom: [
     'client/src/**/*.{js,jsx}',
+    '!server/src/**/*.{js,jsx}',
     '!src/public/*.{js}',
     '!client/src/index.jsx',
   ],
