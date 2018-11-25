@@ -13,7 +13,7 @@ module.exports = ({ apiUrl, env }) => ({
   output: {
     path: resolve,
     filename: 'app.bundle.js',
-    publicPath: '/',
+    // publicPath: '/',
   },
   module: {
     rules: [

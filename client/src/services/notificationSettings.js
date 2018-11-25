@@ -3,13 +3,14 @@
           https://github.com/firebase/quickstart-js/issues/216
 */
 import firebase from 'firebase/app';
-import { printError } from '../utils/index';
-import 'firebase/messaging';
+import { printError } from '../utils';
 
-// require('firebase/messaging');
+require('firebase/messaging');
 
+// eslint-disable-next-line no-undef
 const nav = navigator;
 
+// eslint-disable-next-line no-undef
 const Notify = Notification;
 
 const config = {
@@ -122,7 +123,7 @@ export default class NotificationSettings {
     }
   }
 
-  getToken() {
+  async getToken() {
     if (Notify.permission === 'granted') {
       this.messaging.getToken()
         .then((currentToken) => {

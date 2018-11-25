@@ -1,5 +1,5 @@
-import { FIX_FOOTER, HIDE_NAV_BAR } from '../../actions/toolbar';
 import toolbar from '../../reducers/toolbar';
+import { FIX_FOOTER, HIDE_NAV_BAR } from '../../actions/toolbar';
 
 test('FIX_FOOTER', () => {
   const state = {

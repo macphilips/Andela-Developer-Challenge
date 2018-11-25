@@ -1,5 +1,4 @@
 import { apiRequest } from '../services/index';
-import { DEFAULT_SIZE } from './constants';
 import { dismissModal } from './modal';
 import { showToast } from './notification';
 
@@ -79,6 +78,7 @@ export const removeEntry = id => ({
   id,
 });
 
+export const DEFAULT_SIZE = 5;
 export const getEntries = query => async (dispatch) => {
   try {
     const result = await apiRequest.getEntries(query);
