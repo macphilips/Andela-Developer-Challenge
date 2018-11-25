@@ -1,8 +1,12 @@
-import { getToken, storeToken } from '../utils';
+import { getToken, storeToken } from '../utils/index';
 import Event from '../utils/event';
 
 export default class FetchWrapper {
   constructor() {
+    /**
+     *
+     * @type {Event}
+     */
     this.event = new Event();
   }
 
@@ -31,8 +35,10 @@ export default class FetchWrapper {
       .then((res) => {
         const { status } = res;
         if (status === 401) {
-          return this.event.notify({});
+          this.event.notify({});
+          // return this.event.notify({});
         }
+
         if (status < 400 || status >= 600) {
           const accessToken = res.headers.get('X-Access-Token');
           if (accessToken) storeToken(accessToken);

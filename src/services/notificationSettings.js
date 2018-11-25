@@ -3,14 +3,13 @@
           https://github.com/firebase/quickstart-js/issues/216
 */
 import firebase from 'firebase/app';
-import { printError, windowInterface } from '../utils';
+import { printError } from '../utils/index';
+import 'firebase/messaging';
 
-require('firebase/messaging');
+// require('firebase/messaging');
 
-// eslint-disable-next-line no-undef
 const nav = navigator;
 
-// eslint-disable-next-line no-undef
 const Notify = Notification;
 
 const config = {
@@ -28,7 +27,7 @@ export default class NotificationSettings {
       const notification = new Notify(notificationTitle, notificationOptions);
       notification.onclick = (event) => {
         event.preventDefault(); // prevent the browser from focusing the Notification's tab
-        windowInterface.open(payload.data.tag, '_blank');
+        window.open(payload.data.tag, '_blank');
         notification.close();
       };
     } catch (error) {
@@ -44,11 +43,11 @@ export default class NotificationSettings {
   }
 
   static isTokenSentToServer() {
-    return windowInterface.localStorage.getItem('sentToServer') === '1';
+    return window.localStorage.getItem('sentToServer') === '1';
   }
 
   static setTokenSentToServer(sent) {
-    windowInterface.localStorage.setItem('sentToServer', sent ? '1' : '0');
+    window.localStorage.setItem('sentToServer', sent ? '1' : '0');
   }
 
   /**
@@ -62,12 +61,14 @@ export default class NotificationSettings {
     this.registerServiceWorker();
     this.messaging.usePublicVapidKey('BAYKQUQdxCIqAvMEam9T3TVMXjjlSbDhD7YzxIOtvGCO7pnpdvs4-boURQaaSlbcETXcMDb8NGaQ77sNDbswwuY');
     this.messaging.onTokenRefresh(() => {
-      this.messaging.getToken().then((refreshedToken) => {
-        NotificationSettings.setTokenSentToServer(false);
-        this.sendTokenToServer(refreshedToken);
-      }).catch((err) => {
-        printError('Unable to retrieve refreshed token ', err);
-      });
+      this.messaging.getToken()
+        .then((refreshedToken) => {
+          NotificationSettings.setTokenSentToServer(false);
+          this.sendTokenToServer(refreshedToken);
+        })
+        .catch((err) => {
+          printError('Unable to retrieve refreshed token ', err);
+        });
     });
     this.registerOnMessageEvent();
   }
@@ -89,7 +90,7 @@ export default class NotificationSettings {
         body: payload.notification.body,
         icon: 'favicon.ico',
       };
-      if (('Notification' in windowInterface) && Notify.permission === 'granted') {
+      if (('Notification' in window) && Notify.permission === 'granted') {
         NotificationSettings.showNotification(notificationTitle, notificationOptions, payload);
       }
     });
@@ -109,11 +110,13 @@ export default class NotificationSettings {
   requestPermission() {
     if (Notify.permission !== 'granted') {
       NotificationSettings.setTokenSentToServer(false);
-      this.messaging.requestPermission().then(() => {
-        this.getToken();
-      }).catch((err) => {
-        printError(err);
-      });
+      this.messaging.requestPermission()
+        .then(() => {
+          this.getToken();
+        })
+        .catch((err) => {
+          printError(err);
+        });
     } else {
       this.getToken();
     }
@@ -121,14 +124,16 @@ export default class NotificationSettings {
 
   getToken() {
     if (Notify.permission === 'granted') {
-      this.messaging.getToken().then((currentToken) => {
-        if (currentToken) {
-          this.sendTokenToServer(currentToken);
-        }
-      }).catch((err) => {
-        NotificationSettings.setTokenSentToServer(false);
-        printError(err);
-      });
+      this.messaging.getToken()
+        .then((currentToken) => {
+          if (currentToken) {
+            this.sendTokenToServer(currentToken);
+          }
+        })
+        .catch((err) => {
+          NotificationSettings.setTokenSentToServer(false);
+          printError(err);
+        });
     } else {
       printError(new Error('Do not have permission to use notification'));
     }

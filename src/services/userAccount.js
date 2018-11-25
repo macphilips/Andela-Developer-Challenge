@@ -19,7 +19,7 @@ export default class UserAccount {
    * @param [force]
    * @returns {Promise<any>}
    */
-  identify(force) {
+  async identify(force) {
     if (force === true) {
       this.account = undefined;
       this.authenticated = false;
@@ -27,12 +27,13 @@ export default class UserAccount {
     if (this.account) {
       return Promise.resolve(this.account);
     }
-    return this.apiRequest.getUserDetails()
-      .then((res) => {
-        this.account = res;
-        this.authenticated = this.account !== null;
-        return Promise.resolve(this.account);
-      });
+    try {
+      this.account = await this.apiRequest.getUserDetails();
+      this.authenticated = this.account !== null;
+      return Promise.resolve(this.account);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
   isAuthenticated() {

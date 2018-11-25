@@ -1,4 +1,4 @@
-import { clearToken, storeToken } from '../utils';
+import { clearToken, storeToken } from '../utils/index';
 
 export default class LoginService {
   /**
@@ -12,9 +12,6 @@ export default class LoginService {
     this.notificationService = notificationService;
     this.account = accountService;
     this.apiRequest = apiRequest;
-    http.event.attach(() => {
-      this.logout();
-    });
   }
 
   logout() {
@@ -22,11 +19,16 @@ export default class LoginService {
     this.account.authenticate(null);
   }
 
-  login(credentials) {
-    return this.apiRequest.authenticateUser(credentials).then((res) => {
+  async login(credentials) {
+    try {
+      const res = await this.apiRequest.authenticateUser(credentials);
       storeToken(res.token);
-      this.notificationService.getToken();
-      return this.account.identify(true);
-    });
+      const [result] = await Promise.all([
+        this.account.identify(true),
+        this.notificationService.getToken()]);
+      return result;
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 }
