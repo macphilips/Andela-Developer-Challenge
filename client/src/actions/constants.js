@@ -1,14 +1,7 @@
-export const ADD_ENTRY = 'ADD ENTRY';
-export const SET_ENTRY = 'SET ENTRY';
-export const ENTRY_LOADING = 'ENTRY_LOADING';
-export const REMOVE_ENTRY = 'REMOVE ENTRY';
-export const SET_ENTRIES = 'SET ENTRIES';
-export const UPDATE_ENTRY = 'UPDATE ENTRIES';
 export const UPDATING_PROFILE = 'UPDATING PROFILE';
 export const UPDATING_PASSWORD = 'UPDATING PASSWORD';
 export const UPDATING_SETTINGS = 'UPDATING SETTINGS';
 export const REDIRECT_TO_REFERRER = 'REDIRECT TO REFERRER';
-export const SET_QUERY = 'SET QUERY';
 export const SET_PROFILE = 'SET PROFILE';
 export const SET_REMINDER = 'SET REMINDER';
 export const SET_SUMMARY = 'SET SUMMARY';

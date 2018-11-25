@@ -1,15 +1,19 @@
 import { combineReducers } from 'redux';
-import toolbar from './toolbar';
-import notification from './notification';
 import { authenticate, loading } from './authUserReducer';
 import redirect from './redirect';
+import toolbar from './toolbar';
+import entries from './entries';
+import modal from './modal';
+import notification from './notification';
 
 const appReducer = combineReducers({
-  toolbar,
-  notification,
   loading,
   authenticate,
-  redirect
+  toolbar,
+  redirect,
+  entries,
+  modal,
+  notification
 });
 
 export default appReducer;

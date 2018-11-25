@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
+import { logoutUser } from '../actions/authUser';
 
 export class Navbar extends React.Component {
   constructor(props) {
@@ -71,7 +72,7 @@ export class Navbar extends React.Component {
                     <Link to="/profile">Profile</Link>
                   </li>
                   <li>
-                    <a className="logout-js">Logout</a>
+                    <a onClick={this.props.logoutUser} className="logout-js">Logout</a>
                   </li>
                 </ul>
               )}
@@ -109,7 +110,7 @@ export class Navbar extends React.Component {
                   <Link to="/profile">Profile</Link>
                 </li>
                 <li>
-                  <a className="logout-js">Logout</a>
+                  <a onClick={this.props.logoutUser} className="logout-js">Logout</a>
                 </li>
               </ul>
             )}
@@ -130,21 +131,13 @@ export class Navbar extends React.Component {
   }
 }
 
-Navbar.propTypes = {
-  authenticated: PropTypes.bool,
-  hideNavBar: PropTypes.bool,
-};
-Navbar.defaultProps = {
-  authenticated: false,
-  hideNavBar: false,
-};
-
-
 const mapStateToProps = state => ({
+  authenticated: state.authenticate.authenticated,
   hideNavBar: state.toolbar.hideNavBar,
 });
 
 Navbar.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
   authenticated: PropTypes.bool,
   hideNavBar: PropTypes.bool,
 };
@@ -153,4 +146,4 @@ Navbar.defaultProps = {
   hideNavBar: false,
 };
 
-export default withRouter(connect(mapStateToProps, null)(Navbar));
+export default withRouter(connect(mapStateToProps, { logoutUser })(Navbar));
