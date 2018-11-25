@@ -49,6 +49,9 @@ export class HomePage extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  authenticated: state.authenticate.authenticated,
+});
 
 HomePage.propTypes = {
   fixFooter: PropTypes.func.isRequired,
@@ -58,4 +61,4 @@ HomePage.propTypes = {
 HomePage.defaultProps = {
   authenticated: false,
 };
-export default withRouter(connect(null, { fixFooter })(HomePage));
+export default withRouter(connect(mapStateToProps, { fixFooter })(HomePage));
