@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import TopPagination from './TopPagination';
-import { DEFAULT_SIZE } from '../../actions/constants';
+import { DEFAULT_SIZE } from '../../actions/entries';
 import { queryInfoPropType } from '../propsValidator';
 
 export default class EntryListHeader extends Component {

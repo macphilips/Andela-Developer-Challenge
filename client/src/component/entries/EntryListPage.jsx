@@ -6,10 +6,13 @@ import BottomPagination from './BottomPagination';
 import FloatingButton from './FloatingButton';
 import EntryListItem from './EntryListItem';
 import {
-  createEntry, deleteEntry, getEntries, updateEntry
+  DEFAULT_SIZE,
+  createEntry,
+  deleteEntry,
+  getEntries,
+  updateEntry
 } from '../../actions/entries';
 import { dismissModal, openModal } from '../../actions/modal';
-import { DEFAULT_SIZE } from '../../actions/constants';
 import EntryListHeader from './EntryListHeader';
 import CreateEntry from './CreateEntry';
 import ViewEntry from './ViewEntry';

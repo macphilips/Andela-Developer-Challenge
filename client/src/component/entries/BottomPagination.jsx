@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DEFAULT_SIZE } from '../../actions/constants';
+import { DEFAULT_SIZE } from '../../actions/entries';
 import { queryInfoPropType } from '../propsValidator';
 
 export class BottomPagination extends Component {

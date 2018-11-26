@@ -1,9 +1,11 @@
-import { loginService } from '../services/index';
+import { loginService, notificationService } from '../services/index';
 import { showAlert } from './notification';
 import { printError } from '../utils';
 
 export const USER_LOGOUT = 'USER_LOGOUT';
 export const LOGGING_IN = 'LOGGING_IN';
+export const SET_AUTH = 'SET AUTHENTICATION';
+
 /**
  *
  * @param signingIn {boolean}
@@ -14,7 +16,6 @@ export const loggingIn = signingIn => ({
   signingIn,
 });
 
-export const SET_AUTH = 'SET AUTHENTICATION';
 /**
  *
  * @param authenticated {boolean}
@@ -44,6 +45,7 @@ export const loginUser = credentials => async (dispatch) => {
 export const logoutUser = () => async (dispatch) => {
   try {
     dispatch({ type: USER_LOGOUT });
+    await notificationService.deleteToken();
   } catch (error) {
     printError(error);
   } finally {

@@ -1,6 +1,5 @@
 import { REDIRECT_TO_REFERRER } from '../../actions/redirect';
 import redirect from '../../reducers/redirect';
-import notification from '../../reducers/notification';
 
 test('REDIRECT_TO_REFERRER', () => {
   const state = {
