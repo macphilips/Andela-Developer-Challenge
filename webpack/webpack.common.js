@@ -13,7 +13,12 @@ module.exports = ({ apiUrl, env }) => ({
   output: {
     path: resolve,
     filename: 'app.bundle.js',
-    // publicPath: '/',
+    publicPath: '/',
+  },
+  devServer: {
+    historyApiFallback: true,
+    contentBase: './',
+    hot: true
   },
   module: {
     rules: [
