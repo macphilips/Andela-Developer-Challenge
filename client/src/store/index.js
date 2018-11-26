@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer from '../reducers';
 
 let enhancer;
-if (process.env.NODE_ENV === 'prod') {
+if (process.env.NODE_ENV === 'production') {
   enhancer = applyMiddleware(thunk);
 } else {
   enhancer = composeWithDevTools(applyMiddleware(thunk));

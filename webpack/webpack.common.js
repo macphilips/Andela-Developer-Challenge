@@ -38,7 +38,7 @@ module.exports = ({ apiUrl, env }) => ({
       {
         test: /\.scss$/,
         use: [
-          env === 'prod' ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader', 'sass-loader'
+          env === 'production' ? MiniCssExtractPlugin.loader : 'style-loader', 'css-loader', 'sass-loader'
         ]
       },
       {
